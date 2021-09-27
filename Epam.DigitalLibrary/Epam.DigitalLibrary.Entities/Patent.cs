@@ -24,7 +24,7 @@ namespace Epam.DigitalLibrary.Entities
 
             set
             {
-                Regex regex = new Regex(@"");
+                Regex regex = new Regex(@"^([A-Z][a-z]+|[A-Z]{2,})$"); // For EN language
 
                 if (regex.IsMatch(value))
                 {

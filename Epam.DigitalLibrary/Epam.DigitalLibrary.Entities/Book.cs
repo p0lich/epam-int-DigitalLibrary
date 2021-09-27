@@ -12,7 +12,6 @@ namespace Epam.DigitalLibrary.Entities
         private string _publisher, _publicationPlace, _isbn;
         private DateTime _publicationDate;
 
-        // Authors
         public List<Author> Authors { get; set; }
 
         public string PublicationPlace
@@ -73,7 +72,7 @@ namespace Epam.DigitalLibrary.Entities
 
             set
             {
-                Regex regex = new Regex(@"ISBN\x20(?=.{13}$)\d{1,5}([-])\d{1,7}\1\d{1,6}\1(\d|X)$");
+                Regex regex = new Regex(@"^ISBN\x20(?=.{13}$)[0-9]{1,5}([-])[0-9]{1,7}\1[0-9]{1,6}\1([0-9]|X)$");
 
                 if (!regex.IsMatch(value))
                 {
@@ -84,7 +83,8 @@ namespace Epam.DigitalLibrary.Entities
             }
         }
 
-        public Book(string name, string objectNotes, int pagesCount, DateTime publicatoinDate) : base(name, objectNotes, pagesCount, publicatoinDate)
+        public Book(string name, string objectNotes, int pagesCount, DateTime publicatoinDate) :
+            base(name, objectNotes, pagesCount, publicatoinDate)
         {
 
         }

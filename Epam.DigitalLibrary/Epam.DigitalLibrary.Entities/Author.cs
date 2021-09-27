@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Epam.DigitalLibrary.Entities
@@ -19,6 +20,13 @@ namespace Epam.DigitalLibrary.Entities
 
             set
             {
+                Regex regex = new Regex(@"^[A-Z]([a-z]+|[a-z]+-[A-Z][a-z]+){1,49}$"); // for EN language
+
+                if (!regex.IsMatch(value))
+                {
+                    throw new ArgumentException();
+                }
+
                 _firstName = value;
             }
         }
@@ -32,6 +40,13 @@ namespace Epam.DigitalLibrary.Entities
 
             set
             {
+                Regex regex = new Regex(@"^[A-Z]([a-z]+|[a-z]+-[A-Z][a-z]+){1,49}$"); // for EN language
+
+                if (!regex.IsMatch(value))
+                {
+                    throw new ArgumentException();
+                }
+
                 _lastName = value;
             }
         }

@@ -12,6 +12,11 @@ namespace Epam.DigitalLibrary.DalMemory
     {
         private List<Note> _data;
 
+        public DataLayer()
+        {
+            _data = new List<Note>();
+        }
+
         // 0 - note was added
         // -1 - same note already exist
         // -2 - can't add note
@@ -19,15 +24,17 @@ namespace Epam.DigitalLibrary.DalMemory
         {
             try
             {
-                _data.Add(note);
+                if (IsUnique(note))
+                {
+                    _data.Add(note);
+                    return 0;
+                }
 
-                return 0;
+                return 1;
             }
             catch (Exception)
             {
-
-
-                throw;
+                return 2;
             }
         }
 
@@ -38,7 +45,86 @@ namespace Epam.DigitalLibrary.DalMemory
 
         public bool RemoveNote(Note note)
         {
-            throw new NotImplementedException();
+            if (!_data.Contains(note))
+            {
+                return false;
+            }
+
+            _data.Remove(note);
+            return true;
+        }
+
+        private bool IsUnique(Note note)
+        {
+            Note targetNote;
+
+            if (note is Book)
+            {
+                Book book = note as Book;
+
+                if (!string.IsNullOrEmpty(book.ISBN))
+                {
+                    targetNote = _data.Where(n => n is Book).FirstOrDefault(n => (n as Book).ISBN == book.ISBN);
+
+                    if (targetNote is null)
+                    {
+                        return true;
+                    }
+
+                    return false;
+                }
+
+                targetNote = _data.Where(n => n is Book).FirstOrDefault(n => (n as Book).Name == book.Name &&
+                (n as Book).Authors == book.Authors &&
+                (n as Book).PublicationDate == book.PublicationDate);
+
+                if (targetNote is null)
+                {
+                    return true;
+                }
+
+                return false;
+            }
+
+            if (note is Newspaper)
+            {
+                Newspaper newspaper = note as Newspaper;
+
+                if (!string.IsNullOrEmpty(newspaper.ISSN))
+                {
+                    targetNote = _data.Where(n => n is Newspaper).FirstOrDefault(n => (n as Newspaper).ISSN == newspaper.ISSN);
+
+                    if (targetNote is null)
+                    {
+                        return true;
+                    }
+
+                    return false;
+                }
+
+                targetNote = _data.Where(n => n is Newspaper).FirstOrDefault(n => (n as Newspaper).Name == newspaper.Name &&
+                (n as Newspaper).Publisher == newspaper.Name &&
+                (n as Newspaper).PublicationDate == newspaper.PublicationDate);
+
+                if (targetNote is null)
+                {
+                    return true;
+                }
+
+                return false;
+            }
+
+            Patent patent = note as Patent;
+
+            targetNote = _data.Where(n => n is Patent).FirstOrDefault(n => (n as Patent).RegistrationNumber == patent.RegistrationNumber &&
+            (n as Patent).Country == patent.Country);
+
+            if (targetNote is null)
+            {
+                return true;
+            }
+
+            return true;
         }
     }
 }

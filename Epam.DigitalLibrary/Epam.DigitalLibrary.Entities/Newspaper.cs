@@ -92,7 +92,7 @@ namespace Epam.DigitalLibrary.Entities
 
             set
             {
-                Regex regex = new Regex(@"ISSN\x20[0-9]{4}-[0-9]{4}");
+                Regex regex = new Regex(@"^ISSN\x20[0-9]{4}-[0-9]{4}$");
 
                 if (!regex.IsMatch(value))
                 {

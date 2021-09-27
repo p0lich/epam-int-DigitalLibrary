@@ -3,15 +3,10 @@ using System.Text.RegularExpressions;
 
 namespace Epam.DigitalLibrary.ConsolePL
 {
-    class Program
+    public class Program
     {
         static void Main(string[] args)
         {
-            string a = "12345678";
-            Regex rex = new Regex(@"[0-9]{9}");
-            Console.WriteLine(rex.IsMatch(a));
-
-
             while (true)
             {
                 Console.WriteLine(
@@ -28,7 +23,126 @@ namespace Epam.DigitalLibrary.ConsolePL
                     "11: Group by publication year;\n" +
                     "0: Exit."
                     );
+
+                _ = int.TryParse(Console.ReadLine(), out int option);
+
+                switch (option)
+                {
+                    case 1:
+                        Console.WriteLine("Input note prperties:");
+                        AddNote();
+                        break;
+
+                    case 2:
+                        Console.WriteLine("");
+                        DeleteNote();
+                        break;
+
+                    case 3:
+                        ShowLibrary();
+                        break;
+
+                    case 4:
+                        Console.WriteLine("Input note name:");
+                        SearchByName();
+                        break;
+
+                    case 5:
+                        ForwardByYearSort();
+                        break;
+
+                    case 6:
+                        ReverseByYearSort();
+                        break;
+
+                    case 7:
+                        Console.WriteLine("Input author full name:");
+                        SearchBookByAuthor();
+                        break;
+
+                    case 8:
+                        Console.WriteLine("Input inventor full name:");
+                        SearchPatentsByInventor();
+                        break;
+
+                    case 9:
+                        Console.WriteLine("Input author full name:");
+                        SearchBookAndPatentsByAuthor();
+                        break;
+
+                    case 10:
+                        Console.WriteLine("Input charset:");
+                        SearchByCharset();
+                        break;
+
+                    case 11:
+                        Console.WriteLine("Input year:");
+                        GroupByYear();
+                        break;
+
+                    case 0:
+                        return;
+
+                    default:
+                        Console.WriteLine("Wrong option, try again:");
+                        break;
+                }
             }
         }
+
+        private static void GroupByYear()
+        {
+            throw new NotImplementedException();
+        }
+
+        private static void SearchByCharset()
+        {
+            throw new NotImplementedException();
+        }
+
+        private static void SearchBookAndPatentsByAuthor()
+        {
+            throw new NotImplementedException();
+        }
+
+        private static void SearchPatentsByInventor()
+        {
+            throw new NotImplementedException();
+        }
+
+        private static void SearchBookByAuthor()
+        {
+            throw new NotImplementedException();
+        }
+
+        private static void ReverseByYearSort()
+        {
+            throw new NotImplementedException();
+        }
+
+        private static void ForwardByYearSort()
+        {
+            throw new NotImplementedException();
+        }
+
+        private static void SearchByName()
+        {
+            throw new NotImplementedException();
+        }
+
+        private static void ShowLibrary()
+        {
+            throw new NotImplementedException();
+        }
+
+        private static void DeleteNote()
+        {
+            throw new NotImplementedException();
+        }
+
+        private static void AddNote()
+        {
+            throw new NotImplementedException();
+        }      
     }
 }
