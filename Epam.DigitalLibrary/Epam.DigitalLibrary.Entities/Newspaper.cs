@@ -2,17 +2,29 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Epam.DigitalLibrary.Entities
 {
     public class Newspaper : Note
     {
-        private string _publisher;
+        private string _publicationPlace, _publisher, _issn;
         private DateTime _publicationDate, _releaseDate;
         private int _pagesCount;
 
-        // Publication place
+        public string PublicationPlace
+        {
+            get
+            {
+                return _publicationPlace;
+            }
+
+            set
+            {
+                _publicationPlace = value;
+            }
+        }
 
         public string Publisher
         {
@@ -50,7 +62,7 @@ namespace Epam.DigitalLibrary.Entities
             }
         }
 
-        public int Number { get; set; }
+        public string Number { get; set; }
 
         public DateTime ReleaseDate
         {
@@ -71,6 +83,25 @@ namespace Epam.DigitalLibrary.Entities
         }
 
         // ISSN
+        public string ISSN
+        {
+            get
+            {
+                return _issn;
+            }
+
+            set
+            {
+                Regex regex = new Regex(@"ISSN\x20[0-9]{4}-[0-9]{4}");
+
+                if (!regex.IsMatch(value))
+                {
+                    throw new ArgumentException();
+                }
+
+                _issn = value;
+            }
+        }
 
         public Newspaper(string name, string objectNotes, int pagesCount, DateTime publicatoinDate) : base(name, objectNotes, pagesCount, publicatoinDate)
         {

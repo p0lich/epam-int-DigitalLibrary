@@ -23,7 +23,7 @@ namespace Epam.DigitalLibrary.Logic
             throw new NotImplementedException();
         }
 
-        public IEnumerable<Note> GroupByYear(int year)
+        public List<Note> GroupByYear(int year)
         {
             throw new NotImplementedException();
         }
@@ -33,17 +33,17 @@ namespace Epam.DigitalLibrary.Logic
             throw new NotImplementedException();
         }
 
-        public IEnumerable<Note> SearchBooksAndPatensByAuthors()
+        public List<Note> SearchBooksAndPatensByAuthors()
         {
             throw new NotImplementedException();
         }
 
-        public IEnumerable<Book> SearchBooksByAuthors()
+        public List<Book> SearchBooksByAuthors()
         {
             throw new NotImplementedException();
         }
 
-        public IEnumerable<Book> SearchBooksByCharset(string charSet)
+        public List<Book> SearchBooksByCharset(string charSet)
         {
             throw new NotImplementedException();
         }
@@ -53,7 +53,7 @@ namespace Epam.DigitalLibrary.Logic
             throw new NotImplementedException();
         }
 
-        public IEnumerable<Patent> SearchPatentByInventors()
+        public List<Patent> SearchPatentByInventors()
         {
             throw new NotImplementedException();
         }

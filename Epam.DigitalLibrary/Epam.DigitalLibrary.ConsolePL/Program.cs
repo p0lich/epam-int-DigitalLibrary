@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.RegularExpressions;
 
 namespace Epam.DigitalLibrary.ConsolePL
 {
@@ -6,6 +7,11 @@ namespace Epam.DigitalLibrary.ConsolePL
     {
         static void Main(string[] args)
         {
+            string a = "12345678";
+            Regex rex = new Regex(@"[0-9]{9}");
+            Console.WriteLine(rex.IsMatch(a));
+
+
             while (true)
             {
                 Console.WriteLine(

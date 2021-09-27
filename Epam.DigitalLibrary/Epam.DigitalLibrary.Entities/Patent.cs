@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Epam.DigitalLibrary.Entities
@@ -11,9 +12,28 @@ namespace Epam.DigitalLibrary.Entities
         private DateTime _applicationDate, _publicationDate;
         private string _country;
 
-        // Inventors
+        // At the moment inventors are authors
+        public List<Author> Authors { get; set; }
 
-        // Country
+        public string Country
+        {
+            get
+            {
+                return _country;
+            }
+
+            set
+            {
+                Regex regex = new Regex(@"");
+
+                if (regex.IsMatch(value))
+                {
+                    throw new ArgumentException();
+                }
+
+                _country = value;
+            }
+        }
 
         public string RegistrationNumber
         {

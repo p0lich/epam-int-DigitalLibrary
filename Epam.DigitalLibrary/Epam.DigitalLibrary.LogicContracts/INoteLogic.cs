@@ -21,14 +21,14 @@ namespace Epam.DigitalLibrary.LogicContracts
 
         public bool SortInReverseOrder();
 
-        public IEnumerable<Book> SearchBooksByAuthors();
+        public List<Book> SearchBooksByAuthors();
 
-        public IEnumerable<Patent> SearchPatentByInventors();
+        public List<Patent> SearchPatentByInventors();
 
-        public IEnumerable<Note> SearchBooksAndPatensByAuthors();
+        public List<Note> SearchBooksAndPatensByAuthors();
 
-        public IEnumerable<Book> SearchBooksByCharset(string charSet);
+        public List<Book> SearchBooksByCharset(string charSet);
 
-        public IEnumerable<Note> GroupByYear(int year);
+        public List<Note> GroupByYear(int year);
     }
 }

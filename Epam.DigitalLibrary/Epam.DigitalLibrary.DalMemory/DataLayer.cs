@@ -10,24 +10,33 @@ namespace Epam.DigitalLibrary.DalMemory
 {
     public class DataLayer : IDataLayer
     {
-        private IEnumerable<Note> _data;
+        private List<Note> _data;
 
-        public bool AddNote(Note note)
+        // 0 - note was added
+        // -1 - same note already exist
+        // -2 - can't add note
+        public int AddNote(Note note)
         {
-            throw new NotImplementedException();
+            try
+            {
+                _data.Add(note);
+
+                return 0;
+            }
+            catch (Exception)
+            {
+
+
+                throw;
+            }
         }
 
-        public Note GetNote()
+        public List<Note> GetAllNotes()
         {
-            throw new NotImplementedException();
+            return _data;
         }
 
         public bool RemoveNote(Note note)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool UpdateNote(Note note)
         {
             throw new NotImplementedException();
         }

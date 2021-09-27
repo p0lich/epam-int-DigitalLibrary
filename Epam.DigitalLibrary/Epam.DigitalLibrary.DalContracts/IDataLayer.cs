@@ -9,12 +9,14 @@ namespace Epam.DigitalLibrary.DalContracts
 {
     public interface IDataLayer
     {
-        public bool AddNote(Note note);
+        public int AddNote(Note note);
 
-        public Note GetNote();
+        public List<Note> GetAllNotes();
+
+        //public Note GetNote();
 
         public bool RemoveNote(Note note);
 
-        public bool UpdateNote(Note note);
+        //public bool UpdateNote(Note note);
     }
 }

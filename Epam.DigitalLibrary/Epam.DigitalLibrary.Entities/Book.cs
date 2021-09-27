@@ -2,18 +2,31 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Epam.DigitalLibrary.Entities
 {
     public class Book : Note
     {
-        private string _publisher, _isbn;
+        private string _publisher, _publicationPlace, _isbn;
         private DateTime _publicationDate;
 
         // Authors
+        public List<Author> Authors { get; set; }
 
-        // Publication place
+        public string PublicationPlace
+        {
+            get
+            {
+                return _publicationPlace;
+            }
+
+            set
+            {
+                _publicationPlace = value;
+            }
+        }
 
         public string Publisher
         {
@@ -51,7 +64,25 @@ namespace Epam.DigitalLibrary.Entities
             }
         }
 
-        // ISBN
+        public string ISBN
+        {
+            get
+            {
+                return _isbn;
+            }
+
+            set
+            {
+                Regex regex = new Regex(@"ISBN\x20(?=.{13}$)\d{1,5}([-])\d{1,7}\1\d{1,6}\1(\d|X)$");
+
+                if (!regex.IsMatch(value))
+                {
+                    throw new ArgumentException();
+                }
+
+                _isbn = value;
+            }
+        }
 
         public Book(string name, string objectNotes, int pagesCount, DateTime publicatoinDate) : base(name, objectNotes, pagesCount, publicatoinDate)
         {
