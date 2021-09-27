@@ -10,7 +10,7 @@ namespace Epam.DigitalLibrary.Entities
     public class Patent : Note
     {
         private DateTime _applicationDate, _publicationDate;
-        private string _country;
+        private string _country, _registrationNumber;
 
         // At the moment inventors are authors
         public List<Author> Authors { get; set; }
@@ -37,7 +37,20 @@ namespace Epam.DigitalLibrary.Entities
 
         public string RegistrationNumber
         {
-            get; set;
+            get
+            {
+                return _registrationNumber;
+            }
+
+            set
+            {
+                if (!new Regex(@"^[0-9]{9}$").IsMatch(value))
+                {
+                    throw new ArgumentException();
+                }
+
+                _registrationNumber = value;
+            }
         }
 
         public DateTime ApplicationDate
