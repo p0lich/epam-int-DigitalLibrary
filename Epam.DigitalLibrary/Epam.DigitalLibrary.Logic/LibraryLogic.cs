@@ -7,6 +7,7 @@ using Epam.DigitalLibrary.DalContracts;
 using Epam.DigitalLibrary.Entities;
 using Epam.DigitalLibrary.LogicContracts;
 using Epam.DigitalLibrary.DalMemory;
+using System.Text.RegularExpressions;
 
 namespace Epam.DigitalLibrary.Logic
 {
@@ -19,59 +20,71 @@ namespace Epam.DigitalLibrary.Logic
             _dataLayer = new DataLayer();
         }
 
-        public bool AddNote(Note note)
+        public int AddNote(Note note)
         {
-            throw new NotImplementedException();
+            return _dataLayer.AddNote(note);
         }
 
-        public List<Note> GroupByYear(int year)
+        public Dictionary<int, Note> GroupByYear(int year)
         {
-            throw new NotImplementedException();
+            return _dataLayer.GetAllNotes().ToDictionary(n => n.PublicationDate.Year);
         }
 
         public bool RemoveNote()
         {
-            throw new NotImplementedException();
+            return _dataLayer.RemoveNote();
         }
 
-        public List<Note> SearchBooksAndPatensByAuthors()
+        public List<Note> SearchBooksAndPatensByAuthor(Author author)
         {
-            throw new NotImplementedException();
+            return _dataLayer.GetAllNotes().Where(n => n is Book || n is Patent)
+                .Where(n => (n is Book && (n as Book).Authors.Contains(author))
+                || ((n is Patent && (n as Patent).Authors.Contains(author)))).ToList();
         }
 
-        public List<Book> SearchBooksByAuthors()
+        public List<Book> SearchBooksByAuthor(Author author)
         {
-            throw new NotImplementedException();
+            return _dataLayer.GetAllNotes().Where(n => n is Book)
+                .Where(n => (n as Book).Authors.Contains(author))
+                .Select(n => n as Book).ToList();
         }
 
-        public List<Book> SearchBooksByCharset(string charSet)
+        public Dictionary<string, Book> SearchBooksByCharset(string charSet)
         {
-            throw new NotImplementedException();
+            Regex regex = new Regex($@"^{charSet}");
+
+            return _dataLayer.GetAllNotes()
+                .Where(n => n is Book && regex.IsMatch((n as Book).Name))
+                .Select(n => n as Book).ToDictionary(n => n.Publisher);
         }
 
         public Note SearchByName(string name)
         {
-            throw new NotImplementedException();
+            return _dataLayer.GetAllNotes().FirstOrDefault(n => n.Name == name);
         }
 
-        public List<Patent> SearchPatentByInventors()
+        public List<Patent> SearchPatentByInventor(Author author)
         {
-            throw new NotImplementedException();
+            return _dataLayer.GetAllNotes().Where(n => n is Patent)
+                .Where(n => (n as Patent).Authors.Contains(author))
+                .Select(n => n as Patent).ToList();
         }
 
         public List<Note> GetCatalog()
         {
-            throw new NotImplementedException();
+            return _dataLayer.GetAllNotes();
         }
 
-        public bool SortInOrder()
+        // Methods don't change data
+
+        public List<Note> SortInOrder()
         {
-            throw new NotImplementedException();
+            return _dataLayer.GetAllNotes().OrderBy(n => n.PublicationDate.Year).ToList();
         }
 
-        public bool SortInReverseOrder()
+        public List<Note> SortInReverseOrder()
         {
-            throw new NotImplementedException();
+            return _dataLayer.GetAllNotes().OrderByDescending(n => n.PublicationDate.Year).ToList();
         }
     }
 }

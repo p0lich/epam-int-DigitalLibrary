@@ -101,27 +101,35 @@ namespace Epam.DigitalLibrary.ConsolePL
 
         private static void GroupByYear(string strYear)
         {
-            if (int.TryParse(strYear, out int year))
+            if (!int.TryParse(strYear, out int year))
             {
-                logic.GroupByYear(year);
+                Console.WriteLine("Wrong input");
+                return;
             }
 
-            Console.WriteLine("Wrong input");
+            Dictionary<int, Note> groupedNotes = logic.GroupByYear(year);
+
+            foreach (KeyValuePair<int, Note> note in groupedNotes)
+            {
+                Console.WriteLine("Year: " + note.Key);
+                ShowNote(note.Value);
+            }
         }
 
         private static void SearchByCharset(string charSet)
         {
-            List<Book> searchResults = logic.SearchBooksByCharset(charSet);
+            Dictionary<string, Book> searchResults = logic.SearchBooksByCharset(charSet);
 
-            for (int i = 0; i < searchResults.Count; i++)
+            foreach (KeyValuePair<string, Book> book in searchResults)
             {
-                ShowNote(searchResults[i]);
+                Console.WriteLine("Publisher: " + book.Key);
+                ShowNote(book.Value);
             }
         }
 
         private static void SearchBookAndPatentsByAuthor()
         {
-            List<Note> notes = logic.SearchBooksAndPatensByAuthors();
+            List<Note> notes = logic.SearchBooksAndPatensByAuthor(new Author(Console.ReadLine(), Console.ReadLine()));
 
             for (int i = 0; i < notes.Count; i++)
             {
@@ -131,7 +139,7 @@ namespace Epam.DigitalLibrary.ConsolePL
 
         private static void SearchPatentsByInventor()
         {
-            List<Patent> patents = logic.SearchPatentByInventors();
+            List<Patent> patents = logic.SearchPatentByInventor(new Author(Console.ReadLine(), Console.ReadLine()));
 
             for (int i = 0; i < patents.Count; i++)
             {
@@ -141,7 +149,7 @@ namespace Epam.DigitalLibrary.ConsolePL
 
         private static void SearchBookByAuthor()
         {
-            List<Book> books = logic.SearchBooksByAuthors();
+            List<Book> books = logic.SearchBooksByAuthor(new Author(Console.ReadLine(), Console.ReadLine()));
 
             for (int i = 0; i < books.Count; i++)
             {
@@ -161,7 +169,7 @@ namespace Epam.DigitalLibrary.ConsolePL
 
         private static void SearchByName(string name)
         {
-            Console.WriteLine(logic.SearchByName(name));
+            ShowNote(logic.SearchByName(name));
         }
 
         private static void ShowLibrary()

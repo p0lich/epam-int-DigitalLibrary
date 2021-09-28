@@ -43,14 +43,14 @@ namespace Epam.DigitalLibrary.DalMemory
             return _data;
         }
 
-        public bool RemoveNote(Note note)
+        public bool RemoveNote()
         {
-            if (!_data.Contains(note))
+            if (_data.Count == 0)
             {
                 return false;
             }
 
-            _data.Remove(note);
+            _data.RemoveAt(0);
             return true;
         }
 

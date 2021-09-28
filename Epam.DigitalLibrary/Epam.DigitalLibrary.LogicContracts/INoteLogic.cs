@@ -9,7 +9,7 @@ namespace Epam.DigitalLibrary.LogicContracts
 {
     public interface INoteLogic
     {
-        public bool AddNote(Note note);
+        public int AddNote(Note note);
 
         public bool RemoveNote();
 
@@ -17,18 +17,18 @@ namespace Epam.DigitalLibrary.LogicContracts
 
         public Note SearchByName(string name);
 
-        public bool SortInOrder();
+        public List<Note> SortInOrder();
 
-        public bool SortInReverseOrder();
+        public List<Note> SortInReverseOrder();
 
-        public List<Book> SearchBooksByAuthors();
+        public List<Book> SearchBooksByAuthor(Author author);
 
-        public List<Patent> SearchPatentByInventors();
+        public List<Patent> SearchPatentByInventor(Author author);
 
-        public List<Note> SearchBooksAndPatensByAuthors();
+        public List<Note> SearchBooksAndPatensByAuthor(Author author);
 
-        public List<Book> SearchBooksByCharset(string charSet);
+        public Dictionary<string, Book> SearchBooksByCharset(string charSet);
 
-        public List<Note> GroupByYear(int year);
+        public Dictionary<int, Note> GroupByYear(int year);
     }
 }
