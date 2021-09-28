@@ -11,9 +11,9 @@ namespace Epam.DigitalLibrary.LogicContracts
     {
         public bool AddNote(Note note);
 
-        public bool RemoveNote(Note note);
+        public bool RemoveNote();
 
-        public bool ShowCatalog();
+        public List<Note> GetCatalog();
 
         public Note SearchByName(string name);
 

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Epam.DigitalLibrary.DalContracts;
 using Epam.DigitalLibrary.Entities;
 using Epam.DigitalLibrary.LogicContracts;
+using Epam.DigitalLibrary.DalMemory;
 
 namespace Epam.DigitalLibrary.Logic
 {
@@ -13,9 +14,9 @@ namespace Epam.DigitalLibrary.Logic
     {
         private IDataLayer _dataLayer;
 
-        public LibraryLogic(IDataLayer dataLayer)
+        public LibraryLogic()
         {
-            _dataLayer = dataLayer;
+            _dataLayer = new DataLayer();
         }
 
         public bool AddNote(Note note)
@@ -28,7 +29,7 @@ namespace Epam.DigitalLibrary.Logic
             throw new NotImplementedException();
         }
 
-        public bool RemoveNote(Note note)
+        public bool RemoveNote()
         {
             throw new NotImplementedException();
         }
@@ -58,7 +59,7 @@ namespace Epam.DigitalLibrary.Logic
             throw new NotImplementedException();
         }
 
-        public bool ShowCatalog()
+        public List<Note> GetCatalog()
         {
             throw new NotImplementedException();
         }

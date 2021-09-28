@@ -83,10 +83,15 @@ namespace Epam.DigitalLibrary.Entities
             }
         }
 
-        public Book(string name, string objectNotes, int pagesCount, DateTime publicatoinDate) :
-            base(name, objectNotes, pagesCount, publicatoinDate)
+        public Book(string name, string objectNotes, int pagesCount,
+            List<Author> authors, string publicationPlace, string publisher, DateTime publicationDate, string iSBN) :
+            base(name, objectNotes, pagesCount, publicationDate)
         {
-
+            Authors = authors;
+            PublicationPlace = publicationPlace;
+            Publisher = publisher;
+            PublicationDate = publicationDate;
+            ISBN = iSBN;
         }
     }
 }

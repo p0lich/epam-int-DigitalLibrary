@@ -89,9 +89,15 @@ namespace Epam.DigitalLibrary.Entities
             }
         }
 
-        public Patent(string name, string objectNotes, int pagesCount, DateTime publicatoinDate) : base(name, objectNotes, pagesCount, publicatoinDate)
+        public Patent(string name, string objectNotes, int pagesCount,
+            List<Author> authors, string country, string registrationNumber, DateTime applicationDate, DateTime publicationDate) :
+            base(name, objectNotes, pagesCount, publicationDate)
         {
-
+            Authors = authors;
+            Country = country;
+            RegistrationNumber = registrationNumber;
+            ApplicationDate = applicationDate;
+            PublicationDate = publicationDate;
         }
     }
 }

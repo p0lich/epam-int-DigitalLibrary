@@ -82,7 +82,6 @@ namespace Epam.DigitalLibrary.Entities
             }
         }
 
-        // ISSN
         public string ISSN
         {
             get
@@ -103,9 +102,16 @@ namespace Epam.DigitalLibrary.Entities
             }
         }
 
-        public Newspaper(string name, string objectNotes, int pagesCount, DateTime publicatoinDate) : base(name, objectNotes, pagesCount, publicatoinDate)
+        public Newspaper(string name, string objectNotes, int pagesCount, DateTime publicationDate,
+            string publicationPlace, string publisher, string number, DateTime releaseDate, string iSSN) :
+            base(name, objectNotes, pagesCount, publicationDate)
         {
-            
+            PublicationPlace = publicationPlace;
+            Publisher = publisher;
+            PublicationDate = publicationDate;
+            Number = number;
+            ReleaseDate = releaseDate;
+            ISSN = iSSN;
         }
     }
 }
