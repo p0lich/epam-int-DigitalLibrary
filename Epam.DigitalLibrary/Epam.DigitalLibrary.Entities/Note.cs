@@ -20,6 +20,11 @@ namespace Epam.DigitalLibrary.Entities
 
             set
             {
+                if (value is null)
+                {
+                    throw new ArgumentNullException();
+                }
+
                 if (value.Length > 300)
                 {
                     throw new ArgumentOutOfRangeException();
@@ -56,6 +61,12 @@ namespace Epam.DigitalLibrary.Entities
 
             set
             {
+                if (value is null)
+                {
+                    _objectNotes = null;
+                    return;
+                }
+
                 if (value.Length > 2000)
                 {
                     throw new ArgumentOutOfRangeException();

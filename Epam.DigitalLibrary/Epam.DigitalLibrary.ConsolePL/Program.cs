@@ -281,15 +281,39 @@ namespace Epam.DigitalLibrary.ConsolePL
 
             try
             {
+                Console.Write("Patent name: ");
+                string inputName = Console.ReadLine();
+
+                Console.WriteLine("Inventors:");
+                List<Author> inputAuthors = AddAuthors();
+
+                Console.Write("Country: ");
+                string inputCountry = Console.ReadLine();
+
+                Console.Write("Registration number: ");
+                string inputRegistrationNumber = Console.ReadLine();
+
+                Console.Write("Application date: ");
+                string inputApplicationDate = Console.ReadLine();
+
+                Console.Write("Publication date: ");
+                DateTime inputPublicationDate = DateTime.Parse(Console.ReadLine());
+
+                Console.Write("Pages count: ");
+                int inputPagesCount = int.Parse(Console.ReadLine());
+
+                Console.Write("Patent notes: ");
+                string inputObjectNotes = Console.ReadLine();
+
                 logic.AddNote(new Patent(
-                name: Console.ReadLine(),
-                authors: AddAuthors(),
-                country: Console.ReadLine(),
-                registrationNumber: Console.ReadLine(),
-                applicationDate: DateTime.Parse(Console.ReadLine()),
-                publicationDate: DateTime.Parse(Console.ReadLine()),
-                pagesCount: int.Parse(Console.ReadLine()),
-                objectNotes: Console.ReadLine()
+                name: inputName,
+                authors: inputAuthors,
+                country: inputCountry,
+                registrationNumber: inputRegistrationNumber,
+                applicationDate: string.IsNullOrEmpty(inputApplicationDate) ? null : DateTime.Parse(inputApplicationDate),
+                publicationDate: inputPublicationDate,
+                pagesCount: inputPagesCount,
+                objectNotes: string.IsNullOrEmpty(inputObjectNotes) ? null : inputObjectNotes
                 ));
                 Console.WriteLine("Book was added");
             }
@@ -304,18 +328,45 @@ namespace Epam.DigitalLibrary.ConsolePL
         {
             Console.WriteLine("Leave unnecessary field empty if you don't want fill them");
 
+            Console.Write("Newspaper name: ");
+            string inputName = Console.ReadLine();
+
+            Console.Write("Publication place: ");
+            string inputPublicationPlace = Console.ReadLine();
+
+            Console.Write("Publisher: ");
+            string inputPublisher = Console.ReadLine();
+
+            Console.Write("Publication date: ");
+            DateTime inputPublicationDate = DateTime.Parse(Console.ReadLine());
+
+            Console.Write("Pages count: ");
+            int inputPagesCount = int.Parse(Console.ReadLine());
+
+            Console.Write("Newspaper notes: ");
+            string inputObjectNotes = Console.ReadLine();
+
+            Console.Write("Number: ");
+            string inputNumber = Console.ReadLine();
+
+            Console.Write("Release date: ");
+            DateTime inputReleaseDate = DateTime.Parse(Console.ReadLine());
+
+            Console.Write("ISSN: ");
+            string inputISSN = Console.ReadLine();
+
             try
             {
                 logic.AddNote(new Newspaper(
-                name: Console.ReadLine(),
-                publicationPlace: Console.ReadLine(),
-                publisher: Console.ReadLine(),
-                publicationDate: DateTime.Parse(Console.ReadLine()),
-                pagesCount: int.Parse(Console.ReadLine()),
-                objectNotes: Console.ReadLine(),
-                number: Console.ReadLine(),
-                releaseDate: DateTime.Parse(Console.ReadLine()),
-                iSSN: Console.ReadLine()
+                name: inputName,
+                publicationPlace: inputPublicationPlace,
+                publisher: inputPublisher,
+                publicationDate: inputPublicationDate,
+                pagesCount: inputPagesCount,
+                objectNotes: string.IsNullOrEmpty(inputObjectNotes) ? null : inputObjectNotes,
+                number: string.IsNullOrEmpty(inputNumber) ? null : inputNumber,
+                releaseDate: inputReleaseDate,
+                iSSN: string.IsNullOrEmpty(inputISSN) ? null : inputISSN
                 ));
                 Console.WriteLine("Book was added");
             }
@@ -332,15 +383,39 @@ namespace Epam.DigitalLibrary.ConsolePL
 
             try
             {
+                Console.Write("Book name: ");
+                string inputName = Console.ReadLine();
+
+                Console.WriteLine("Authors:");
+                List<Author> inputAuthors = AddAuthors();
+
+                Console.Write("Publication place: ");
+                string inputPublicationPlace = Console.ReadLine();
+
+                Console.Write("Publisher: ");
+                string inputPublisher = Console.ReadLine();
+
+                Console.Write("Publication date: ");
+                DateTime inputPublicationDate = DateTime.Parse(Console.ReadLine());
+
+                Console.Write("Pages count: ");
+                int inputPagesCount = int.Parse(Console.ReadLine());
+
+                Console.Write("Book notes: ");
+                string inputObjectNotes = Console.ReadLine();
+
+                Console.Write("ISBN: ");
+                string inputISBN = Console.ReadLine();
+
                 logic.AddNote(new Book(
-                name: Console.ReadLine(),
-                authors: AddAuthors(),
-                publicationPlace: Console.ReadLine(),
-                publisher: Console.ReadLine(),
-                publicationDate: DateTime.Parse(Console.ReadLine()),
-                pagesCount: int.Parse(Console.ReadLine()),
-                objectNotes: Console.ReadLine(),
-                iSBN: Console.ReadLine()
+                name: inputName,
+                authors: inputAuthors,
+                publicationPlace: inputPublicationPlace,
+                publisher: inputPublisher,
+                publicationDate: inputPublicationDate,
+                pagesCount: inputPagesCount,
+                objectNotes: string.IsNullOrEmpty(inputObjectNotes) ? null : inputObjectNotes,
+                iSBN: string.IsNullOrEmpty(inputISBN) ? null : inputISBN
                 ));
                 Console.WriteLine("Book was added");
             }
@@ -402,8 +477,8 @@ namespace Epam.DigitalLibrary.ConsolePL
                     $"Publisher: {book.Publisher};\n" +
                     $"Publication date: {book.PublicationDate};\n" +
                     $"Page count: {book.PagesCount};\n" +
-                    $"Book notes: {book.ObjectNotes};\n" +
-                    $"ISBN: {book.ISBN};\n"
+                    $"Book notes: {book.ObjectNotes ?? "N/A"};\n" +
+                    $"ISBN: {book.ISBN ?? "N/A"};\n"
                     );
 
                 return;
@@ -419,10 +494,10 @@ namespace Epam.DigitalLibrary.ConsolePL
                     $"Publisher: {newspaper.Publisher};\n" +
                     $"Publication date: {newspaper.PublicationDate};\n" +
                     $"Page count: {newspaper.PagesCount};\n" +
-                    $"Newspaper notes: {newspaper.ObjectNotes};\n" +
-                    $"Number: {newspaper.Number};\n" +
+                    $"Newspaper notes: {newspaper.ObjectNotes ?? "N/A"};\n" +
+                    $"Number: {newspaper.Number ?? "N/A"};\n" +
                     $"Release date: {newspaper.ReleaseDate};\n" +
-                    $"ISBN: {newspaper.ISSN};\n"
+                    $"ISBN: {newspaper.ISSN ?? "N/A"};\n"
                     );
 
                 return;
@@ -433,18 +508,20 @@ namespace Epam.DigitalLibrary.ConsolePL
 
             for (int i = 0; i < patent.Authors.Count; i++)
             {
-                inventors.Append(patent.Authors[i].ToString() + ",\n");
+                inventors.Append(patent.Authors[i].ToString() + "\n");
             }
+
+            string appDate = patent.ApplicationDate is null ? "N/A" : patent.ApplicationDate.ToString();
 
             Console.WriteLine(
                 $"Name: {patent.Name};\n" +
                 $"Inventors:\n{inventors};\n" +
                 $"Country: {patent.Country};\n" +
                 $"Registration number: {patent.RegistrationNumber};\n" +
-                $"Application date: {patent.ApplicationDate};\n" +
+                $"Application date: {appDate};\n" +
                 $"Publication date: {patent.PublicationDate};\n" +
                 $"Page count: {patent.PagesCount};\n" +
-                $"Patent notes: {patent.ObjectNotes};\n"
+                $"Patent notes: {patent.ObjectNotes ?? "N/A"};\n"
                 );
 
             return;

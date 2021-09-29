@@ -20,7 +20,7 @@ namespace Epam.DigitalLibrary.Entities
 
             set
             {
-                Regex regex = new Regex(@"^[A-Z]([a-z]+(-[A-Z])?[a-z]+)$"); // for EN language
+                Regex regex = new Regex(@"^[A-Z]([a-z]*(-[A-Z])?[a-z]+)$"); // for EN language
 
                 if (!regex.IsMatch(value) || value.Length > 50)
                 {

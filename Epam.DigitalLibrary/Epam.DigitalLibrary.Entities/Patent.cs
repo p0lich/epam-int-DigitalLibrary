@@ -9,7 +9,8 @@ namespace Epam.DigitalLibrary.Entities
 {
     public class Patent : Note
     {
-        private DateTime _applicationDate, _publicationDate;
+        private DateTime _publicationDate;
+        private DateTime? _applicationDate;
         private string _country, _registrationNumber;
 
         // At the moment inventors are authors
@@ -24,6 +25,11 @@ namespace Epam.DigitalLibrary.Entities
 
             set
             {
+                if (value is null)
+                {
+                    throw new ArgumentNullException();
+                }
+
                 Regex regex = new Regex(@"^([A-Z][a-z]+|[A-Z]{2,})$"); // For EN language
 
                 if (!regex.IsMatch(value))
@@ -44,6 +50,11 @@ namespace Epam.DigitalLibrary.Entities
 
             set
             {
+                if (value is null)
+                {
+                    throw new ArgumentNullException();
+                }
+
                 if (!new Regex(@"^[0-9]{1,9}$").IsMatch(value))
                 {
                     throw new ArgumentException();
@@ -53,7 +64,7 @@ namespace Epam.DigitalLibrary.Entities
             }
         }
 
-        public DateTime ApplicationDate
+        public DateTime? ApplicationDate
         {
             get
             {
@@ -62,9 +73,12 @@ namespace Epam.DigitalLibrary.Entities
 
             set
             {
-                if (value.Year < 1474)
+                if (value.HasValue)
                 {
-                    throw new ArgumentOutOfRangeException();
+                    if (value.Value.Year < 1474)
+                    {
+                        throw new ArgumentOutOfRangeException();
+                    }
                 }
 
                 _applicationDate = value;
@@ -80,7 +94,15 @@ namespace Epam.DigitalLibrary.Entities
 
             set
             {
-                if (value.Year < 1474 || _applicationDate > value)
+                if (_applicationDate.HasValue)
+                {
+                    if (value < _applicationDate.Value)
+                    {
+                        throw new ArgumentException();
+                    }
+                }
+
+                if (value.Year < 1474 || value > DateTime.Now)
                 {
                     throw new ArgumentOutOfRangeException();
                 }
@@ -90,7 +112,7 @@ namespace Epam.DigitalLibrary.Entities
         }
 
         public Patent(string name, string objectNotes, int pagesCount,
-            List<Author> authors, string country, string registrationNumber, DateTime applicationDate, DateTime publicationDate) :
+            List<Author> authors, string country, string registrationNumber, DateTime? applicationDate, DateTime publicationDate) :
             base(name, objectNotes, pagesCount, publicationDate)
         {
             Authors = authors;

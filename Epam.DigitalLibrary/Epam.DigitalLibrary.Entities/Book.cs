@@ -23,6 +23,11 @@ namespace Epam.DigitalLibrary.Entities
 
             set
             {
+                if (value is null)
+                {
+                    throw new ArgumentNullException();
+                }
+
                 Regex regex = new Regex(@"^( [A-Z]?)?[A-Z]([a-z]*( [A-Z]?)?[a-z]+((-[A-Z])|(-[a-z]+-[A-Z]))?[a-z]*( [A-Z]?)?[a-z]+)$");
 
                 if (!regex.IsMatch(value) || value.Length > 200)
@@ -43,6 +48,11 @@ namespace Epam.DigitalLibrary.Entities
 
             set
             {
+                if (value is null)
+                {
+                    throw new ArgumentNullException();
+                }
+
                 if (value.Length > 300)
                 {
                     throw new ArgumentOutOfRangeException();
@@ -79,6 +89,12 @@ namespace Epam.DigitalLibrary.Entities
 
             set
             {
+                if (value is null)
+                {
+                    _isbn = null;
+                    return;
+                }
+
                 Regex regex = new Regex(@"^ISBN ((999[0-9]{2})|(99[4-8][0-9])|(9(([5-8][0-9])|(9[0-3])))|((8[0-9])|(9[0-4]))|[0-7])-[0-9]{1,7}-[0-9]{1,7}-[0-9X]$");
 
                 if (!regex.IsMatch(value) || value.Length != 18)

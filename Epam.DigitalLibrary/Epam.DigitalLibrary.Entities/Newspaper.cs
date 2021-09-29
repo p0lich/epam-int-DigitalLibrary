@@ -21,6 +21,11 @@ namespace Epam.DigitalLibrary.Entities
 
             set
             {
+                if (value is null)
+                {
+                    throw new ArgumentNullException();
+                }
+
                 Regex regex = new Regex(@"^( [A-Z]?)?[A-Z]([a-z]*( [A-Z]?)?[a-z]+((-[A-Z])|(-[a-z]+-[A-Z]))?[a-z]*( [A-Z]?)?[a-z]+)$");
 
                 if (!regex.IsMatch(value) || value.Length > 200)
@@ -41,6 +46,11 @@ namespace Epam.DigitalLibrary.Entities
 
             set
             {
+                if (value is null)
+                {
+                    throw new ArgumentNullException();
+                }
+
                 if (value.Length > 300)
                 {
                     throw new ArgumentOutOfRangeException();
@@ -79,7 +89,7 @@ namespace Epam.DigitalLibrary.Entities
 
             set
             {
-                if (_publicationDate != value)
+                if (_publicationDate.Year != value.Year)
                 {
                     throw new ArgumentException();
                 }
@@ -97,6 +107,12 @@ namespace Epam.DigitalLibrary.Entities
 
             set
             {
+                if (value is null)
+                {
+                    _issn = null;
+                    return;
+                }
+
                 Regex regex = new Regex(@"^ISSN[0-9]{4}-[0-9]{4}$");
 
                 if (!regex.IsMatch(value))
