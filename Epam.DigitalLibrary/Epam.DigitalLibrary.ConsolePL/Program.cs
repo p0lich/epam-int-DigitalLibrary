@@ -511,14 +511,12 @@ namespace Epam.DigitalLibrary.ConsolePL
                 inventors.Append(patent.Authors[i].ToString() + "\n");
             }
 
-            string appDate = patent.ApplicationDate is null ? "N/A" : patent.ApplicationDate.ToString();
-
             Console.WriteLine(
                 $"Name: {patent.Name};\n" +
                 $"Inventors:\n{inventors};\n" +
                 $"Country: {patent.Country};\n" +
                 $"Registration number: {patent.RegistrationNumber};\n" +
-                $"Application date: {appDate};\n" +
+                $"Application date: {(patent.ApplicationDate is null ? "N/A" : patent.ApplicationDate.ToString())};\n" +
                 $"Publication date: {patent.PublicationDate};\n" +
                 $"Page count: {patent.PagesCount};\n" +
                 $"Patent notes: {patent.ObjectNotes ?? "N/A"};\n"
