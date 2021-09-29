@@ -11,7 +11,6 @@ namespace Epam.DigitalLibrary.Entities
     {
         private string _publicationPlace, _publisher, _issn;
         private DateTime _publicationDate, _releaseDate;
-        private int _pagesCount;
 
         public string PublicationPlace
         {
@@ -22,6 +21,13 @@ namespace Epam.DigitalLibrary.Entities
 
             set
             {
+                Regex regex = new Regex(@"^( [A-Z]?)?[A-Z]([a-z]*( [A-Z]?)?[a-z]+((-[A-Z])|(-[a-z]+-[A-Z]))?[a-z]*( [A-Z]?)?[a-z]+)$");
+
+                if (!regex.IsMatch(value) || value.Length > 200)
+                {
+                    throw new ArgumentException();
+                }
+
                 _publicationPlace = value;
             }
         }
@@ -91,7 +97,7 @@ namespace Epam.DigitalLibrary.Entities
 
             set
             {
-                Regex regex = new Regex(@"^ISSN\x20[0-9]{4}-[0-9]{4}$");
+                Regex regex = new Regex(@"^ISSN[0-9]{4}-[0-9]{4}$");
 
                 if (!regex.IsMatch(value))
                 {

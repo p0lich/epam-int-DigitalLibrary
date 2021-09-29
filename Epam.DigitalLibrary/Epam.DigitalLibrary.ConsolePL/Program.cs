@@ -14,7 +14,41 @@ namespace Epam.DigitalLibrary.ConsolePL
 
         static void Main(string[] args)
         {
-            
+            // Prepared data
+
+            logic.AddNote(new Book(
+                name: "book1",
+                authors: new List<Author> { new Author("Ivan", "Karasev") },
+                publicationPlace: "Saratov",
+                publisher: "booker",
+                publicationDate: new DateTime(1900, 01, 01),
+                pagesCount: 50,
+                objectNotes: "aoaoaoaoa",
+                iSBN: "ISBN 1-56389-668-0"
+                ));
+
+            logic.AddNote(new Newspaper(
+                name: "newspaper1",
+                publicationPlace: "Samara",
+                publisher: "samaraNews",
+                publicationDate: new DateTime(1900, 01, 01),
+                pagesCount: 5,
+                objectNotes: "hi",
+                number: "123",
+                releaseDate: new DateTime(1900, 01, 01),
+                iSSN: "ISSN1284-5678"
+                ));
+
+            logic.AddNote(new Patent(
+                name: "patent1",
+                authors: new List<Author> { new Author("Kiril", "Ivanov") },
+                country: "Russia",
+                registrationNumber: "11123",
+                applicationDate: new DateTime(1890, 01, 01),
+                publicationDate: new DateTime(1891, 01, 01),
+                pagesCount: 20,
+                objectNotes: "da"
+                ));
 
             while (true)
             {
@@ -159,12 +193,22 @@ namespace Epam.DigitalLibrary.ConsolePL
 
         private static void ReverseByYearSort()
         {
-            logic.SortInReverseOrder();
+            List<Note> sortedLib = logic.SortInReverseOrder();
+
+            for (int i = 0; i < sortedLib.Count; i++)
+            {
+                ShowNote(sortedLib[i]);
+            }
         }
 
         private static void ForwardByYearSort()
         {
-            logic.SortInOrder();
+            List<Note> sortedLib = logic.SortInOrder();
+
+            for (int i = 0; i < sortedLib.Count; i++)
+            {
+                ShowNote(sortedLib[i]);
+            }
         }
 
         private static void SearchByName(string name)
@@ -185,7 +229,7 @@ namespace Epam.DigitalLibrary.ConsolePL
         // Currently remove first note in catalog
         private static void DeleteNote()
         {
-            if (logic.GetCatalog().Count > 1)
+            if (logic.GetCatalog().Count > 0)
             {
                 logic.RemoveNote();
                 return;
@@ -348,12 +392,12 @@ namespace Epam.DigitalLibrary.ConsolePL
 
                 for (int i = 0; i < book.Authors.Count; i++)
                 {
-                    authors.Append(book.Authors[i].ToString() + ",\n");
+                    authors.Append(book.Authors[i].ToString() + "\n");
                 }
 
                 Console.WriteLine(
                     $"Name: {book.Name};\n" +
-                    $"Authors: {authors};\n" +
+                    $"Authors:\n{authors};\n" +
                     $"Publication place: {book.PublicationPlace};\n" +
                     $"Publisher: {book.Publisher};\n" +
                     $"Publication date: {book.PublicationDate};\n" +
@@ -377,7 +421,7 @@ namespace Epam.DigitalLibrary.ConsolePL
                     $"Page count: {newspaper.PagesCount};\n" +
                     $"Newspaper notes: {newspaper.ObjectNotes};\n" +
                     $"Number: {newspaper.Number};\n" +
-                    $"Release date: {newspaper.ReleaseDate}\n;" +
+                    $"Release date: {newspaper.ReleaseDate};\n" +
                     $"ISBN: {newspaper.ISSN};\n"
                     );
 
@@ -394,7 +438,7 @@ namespace Epam.DigitalLibrary.ConsolePL
 
             Console.WriteLine(
                 $"Name: {patent.Name};\n" +
-                $"Inventors: {inventors};\n" +
+                $"Inventors:\n{inventors};\n" +
                 $"Country: {patent.Country};\n" +
                 $"Registration number: {patent.RegistrationNumber};\n" +
                 $"Application date: {patent.ApplicationDate};\n" +

@@ -26,7 +26,7 @@ namespace Epam.DigitalLibrary.Entities
             {
                 Regex regex = new Regex(@"^([A-Z][a-z]+|[A-Z]{2,})$"); // For EN language
 
-                if (regex.IsMatch(value))
+                if (!regex.IsMatch(value))
                 {
                     throw new ArgumentException();
                 }
@@ -44,7 +44,7 @@ namespace Epam.DigitalLibrary.Entities
 
             set
             {
-                if (!new Regex(@"^[0-9]{9}$").IsMatch(value))
+                if (!new Regex(@"^[0-9]{1,9}$").IsMatch(value))
                 {
                     throw new ArgumentException();
                 }
@@ -62,7 +62,7 @@ namespace Epam.DigitalLibrary.Entities
 
             set
             {
-                if (_applicationDate.Year < 1474)
+                if (value.Year < 1474)
                 {
                     throw new ArgumentOutOfRangeException();
                 }
@@ -80,7 +80,7 @@ namespace Epam.DigitalLibrary.Entities
 
             set
             {
-                if (_publicationDate.Year < 1474 || _applicationDate > value)
+                if (value.Year < 1474 || _applicationDate > value)
                 {
                     throw new ArgumentOutOfRangeException();
                 }

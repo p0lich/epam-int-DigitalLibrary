@@ -20,9 +20,9 @@ namespace Epam.DigitalLibrary.Entities
 
             set
             {
-                Regex regex = new Regex(@"^[A-Z]([a-z]+|[a-z]+-[A-Z][a-z]+){1,49}$"); // for EN language
+                Regex regex = new Regex(@"^[A-Z]([a-z]+(-[A-Z])?[a-z]+)$"); // for EN language
 
-                if (!regex.IsMatch(value))
+                if (!regex.IsMatch(value) || value.Length > 50)
                 {
                     throw new ArgumentException();
                 }
@@ -40,9 +40,9 @@ namespace Epam.DigitalLibrary.Entities
 
             set
             {
-                Regex regex = new Regex(@"^[A-Z]([a-z]+|[a-z]+-[A-Z][a-z]+){1,49}$"); // for EN language
+                Regex regex = new Regex(@"^(([a-z]{2,3} )?[A-Z]'?([a-z]+'?(-[A-Z])?'?[a-z]+'?[a-z]+))$"); // for EN language
 
-                if (!regex.IsMatch(value))
+                if (!regex.IsMatch(value) || value.Length > 200)
                 {
                     throw new ArgumentException();
                 }
@@ -55,6 +55,26 @@ namespace Epam.DigitalLibrary.Entities
         {
             FirstName = firstName;
             LastName = lastName;
+        }
+
+        public static bool operator !=(Author a1, Author a2)
+        {
+            if (a1.FirstName != a2.FirstName || a1.LastName != a2.LastName)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        public static bool operator ==(Author a1, Author a2)
+        {
+            if (a1.FirstName == a2.FirstName && a1.LastName == a2.LastName)
+            {
+                return true;
+            }
+
+            return false;
         }
 
         public override string ToString()
