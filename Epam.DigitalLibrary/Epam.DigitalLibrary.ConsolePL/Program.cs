@@ -165,6 +165,12 @@ namespace Epam.DigitalLibrary.ConsolePL
         {
             List<Note> notes = logic.SearchBooksAndPatensByAuthor(new Author(Console.ReadLine(), Console.ReadLine()));
 
+            if (notes.Count == 0)
+            {
+                Console.WriteLine("Can't find this author notes");
+                return;
+            }
+
             for (int i = 0; i < notes.Count; i++)
             {
                 ShowNote(notes[i]);
@@ -175,6 +181,12 @@ namespace Epam.DigitalLibrary.ConsolePL
         {
             List<Patent> patents = logic.SearchPatentByInventor(new Author(Console.ReadLine(), Console.ReadLine()));
 
+            if (patents.Count == 0)
+            {
+                Console.WriteLine("Can't find this inventor patents");
+                return;
+            }
+
             for (int i = 0; i < patents.Count; i++)
             {
                 ShowNote(patents[i]);
@@ -184,6 +196,12 @@ namespace Epam.DigitalLibrary.ConsolePL
         private static void SearchBookByAuthor()
         {
             List<Book> books = logic.SearchBooksByAuthor(new Author(Console.ReadLine(), Console.ReadLine()));
+
+            if (books.Count == 0)
+            {
+                Console.WriteLine("Can't find this author books");
+                return;
+            }
 
             for (int i = 0; i < books.Count; i++)
             {
@@ -213,12 +231,25 @@ namespace Epam.DigitalLibrary.ConsolePL
 
         private static void SearchByName(string name)
         {
-            ShowNote(logic.SearchByName(name));
+            Note note = logic.SearchByName(name);
+
+            if (note is null)
+            {
+                Console.WriteLine("Can't find this note");
+                return;
+            }
+
+            ShowNote(note);
         }
 
         private static void ShowLibrary()
         {
             List<Note> notes = logic.GetCatalog();
+
+            if (notes.Count == 0)
+            {
+                Console.WriteLine("Library is empty");
+            }
 
             for (int i = 0; i < notes.Count; i++)
             {
@@ -305,7 +336,7 @@ namespace Epam.DigitalLibrary.ConsolePL
                 Console.Write("Patent notes: ");
                 string inputObjectNotes = Console.ReadLine();
 
-                logic.AddNote(new Patent(
+                int addResult = logic.AddNote(new Patent(
                 name: inputName,
                 authors: inputAuthors,
                 country: inputCountry,
@@ -315,49 +346,58 @@ namespace Epam.DigitalLibrary.ConsolePL
                 pagesCount: inputPagesCount,
                 objectNotes: string.IsNullOrEmpty(inputObjectNotes) ? null : inputObjectNotes
                 ));
-                Console.WriteLine("Book was added");
+
+                if (addResult == 0)
+                {
+                    Console.WriteLine("Patent was added");
+                }
+
+                if (addResult == -1)
+                {
+                    Console.WriteLine("Same patent already exist");
+                }
             }
             catch (Exception)
             {
-                Console.WriteLine("Error was occured during book creation");
+                Console.WriteLine("Error was occured during patent adding");
                 return;
             }
         }
 
         private static void AddNewspaper()
         {
-            Console.WriteLine("Leave unnecessary field empty if you don't want fill them");
-
-            Console.Write("Newspaper name: ");
-            string inputName = Console.ReadLine();
-
-            Console.Write("Publication place: ");
-            string inputPublicationPlace = Console.ReadLine();
-
-            Console.Write("Publisher: ");
-            string inputPublisher = Console.ReadLine();
-
-            Console.Write("Publication date: ");
-            DateTime inputPublicationDate = DateTime.Parse(Console.ReadLine());
-
-            Console.Write("Pages count: ");
-            int inputPagesCount = int.Parse(Console.ReadLine());
-
-            Console.Write("Newspaper notes: ");
-            string inputObjectNotes = Console.ReadLine();
-
-            Console.Write("Number: ");
-            string inputNumber = Console.ReadLine();
-
-            Console.Write("Release date: ");
-            DateTime inputReleaseDate = DateTime.Parse(Console.ReadLine());
-
-            Console.Write("ISSN: ");
-            string inputISSN = Console.ReadLine();
-
             try
             {
-                logic.AddNote(new Newspaper(
+                Console.WriteLine("Leave unnecessary field empty if you don't want fill them");
+
+                Console.Write("Newspaper name: ");
+                string inputName = Console.ReadLine();
+
+                Console.Write("Publication place: ");
+                string inputPublicationPlace = Console.ReadLine();
+
+                Console.Write("Publisher: ");
+                string inputPublisher = Console.ReadLine();
+
+                Console.Write("Publication date: ");
+                DateTime inputPublicationDate = DateTime.Parse(Console.ReadLine());
+
+                Console.Write("Pages count: ");
+                int inputPagesCount = int.Parse(Console.ReadLine());
+
+                Console.Write("Newspaper notes: ");
+                string inputObjectNotes = Console.ReadLine();
+
+                Console.Write("Number: ");
+                string inputNumber = Console.ReadLine();
+
+                Console.Write("Release date: ");
+                DateTime inputReleaseDate = DateTime.Parse(Console.ReadLine());
+
+                Console.Write("ISSN: ");
+                string inputISSN = Console.ReadLine();
+
+                int addResult = logic.AddNote(new Newspaper(
                 name: inputName,
                 publicationPlace: inputPublicationPlace,
                 publisher: inputPublisher,
@@ -368,11 +408,20 @@ namespace Epam.DigitalLibrary.ConsolePL
                 releaseDate: inputReleaseDate,
                 iSSN: string.IsNullOrEmpty(inputISSN) ? null : inputISSN
                 ));
-                Console.WriteLine("Book was added");
+
+                if (addResult == 0)
+                {
+                    Console.WriteLine("Newspaper was added");
+                }
+
+                if (addResult == -1)
+                {
+                    Console.WriteLine("Same newspaper already exist");
+                }
             }
             catch (Exception)
             {
-                Console.WriteLine("Error was occured during book creation");
+                Console.WriteLine("Error was occured during newspaper adding");
                 return;
             }
         }
@@ -407,7 +456,7 @@ namespace Epam.DigitalLibrary.ConsolePL
                 Console.Write("ISBN: ");
                 string inputISBN = Console.ReadLine();
 
-                logic.AddNote(new Book(
+                int addResult = logic.AddNote(new Book(
                 name: inputName,
                 authors: inputAuthors,
                 publicationPlace: inputPublicationPlace,
@@ -417,11 +466,20 @@ namespace Epam.DigitalLibrary.ConsolePL
                 objectNotes: string.IsNullOrEmpty(inputObjectNotes) ? null : inputObjectNotes,
                 iSBN: string.IsNullOrEmpty(inputISBN) ? null : inputISBN
                 ));
-                Console.WriteLine("Book was added");
+
+                if (addResult == 0)
+                {
+                    Console.WriteLine("Book was added");
+                }
+
+                if (addResult == -1)
+                {
+                    Console.WriteLine("Same book already exist");
+                }
             }
             catch (Exception)
             {
-                Console.WriteLine("Error was occured during book creation");
+                Console.WriteLine("Error was occured during book adding");
                 return;
             }
         }

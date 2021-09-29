@@ -10,7 +10,7 @@ namespace Epam.DigitalLibrary.DalMemory
 {
     public class DataLayer : IDataLayer
     {
-        private List<Note> _data;
+        private readonly List<Note> _data;
 
         public DataLayer()
         {
@@ -40,7 +40,7 @@ namespace Epam.DigitalLibrary.DalMemory
 
         public List<Note> GetAllNotes()
         {
-            return _data;
+            return _data.Select(n => n).ToList();
         }
 
         public bool RemoveNote()
