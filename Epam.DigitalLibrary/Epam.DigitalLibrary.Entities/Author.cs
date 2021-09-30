@@ -20,7 +20,7 @@ namespace Epam.DigitalLibrary.Entities
 
             set
             {
-                Regex regex = new Regex(@"^[A-Z]([a-z]*(-[A-Z])?[a-z]+)$"); // for EN language
+                Regex regex = new Regex(@"^(([A-Z]([a-z]*(-[A-Z])?[a-z]+))|([А-ЯЁ]([а-яё]*(-[А-ЯЁ])?[а-яё]+)))$"); // for EN language
 
                 if (!regex.IsMatch(value) || value.Length > 50)
                 {
@@ -40,7 +40,7 @@ namespace Epam.DigitalLibrary.Entities
 
             set
             {
-                Regex regex = new Regex(@"^(([a-z]{2,3} )?[A-Z]'?([a-z]+'?(-[A-Z])?'?[a-z]+'?[a-z]+))$"); // for EN language
+                Regex regex = new Regex(@"^((([a-z]{2,3} )?[A-Z]'?([a-z]+'?(-[A-Z])?'?[a-z]+'?[a-z]+))|(([а-яё]{2,3} )?[А-ЯЁ]'?([а-яё]+'?(-[А-ЯЁ])?'?[а-яё]+'?[а-яё]+)))$");
 
                 if (!regex.IsMatch(value) || value.Length > 200)
                 {
@@ -75,6 +75,12 @@ namespace Epam.DigitalLibrary.Entities
             }
 
             return false;
+        }
+
+        public override bool Equals(object obj)
+        {
+            Author auth = obj as Author;
+            return ((auth is not null) && this == auth);
         }
 
         public override string ToString()

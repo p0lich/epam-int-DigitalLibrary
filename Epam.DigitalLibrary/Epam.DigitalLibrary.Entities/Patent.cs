@@ -30,7 +30,7 @@ namespace Epam.DigitalLibrary.Entities
                     throw new ArgumentNullException();
                 }
 
-                Regex regex = new Regex(@"^([A-Z][a-z]+|[A-Z]{2,})$"); // For EN language
+                Regex regex = new Regex(@"^(([A-Z][a-z]+|[A-Z]{2,})|([А-ЯЁ][а-яё]+|[А-ЯЁ]{2,}))$"); // For EN language
 
                 if (!regex.IsMatch(value))
                 {

@@ -50,6 +50,15 @@ namespace Epam.DigitalLibrary.ConsolePL
                 objectNotes: "da"
                 ));
 
+            //List<Author> a1 = new List<Author>
+            //{
+            //    new Author("Ivan", "Karasev"),
+            //    new Author("Jhon", "Piterson"),
+            //    new Author("Stepan", "Stepanich")
+            //};
+
+            //Console.WriteLine(a1.Contains(new Author("Jhona", "Piterson")));
+
             while (true)
             {
                 Console.WriteLine(

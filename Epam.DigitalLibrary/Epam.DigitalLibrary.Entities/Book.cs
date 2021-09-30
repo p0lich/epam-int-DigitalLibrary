@@ -28,7 +28,7 @@ namespace Epam.DigitalLibrary.Entities
                     throw new ArgumentNullException();
                 }
 
-                Regex regex = new Regex(@"^( [A-Z]?)?[A-Z]([a-z]*( [A-Z]?)?[a-z]+((-[A-Z])|(-[a-z]+-[A-Z]))?[a-z]*( [A-Z]?)?[a-z]+)$");
+                Regex regex = new Regex(@"^(([A-Z]([a-z]*( [A-Z]?)?[a-z]+((-[A-Z])|(-[a-z]+-[A-Z]))?[a-z]*( [A-Z]?)?[a-z]+))|([А-ЯЁ]([а-яё]*( [А-ЯЁ]?)?[а-яё]+((-[А-ЯЁ])|(-[а-яё]+-[А-ЯЁ]))?[а-яё]*( [А-ЯЁ]?)?[а-яё]+)))$");
 
                 if (!regex.IsMatch(value) || value.Length > 200)
                 {
