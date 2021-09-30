@@ -51,6 +51,17 @@ namespace Epam.DigitalLibrary.ConsolePL
                 objectNotes: "da"
                 ));
 
+            logic.AddNote(new Book(
+                name: "book2",
+                authors: new List<Author> { new Author("Ivan", "Karasev") },
+                publicationPlace: "Saratov",
+                publisher: "superSaratov",
+                publicationDate: new DateTime(1900, 01, 01),
+                pagesCount: 50,
+                objectNotes: "aoaoaoaoa",
+                iSBN: "ISBN 1-56379-668-0"
+                ));
+
             //List<Author> a1 = new List<Author>
             //{
             //    new Author("Ivan", "Karasev"),
@@ -64,7 +75,7 @@ namespace Epam.DigitalLibrary.ConsolePL
             //    new Author("Jhon", "Piterson"),
             //    new Author("Stepan", "Stepanich")
             //};
-            
+
             //Console.WriteLine(a1.SequenceEqual(a2));
 
             //Console.WriteLine(a1.Contains(new Author("Jhona", "Piterson")));
@@ -139,7 +150,7 @@ namespace Epam.DigitalLibrary.ConsolePL
 
                     case 11:
                         Console.WriteLine("Input year:");
-                        GroupByYear(Console.ReadLine());
+                        GroupByYear();
                         break;
 
                     case 0:
@@ -152,31 +163,33 @@ namespace Epam.DigitalLibrary.ConsolePL
             }
         }
 
-        private static void GroupByYear(string strYear)
+        private static void GroupByYear()
         {
-            if (!int.TryParse(strYear, out int year))
-            {
-                Console.WriteLine("Wrong input");
-                return;
-            }
+            IEnumerable<IGrouping<int, Note>> groupedNotes = logic.GroupByYear();
 
-            Dictionary<int, Note> groupedNotes = logic.GroupByYear(year);
-
-            foreach (KeyValuePair<int, Note> note in groupedNotes)
+            foreach (var group in groupedNotes)
             {
-                Console.WriteLine("Year: " + note.Key);
-                ShowNote(note.Value);
+                Console.WriteLine("Year: {0}\n---------------", group.Key);
+
+                foreach (var note in group)
+                {
+                    ShowNote(note);
+                }
             }
         }
 
         private static void SearchByCharset(string charSet)
         {
-            Dictionary<string, Book> searchResults = logic.SearchBooksByCharset(charSet);
+            IEnumerable<IGrouping<string, Book>> searchResults = logic.SearchBooksByCharset(charSet);
 
-            foreach (KeyValuePair<string, Book> book in searchResults)
+            foreach (var group in searchResults)
             {
-                Console.WriteLine("Publisher: " + book.Key);
-                ShowNote(book.Value);
+                Console.WriteLine("Publisher: {0}\n---------------", group.Key);
+
+                foreach (var book in group)
+                {
+                    ShowNote(book);
+                }
             }
         }
 

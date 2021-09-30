@@ -27,8 +27,8 @@ namespace Epam.DigitalLibrary.LogicContracts
 
         public List<Note> SearchBooksAndPatensByAuthor(Author author);
 
-        public Dictionary<string, Book> SearchBooksByCharset(string charSet);
+        public IEnumerable<IGrouping<string, Book>> SearchBooksByCharset(string charSet);
 
-        public Dictionary<int, Note> GroupByYear(int year);
+        public IEnumerable<IGrouping<int, Note>> GroupByYear();
     }
 }

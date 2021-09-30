@@ -25,9 +25,9 @@ namespace Epam.DigitalLibrary.Logic
             return _dataLayer.AddNote(note);
         }
 
-        public Dictionary<int, Note> GroupByYear(int year)
+        public IEnumerable<IGrouping<int, Note>> GroupByYear()
         {
-            return _dataLayer.GetAllNotes().ToDictionary(n => n.PublicationDate.Year);
+            return _dataLayer.GetAllNotes().GroupBy(n => n.PublicationDate.Year);
         }
 
         public bool RemoveNote()
@@ -49,13 +49,12 @@ namespace Epam.DigitalLibrary.Logic
                 .Select(n => n as Book).ToList();
         }
 
-        public Dictionary<string, Book> SearchBooksByCharset(string charSet)
+        public IEnumerable<IGrouping<string, Book>> SearchBooksByCharset(string charSet)
         {
             Regex regex = new Regex($@"^{charSet}");
 
             return _dataLayer.GetAllNotes()
-                .Where(n => n is Book && regex.IsMatch((n as Book).Name))
-                .Select(n => n as Book).ToDictionary(n => n.Publisher);
+                .Where(n => n is Book && regex.IsMatch((n as Book).Name)).Select(n => n as Book).GroupBy(b => b.Publisher);
         }
 
         public Note SearchByName(string name)
