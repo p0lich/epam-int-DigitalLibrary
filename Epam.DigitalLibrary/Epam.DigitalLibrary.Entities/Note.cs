@@ -11,6 +11,8 @@ namespace Epam.DigitalLibrary.Entities
         private string _name, _objectNotes;
         private int _pagesCount;
 
+        public Guid ID { get; }
+
         public string Name
         {
             get
@@ -18,7 +20,7 @@ namespace Epam.DigitalLibrary.Entities
                 return _name;
             }
 
-            set
+            protected set
             {
                 if (value is null)
                 {
@@ -41,7 +43,7 @@ namespace Epam.DigitalLibrary.Entities
                 return _pagesCount;
             }
 
-            set
+            protected set
             {
                 if (value < 0)
                 {
@@ -59,7 +61,7 @@ namespace Epam.DigitalLibrary.Entities
                 return _objectNotes;
             }
 
-            set
+            protected set
             {
                 if (value is null)
                 {
@@ -76,10 +78,11 @@ namespace Epam.DigitalLibrary.Entities
             }
         }
 
-        public abstract DateTime PublicationDate { get; set; }
+        public abstract DateTime PublicationDate { get; protected set; }
 
         public Note(string name, string objectNotes, int pagesCount, DateTime publicationDate)
         {
+            ID = new Guid();
             Name = name;
             ObjectNotes = objectNotes;
             PagesCount = pagesCount;

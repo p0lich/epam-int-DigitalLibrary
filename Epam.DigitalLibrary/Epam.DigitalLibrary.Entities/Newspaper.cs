@@ -19,7 +19,7 @@ namespace Epam.DigitalLibrary.Entities
                 return _publicationPlace;
             }
 
-            set
+            private set
             {
                 if (value is null)
                 {
@@ -44,7 +44,7 @@ namespace Epam.DigitalLibrary.Entities
                 return _publisher;
             }
 
-            set
+            private set
             {
                 if (value is null)
                 {
@@ -67,7 +67,7 @@ namespace Epam.DigitalLibrary.Entities
                 return _publicationDate;
             }
 
-            set
+            protected set
             {
                 if (value.Year < 1400 || value.Year > DateTime.Now.Year)
                 {
@@ -87,7 +87,7 @@ namespace Epam.DigitalLibrary.Entities
                 return _releaseDate;
             }
 
-            set
+            private set
             {
                 if (_publicationDate.Year != value.Year)
                 {
@@ -105,7 +105,7 @@ namespace Epam.DigitalLibrary.Entities
                 return _issn;
             }
 
-            set
+            private set
             {
                 if (value is null)
                 {

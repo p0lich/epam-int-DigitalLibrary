@@ -23,7 +23,7 @@ namespace Epam.DigitalLibrary.Entities
                 return _country;
             }
 
-            set
+            private set
             {
                 if (value is null)
                 {
@@ -48,7 +48,7 @@ namespace Epam.DigitalLibrary.Entities
                 return _registrationNumber;
             }
 
-            set
+            private set
             {
                 if (value is null)
                 {
@@ -71,7 +71,7 @@ namespace Epam.DigitalLibrary.Entities
                 return _applicationDate;
             }
 
-            set
+            private set
             {
                 if (value.HasValue)
                 {
@@ -92,7 +92,7 @@ namespace Epam.DigitalLibrary.Entities
                 return _publicationDate;
             }
 
-            set
+            protected set
             {
                 if (_applicationDate.HasValue)
                 {
@@ -115,7 +115,7 @@ namespace Epam.DigitalLibrary.Entities
             List<Author> authors, string country, string registrationNumber, DateTime? applicationDate, DateTime publicationDate) :
             base(name, objectNotes, pagesCount, publicationDate)
         {
-            Authors = authors;
+            Authors = authors.OrderBy(a => a.FirstName).ToList();
             Country = country;
             RegistrationNumber = registrationNumber;
             ApplicationDate = applicationDate;

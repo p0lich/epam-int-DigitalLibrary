@@ -30,11 +30,11 @@ namespace Epam.DigitalLibrary.DalMemory
                     return 0;
                 }
 
-                return 1;
+                return -1;
             }
             catch (Exception)
             {
-                return 2;
+                return -2;
             }
         }
 
@@ -66,24 +66,14 @@ namespace Epam.DigitalLibrary.DalMemory
                 {
                     targetNote = _data.Where(n => n is Book).FirstOrDefault(n => (n as Book).ISBN == book.ISBN);
 
-                    if (targetNote is null)
-                    {
-                        return true;
-                    }
-
-                    return false;
+                    return targetNote is null;
                 }
 
                 targetNote = _data.Where(n => n is Book).FirstOrDefault(n => (n as Book).Name == book.Name &&
-                (n as Book).Authors == book.Authors &&
+                (n as Book).Authors.SequenceEqual(book.Authors) &&
                 (n as Book).PublicationDate == book.PublicationDate);
 
-                if (targetNote is null)
-                {
-                    return true;
-                }
-
-                return false;
+                return targetNote is null;
             }
 
             if (note is Newspaper)
@@ -94,24 +84,14 @@ namespace Epam.DigitalLibrary.DalMemory
                 {
                     targetNote = _data.Where(n => n is Newspaper).FirstOrDefault(n => (n as Newspaper).ISSN == newspaper.ISSN);
 
-                    if (targetNote is null)
-                    {
-                        return true;
-                    }
-
-                    return false;
+                    return targetNote is null;
                 }
 
                 targetNote = _data.Where(n => n is Newspaper).FirstOrDefault(n => (n as Newspaper).Name == newspaper.Name &&
                 (n as Newspaper).Publisher == newspaper.Name &&
                 (n as Newspaper).PublicationDate == newspaper.PublicationDate);
 
-                if (targetNote is null)
-                {
-                    return true;
-                }
-
-                return false;
+                return targetNote is null;
             }
 
             Patent patent = note as Patent;
@@ -119,12 +99,7 @@ namespace Epam.DigitalLibrary.DalMemory
             targetNote = _data.Where(n => n is Patent).FirstOrDefault(n => (n as Patent).RegistrationNumber == patent.RegistrationNumber &&
             (n as Patent).Country == patent.Country);
 
-            if (targetNote is null)
-            {
-                return true;
-            }
-
-            return true;
+            return targetNote is null;
         }
     }
 }

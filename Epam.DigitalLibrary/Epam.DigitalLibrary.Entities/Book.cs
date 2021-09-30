@@ -21,7 +21,7 @@ namespace Epam.DigitalLibrary.Entities
                 return _publicationPlace;
             }
 
-            set
+            private set
             {
                 if (value is null)
                 {
@@ -46,7 +46,7 @@ namespace Epam.DigitalLibrary.Entities
                 return _publisher;
             }
 
-            set
+            private set
             {
                 if (value is null)
                 {
@@ -69,7 +69,7 @@ namespace Epam.DigitalLibrary.Entities
                 return _publicationDate;
             }
 
-            set
+            protected set
             {
                 if (value.Year < 1400 || value.Year > DateTime.Now.Year)
                 {
@@ -87,7 +87,7 @@ namespace Epam.DigitalLibrary.Entities
                 return _isbn;
             }
 
-            set
+            private set
             {
                 if (value is null)
                 {
@@ -110,7 +110,7 @@ namespace Epam.DigitalLibrary.Entities
             List<Author> authors, string publicationPlace, string publisher, DateTime publicationDate, string iSBN) :
             base(name, objectNotes, pagesCount, publicationDate)
         {
-            Authors = authors;
+            Authors = authors.OrderBy(a => a.FirstName).ToList();
             PublicationPlace = publicationPlace;
             Publisher = publisher;
             PublicationDate = publicationDate;

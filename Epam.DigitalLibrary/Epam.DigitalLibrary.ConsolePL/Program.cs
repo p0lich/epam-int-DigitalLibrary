@@ -3,6 +3,7 @@ using Epam.DigitalLibrary.Logic;
 using Epam.DigitalLibrary.LogicContracts;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -18,7 +19,7 @@ namespace Epam.DigitalLibrary.ConsolePL
 
             logic.AddNote(new Book(
                 name: "book1",
-                authors: new List<Author> { new Author("Ivan", "Karasev") },
+                authors: new List<Author> { new Author("Ivan", "Karasev"), new Author("Aleksei", "Ivanov") },
                 publicationPlace: "Saratov",
                 publisher: "booker",
                 publicationDate: new DateTime(1900, 01, 01),
@@ -56,6 +57,15 @@ namespace Epam.DigitalLibrary.ConsolePL
             //    new Author("Jhon", "Piterson"),
             //    new Author("Stepan", "Stepanich")
             //};
+
+            //List<Author> a2 = new List<Author>
+            //{
+            //    new Author("Ivan", "Karasev"),
+            //    new Author("Jhon", "Piterson"),
+            //    new Author("Stepan", "Stepanich")
+            //};
+            
+            //Console.WriteLine(a1.SequenceEqual(a2));
 
             //Console.WriteLine(a1.Contains(new Author("Jhona", "Piterson")));
 
