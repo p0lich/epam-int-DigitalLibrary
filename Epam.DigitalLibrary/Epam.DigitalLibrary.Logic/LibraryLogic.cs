@@ -74,8 +74,6 @@ namespace Epam.DigitalLibrary.Logic
             return _dataLayer.GetAllNotes();
         }
 
-        // Methods don't change data
-
         public List<Note> SortInOrder()
         {
             return _dataLayer.GetAllNotes().OrderBy(n => n.PublicationDate.Year).ToList();
