@@ -121,5 +121,24 @@ namespace Epam.DigitalLibrary.Entities
             ApplicationDate = applicationDate;
             PublicationDate = publicationDate;
         }
+
+        public override string ToString()
+        {
+            StringBuilder inventors = new StringBuilder();
+
+            for (int i = 0; i < Authors.Count; i++)
+            {
+                inventors.Append(Authors[i].ToString() + "\n");
+            }
+
+            return $"Name: {Name};\n" +
+                   $"Inventors:\n{inventors}" +
+                   $"Country: {Country};\n" +
+                   $"Registration number: {RegistrationNumber};\n" +
+                   $"Application date: {(ApplicationDate is null ? "N/A" : ApplicationDate.ToString())};\n" +
+                   $"Publication date: {PublicationDate};\n" +
+                   $"Page count: {PagesCount};\n" +
+                   $"Patent notes: {ObjectNotes ?? "N/A"};\n";
+        }
     }
 }

@@ -78,7 +78,7 @@ namespace Epam.DigitalLibrary.Entities
             }
         }
 
-        public abstract DateTime PublicationDate { get; protected set; }
+        public abstract DateTime PublicationDate { get; protected set; }   
 
         public Note(string name, string objectNotes, int pagesCount, DateTime publicationDate)
         {
@@ -88,5 +88,7 @@ namespace Epam.DigitalLibrary.Entities
             PagesCount = pagesCount;
             PublicationDate = publicationDate;
         }
+
+        public abstract override string ToString();
     }
 }

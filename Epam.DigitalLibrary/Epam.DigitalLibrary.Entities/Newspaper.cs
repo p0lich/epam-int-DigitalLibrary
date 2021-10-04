@@ -135,5 +135,18 @@ namespace Epam.DigitalLibrary.Entities
             ReleaseDate = releaseDate;
             ISSN = iSSN;
         }
+
+        public override string ToString()
+        {
+            return $"Name: {Name};\n" +
+                   $"Publication place: {PublicationPlace};\n" +
+                   $"Publisher: {Publisher};\n" +
+                   $"Publication date: {PublicationDate};\n" +
+                   $"Page count: {PagesCount};\n" +
+                   $"Newspaper notes: {ObjectNotes ?? "N/A"};\n" +
+                   $"Number: {Number ?? "N/A"};\n" +
+                   $"Release date: {ReleaseDate};\n" +
+                   $"ISBN: {ISSN ?? "N/A"};\n";
+        }
     }
 }

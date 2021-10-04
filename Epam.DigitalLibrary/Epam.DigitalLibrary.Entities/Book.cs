@@ -116,5 +116,24 @@ namespace Epam.DigitalLibrary.Entities
             PublicationDate = publicationDate;
             ISBN = iSBN;
         }
+
+        public override string ToString()
+        {
+            StringBuilder authors = new StringBuilder();
+
+            for (int i = 0; i < Authors.Count; i++)
+            {
+                authors.Append(Authors[i].ToString() + "\n");
+            }
+
+            return $"Name: {Name};\n" +
+                   $"Authors:\n{authors}" +
+                   $"Publication place: {PublicationPlace};\n" +
+                   $"Publisher: {Publisher};\n" +
+                   $"Publication date: {PublicationDate};\n" +
+                   $"Page count: {PagesCount};\n" +
+                   $"Book notes: {ObjectNotes ?? "N/A"};\n" +
+                   $"ISBN: {ISBN ?? "N/A"};\n";
+        }
     }
 }
