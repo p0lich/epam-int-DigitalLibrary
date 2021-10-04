@@ -37,24 +37,27 @@ namespace Epam.DigitalLibrary.Logic
 
         public List<Note> SearchBooksAndPatensByAuthor(Author author)
         {
-            return _dataLayer.GetAllNotes().Where(n => n is Book || n is Patent)
-                .Where(n => (n is Book && (n as Book).Authors.Contains(author))
-                || ((n is Patent && (n as Patent).Authors.Contains(author)))).ToList();
+            IEnumerable<Note> books = _dataLayer.GetAllNotes().OfType<Book>()
+                .Where(b => b.Authors.Contains(author));
+
+            IEnumerable<Note> patents = _dataLayer.GetAllNotes().OfType<Patent>()
+                .Where(p => p.Authors.Contains(author));
+
+            return books.Concat(patents).ToList();
         }
 
         public List<Book> SearchBooksByAuthor(Author author)
         {
-            return _dataLayer.GetAllNotes().Where(n => n is Book)
-                .Where(n => (n as Book).Authors.Contains(author))
-                .Select(n => n as Book).ToList();
+            return _dataLayer.GetAllNotes().OfType<Book>()
+                .Where(p => p.Authors.Contains(author)).ToList();
         }
 
         public IEnumerable<IGrouping<string, Book>> SearchBooksByCharset(string charSet)
         {
             Regex regex = new Regex($@"^{charSet}");
 
-            return _dataLayer.GetAllNotes()
-                .Where(n => n is Book && regex.IsMatch((n as Book).Name)).Select(n => n as Book).GroupBy(b => b.Publisher);
+            return _dataLayer.GetAllNotes().OfType<Book>()
+                .Where(b => regex.IsMatch(b.Name)).GroupBy(b => b.Publisher);
         }
 
         public Note SearchByName(string name)
@@ -64,9 +67,8 @@ namespace Epam.DigitalLibrary.Logic
 
         public List<Patent> SearchPatentByInventor(Author author)
         {
-            return _dataLayer.GetAllNotes().Where(n => n is Patent)
-                .Where(n => (n as Patent).Authors.Contains(author))
-                .Select(n => n as Patent).ToList();
+            return _dataLayer.GetAllNotes().OfType<Patent>()
+                .Where(p => p.Authors.Contains(author)).ToList();
         }
 
         public List<Note> GetCatalog()

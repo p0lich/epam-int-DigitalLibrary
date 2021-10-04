@@ -42,7 +42,7 @@ namespace Epam.DigitalLibrary.ConsolePL
 
             logic.AddNote(new Patent(
                 name: "patent1",
-                authors: new List<Author> { new Author("Kiril", "Ivanov") },
+                authors: new List<Author> { new Author("Aleksei", "Ivanov") },
                 country: "Russia",
                 registrationNumber: "11123",
                 applicationDate: new DateTime(1890, 01, 01),
