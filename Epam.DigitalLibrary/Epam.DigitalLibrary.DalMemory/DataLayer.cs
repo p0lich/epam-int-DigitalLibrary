@@ -17,9 +17,6 @@ namespace Epam.DigitalLibrary.DalMemory
             _data = new List<Note>();
         }
 
-        // 0 - note was added
-        // -1 - same note already exist
-        // -2 - can't add note
         public int AddNote(Note note)
         {
             try

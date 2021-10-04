@@ -53,22 +53,22 @@ namespace Epam.DigitalLibrary.Entities
 
         public static bool operator !=(Author a1, Author a2)
         {
-            if (a1.FirstName != a2.FirstName || a1.LastName != a2.LastName)
+            if (a1 is null || a2 is null)
             {
-                return true;
+                return !(a1 is null && a2 is null);
             }
 
-            return false;
+            return (a1.FirstName != a2.FirstName || a1.LastName != a2.LastName);
         }
 
         public static bool operator ==(Author a1, Author a2)
         {
-            if (a1.FirstName == a2.FirstName && a1.LastName == a2.LastName)
+            if (a1 is null || a2 is null)
             {
-                return true;
+                return a1 is null && a2 is null;
             }
 
-            return false;
+            return (a1.FirstName == a2.FirstName && a1.LastName == a2.LastName);
         }
 
         public bool Equals(Author other)

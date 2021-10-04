@@ -13,10 +13,6 @@ namespace Epam.DigitalLibrary.DalContracts
 
         public List<Note> GetAllNotes();
 
-        //public Note GetNote();
-
         public bool RemoveNote();
-
-        //public bool UpdateNote(Note note);
     }
 }
