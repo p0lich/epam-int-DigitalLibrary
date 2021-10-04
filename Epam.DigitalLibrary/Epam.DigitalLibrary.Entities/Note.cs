@@ -15,10 +15,7 @@ namespace Epam.DigitalLibrary.Entities
 
         public string Name
         {
-            get
-            {
-                return _name;
-            }
+            get => _name;
 
             protected set
             {
@@ -38,10 +35,7 @@ namespace Epam.DigitalLibrary.Entities
 
         public int PagesCount
         {
-            get
-            {
-                return _pagesCount;
-            }
+            get => _pagesCount;
 
             protected set
             {
@@ -56,10 +50,7 @@ namespace Epam.DigitalLibrary.Entities
 
         public string ObjectNotes
         {
-            get
-            {
-                return _objectNotes;
-            }
+            get => _objectNotes;
 
             protected set
             {

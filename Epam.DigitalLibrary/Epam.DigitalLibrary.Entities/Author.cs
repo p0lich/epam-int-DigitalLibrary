@@ -13,10 +13,7 @@ namespace Epam.DigitalLibrary.Entities
 
         public string FirstName
         {
-            get
-            {
-                return _firstName;
-            }
+            get => _firstName;
 
             private set
             {
@@ -33,10 +30,7 @@ namespace Epam.DigitalLibrary.Entities
 
         public string LastName
         {
-            get
-            {
-                return _lastName;
-            }
+            get => _lastName;
 
             private set
             {

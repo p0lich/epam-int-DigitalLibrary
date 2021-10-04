@@ -18,10 +18,7 @@ namespace Epam.DigitalLibrary.Entities
 
         public string Country
         {
-            get
-            {
-                return _country;
-            }
+            get => _country;
 
             private set
             {
@@ -43,10 +40,7 @@ namespace Epam.DigitalLibrary.Entities
 
         public string RegistrationNumber
         {
-            get
-            {
-                return _registrationNumber;
-            }
+            get => _registrationNumber;
 
             private set
             {
@@ -66,10 +60,7 @@ namespace Epam.DigitalLibrary.Entities
 
         public DateTime? ApplicationDate
         {
-            get
-            {
-                return _applicationDate;
-            }
+            get => _applicationDate;
 
             private set
             {
@@ -87,10 +78,7 @@ namespace Epam.DigitalLibrary.Entities
 
         public override DateTime PublicationDate
         {
-            get
-            {
-                return _publicationDate;
-            }
+            get => _publicationDate;
 
             protected set
             {

@@ -14,10 +14,7 @@ namespace Epam.DigitalLibrary.Entities
 
         public string PublicationPlace
         {
-            get
-            {
-                return _publicationPlace;
-            }
+            get => _publicationPlace;
 
             private set
             {
@@ -39,10 +36,7 @@ namespace Epam.DigitalLibrary.Entities
 
         public string Publisher
         {
-            get
-            {
-                return _publisher;
-            }
+            get => _publisher;
 
             private set
             {
@@ -62,10 +56,7 @@ namespace Epam.DigitalLibrary.Entities
 
         public override DateTime PublicationDate
         {
-            get
-            {
-                return _publicationDate;
-            }
+            get => _publicationDate;
 
             protected set
             {
@@ -78,14 +69,11 @@ namespace Epam.DigitalLibrary.Entities
             }
         }
 
-        public string Number { get; set; }
+        public string Number { get; private set; }
 
         public DateTime ReleaseDate
         {
-            get
-            {
-                return _releaseDate;
-            }
+            get => _releaseDate;
 
             private set
             {
@@ -100,10 +88,7 @@ namespace Epam.DigitalLibrary.Entities
 
         public string ISSN
         {
-            get
-            {
-                return _issn;
-            }
+            get => _issn;
 
             private set
             {
