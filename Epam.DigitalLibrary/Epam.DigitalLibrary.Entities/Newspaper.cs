@@ -136,6 +136,25 @@ namespace Epam.DigitalLibrary.Entities
             ISSN = iSSN;
         }
 
+        public override bool IsDuplicate(Note note)
+        {
+            if (!(note is Newspaper))
+            {
+                return false;
+            }
+
+            Newspaper newspaper = note as Newspaper;
+
+            if (!string.IsNullOrEmpty(newspaper.ISSN))
+            {
+                return ISSN == newspaper.ISSN;
+            }
+
+            return Name == newspaper.Name &&
+                Publisher == newspaper.Publisher &&
+                PublicationDate == newspaper.PublicationDate;
+        }
+
         public override string ToString()
         {
             return $"Name: {Name};\n" +

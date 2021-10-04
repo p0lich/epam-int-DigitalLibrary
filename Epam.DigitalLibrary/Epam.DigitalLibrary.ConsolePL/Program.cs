@@ -648,10 +648,5 @@ namespace Epam.DigitalLibrary.ConsolePL
                 return;
             }
         }
-
-        private static void ShowNote(Note note)
-        {
-            Console.WriteLine(note.ToString());
-        }
     }
 }

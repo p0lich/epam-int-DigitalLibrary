@@ -122,6 +122,19 @@ namespace Epam.DigitalLibrary.Entities
             PublicationDate = publicationDate;
         }
 
+        public override bool IsDuplicate(Note note)
+        {
+            if (!(note is Patent))
+            {
+                return false;
+            }
+
+            Patent patent = note as Patent;
+
+            return Country == patent.Country &&
+                RegistrationNumber == patent.RegistrationNumber;
+        }
+
         public override string ToString()
         {
             StringBuilder inventors = new StringBuilder();

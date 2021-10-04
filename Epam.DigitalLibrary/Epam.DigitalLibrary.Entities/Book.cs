@@ -117,6 +117,25 @@ namespace Epam.DigitalLibrary.Entities
             ISBN = iSBN;
         }
 
+        public override bool IsDuplicate(Note note)
+        {
+            if (!(note is Book))
+            {
+                return false;
+            }
+
+            Book book = note as Book;
+
+            if (!string.IsNullOrEmpty(book.ISBN))
+            {
+                return ISBN == book.ISBN;
+            }
+
+            return Name == book.Name &&
+                Authors.SequenceEqual(book.Authors) &&
+                PublicationDate == book.PublicationDate;
+        }
+
         public override string ToString()
         {
             StringBuilder authors = new StringBuilder();

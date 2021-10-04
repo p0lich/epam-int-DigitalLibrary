@@ -56,50 +56,15 @@ namespace Epam.DigitalLibrary.DalMemory
 
         private bool IsUnique(Note note)
         {
-            Note targetNote;
-
-            if (note is Book)
+            for (int i = 0; i < _data.Count; i++)
             {
-                Book book = note as Book;
-
-                if (!string.IsNullOrEmpty(book.ISBN))
+                if (_data[i].IsDuplicate(note))
                 {
-                    targetNote = _data.Where(n => n is Book).FirstOrDefault(n => (n as Book).ISBN == book.ISBN);
-
-                    return targetNote is null;
+                    return false;
                 }
-
-                targetNote = _data.Where(n => n is Book).FirstOrDefault(n => (n as Book).Name == book.Name &&
-                (n as Book).Authors.SequenceEqual(book.Authors) &&
-                (n as Book).PublicationDate == book.PublicationDate);
-
-                return targetNote is null;
             }
 
-            if (note is Newspaper)
-            {
-                Newspaper newspaper = note as Newspaper;
-
-                if (!string.IsNullOrEmpty(newspaper.ISSN))
-                {
-                    targetNote = _data.Where(n => n is Newspaper).FirstOrDefault(n => (n as Newspaper).ISSN == newspaper.ISSN);
-
-                    return targetNote is null;
-                }
-
-                targetNote = _data.Where(n => n is Newspaper).FirstOrDefault(n => (n as Newspaper).Name == newspaper.Name &&
-                (n as Newspaper).Publisher == newspaper.Name &&
-                (n as Newspaper).PublicationDate == newspaper.PublicationDate);
-
-                return targetNote is null;
-            }
-
-            Patent patent = note as Patent;
-
-            targetNote = _data.Where(n => n is Patent).FirstOrDefault(n => (n as Patent).RegistrationNumber == patent.RegistrationNumber &&
-            (n as Patent).Country == patent.Country);
-
-            return targetNote is null;
+            return true;
         }
     }
 }
