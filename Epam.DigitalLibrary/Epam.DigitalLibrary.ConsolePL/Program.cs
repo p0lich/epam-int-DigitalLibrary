@@ -175,7 +175,6 @@ namespace Epam.DigitalLibrary.ConsolePL
 
                     case 11:
                         Console.WriteLine("------------------------------------------");
-                        Console.WriteLine("Input year:");
                         GroupByYear();
                         Console.WriteLine("------------------------------------------");
                         break;
@@ -202,7 +201,7 @@ namespace Epam.DigitalLibrary.ConsolePL
 
                 foreach (var note in group)
                 {
-                    ShowNote(note);
+                    Console.WriteLine(note.ToString());
                 }
             }
         }
@@ -217,7 +216,7 @@ namespace Epam.DigitalLibrary.ConsolePL
 
                 foreach (var book in group)
                 {
-                    ShowNote(book);
+                    Console.WriteLine(book.ToString());
                 }
             }
         }
@@ -240,7 +239,7 @@ namespace Epam.DigitalLibrary.ConsolePL
 
             for (int i = 0; i < notes.Count; i++)
             {
-                ShowNote(notes[i]);
+                Console.WriteLine(notes[i].ToString());
             }
         }
 
@@ -262,7 +261,7 @@ namespace Epam.DigitalLibrary.ConsolePL
 
             for (int i = 0; i < patents.Count; i++)
             {
-                ShowNote(patents[i]);
+                Console.WriteLine(patents[i].ToString());
             }
         }
 
@@ -284,7 +283,7 @@ namespace Epam.DigitalLibrary.ConsolePL
 
             for (int i = 0; i < books.Count; i++)
             {
-                ShowNote(books[i]);
+                Console.WriteLine(books[i].ToString());
             }
         }
 
@@ -294,7 +293,7 @@ namespace Epam.DigitalLibrary.ConsolePL
 
             for (int i = 0; i < sortedLib.Count; i++)
             {
-                ShowNote(sortedLib[i]);
+                Console.WriteLine(sortedLib[i].ToString());
             }
         }
 
@@ -304,7 +303,7 @@ namespace Epam.DigitalLibrary.ConsolePL
 
             for (int i = 0; i < sortedLib.Count; i++)
             {
-                ShowNote(sortedLib[i]);
+                Console.WriteLine(sortedLib[i].ToString());
             }
         }
 
@@ -318,7 +317,7 @@ namespace Epam.DigitalLibrary.ConsolePL
                 return;
             }
 
-            ShowNote(note);
+            Console.WriteLine(note.ToString());
         }
 
         private static void ShowLibrary()
@@ -332,11 +331,10 @@ namespace Epam.DigitalLibrary.ConsolePL
 
             for (int i = 0; i < notes.Count; i++)
             {
-                ShowNote(notes[i]);
+                Console.WriteLine(notes[i].ToString());
             }
         }
 
-        // Currently remove first note in catalog
         private static void DeleteNote()
         {
             if (logic.GetCatalog().Count > 0)
@@ -653,69 +651,7 @@ namespace Epam.DigitalLibrary.ConsolePL
 
         private static void ShowNote(Note note)
         {
-            if (note is Book)
-            {
-                Book book = note as Book;
-                StringBuilder authors = new StringBuilder();
-
-                for (int i = 0; i < book.Authors.Count; i++)
-                {
-                    authors.Append(book.Authors[i].ToString() + "\n");
-                }
-
-                Console.WriteLine(
-                    $"Name: {book.Name};\n" +
-                    $"Authors:\n{authors}" +
-                    $"Publication place: {book.PublicationPlace};\n" +
-                    $"Publisher: {book.Publisher};\n" +
-                    $"Publication date: {book.PublicationDate};\n" +
-                    $"Page count: {book.PagesCount};\n" +
-                    $"Book notes: {book.ObjectNotes ?? "N/A"};\n" +
-                    $"ISBN: {book.ISBN ?? "N/A"};\n"
-                    );
-
-                return;
-            }
-
-            if (note is Newspaper)
-            {
-                Newspaper newspaper = note as Newspaper;
-
-                Console.WriteLine(
-                    $"Name: {newspaper.Name};\n" +
-                    $"Publication place: {newspaper.PublicationPlace};\n" +
-                    $"Publisher: {newspaper.Publisher};\n" +
-                    $"Publication date: {newspaper.PublicationDate};\n" +
-                    $"Page count: {newspaper.PagesCount};\n" +
-                    $"Newspaper notes: {newspaper.ObjectNotes ?? "N/A"};\n" +
-                    $"Number: {newspaper.Number ?? "N/A"};\n" +
-                    $"Release date: {newspaper.ReleaseDate};\n" +
-                    $"ISBN: {newspaper.ISSN ?? "N/A"};\n"
-                    );
-
-                return;
-            }
-
-            Patent patent = note as Patent;
-            StringBuilder inventors = new StringBuilder();
-
-            for (int i = 0; i < patent.Authors.Count; i++)
-            {
-                inventors.Append(patent.Authors[i].ToString() + "\n");
-            }
-
-            Console.WriteLine(
-                $"Name: {patent.Name};\n" +
-                $"Inventors:\n{inventors}" +
-                $"Country: {patent.Country};\n" +
-                $"Registration number: {patent.RegistrationNumber};\n" +
-                $"Application date: {(patent.ApplicationDate is null ? "N/A" : patent.ApplicationDate.ToString())};\n" +
-                $"Publication date: {patent.PublicationDate};\n" +
-                $"Page count: {patent.PagesCount};\n" +
-                $"Patent notes: {patent.ObjectNotes ?? "N/A"};\n"
-                );
-
-            return;
+            Console.WriteLine(note.ToString());
         }
     }
 }
