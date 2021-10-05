@@ -29,6 +29,7 @@ namespace Epam.DigitalLibrary.DalMemory
 
                 return -1;
             }
+
             catch (Exception)
             {
                 return -2;

@@ -45,7 +45,10 @@ namespace Epam.DigitalLibrary.ConsolePL
                     case 1:
                         Console.WriteLine("------------------------------------------");
                         Console.WriteLine("Input note properties:");
-                        AddNote();
+
+                        int addResult = AddNote();
+                        PrintAddResult(addResult);
+
                         Console.WriteLine("------------------------------------------");
                         break;
 
@@ -57,60 +60,91 @@ namespace Epam.DigitalLibrary.ConsolePL
 
                     case 3:
                         Console.WriteLine("------------------------------------------");
-                        ShowLibrary();
+
+                        List<Note> allNotes = logic.GetCatalog();
+                        PrintNotes(allNotes);
+
                         Console.WriteLine("------------------------------------------");
                         break;
 
                     case 4:
                         Console.WriteLine("------------------------------------------");
                         Console.WriteLine("Input note name:");
-                        SearchByName(Console.ReadLine());
+
+                        Note note = logic.SearchByName(Console.ReadLine());
+                        PrintNote(note);
+
                         Console.WriteLine("------------------------------------------");
                         break;
 
                     case 5:
                         Console.WriteLine("------------------------------------------");
-                        ForwardByYearSort();
+
+                        List<Note> sortedLib = logic.SortInOrder();
+                        PrintNotes(sortedLib);
+
                         Console.WriteLine("------------------------------------------");
                         break;
 
                     case 6:
                         Console.WriteLine("------------------------------------------");
-                        ReverseByYearSort();
+
+                        List<Note> reverseSortedLib = logic.SortInReverseOrder();
+                        PrintNotes(reverseSortedLib);
+
                         Console.WriteLine("------------------------------------------");
                         break;
 
                     case 7:
                         Console.WriteLine("------------------------------------------");
                         Console.WriteLine("Input author full name:");
-                        SearchBookByAuthor();
+
+                        Author bookAuthor = InputAuthor();
+                        List<Book> books = logic.SearchBooksByAuthor(bookAuthor);
+                        PrintNotes(books);
+
                         Console.WriteLine("------------------------------------------");
                         break;
 
                     case 8:
                         Console.WriteLine("------------------------------------------");
                         Console.WriteLine("Input inventor full name:");
-                        SearchPatentsByInventor();
+
+                        Author patentInventor = InputAuthor();
+                        List<Patent> patents = logic.SearchPatentByInventor(patentInventor);
+                        PrintNotes(patents);
+
                         Console.WriteLine("------------------------------------------");
                         break;
 
                     case 9:
                         Console.WriteLine("------------------------------------------");
                         Console.WriteLine("Input author full name:");
-                        SearchBookAndPatentsByAuthor();
+
+                        Author author = InputAuthor();
+                        List<Note> foundNotes = logic.SearchBooksAndPatensByAuthor(author);
+                        PrintNotes(foundNotes);
+
                         Console.WriteLine("------------------------------------------");
                         break;
 
                     case 10:
                         Console.WriteLine("------------------------------------------");
                         Console.WriteLine("Input charset:");
-                        SearchByCharset(Console.ReadLine());
+
+                        string charSet = Console.ReadLine();
+                        IEnumerable<IGrouping<string, Book>> groupedBooks = logic.SearchBooksByCharset(charSet);
+                        PrintGroup(groupedBooks);
+
                         Console.WriteLine("------------------------------------------");
                         break;
 
                     case 11:
                         Console.WriteLine("------------------------------------------");
-                        GroupByYear();
+
+                        IEnumerable<IGrouping<int, Note>> groupedNotes = logic.GroupByYear();
+                        PrintGroup(groupedNotes);
+
                         Console.WriteLine("------------------------------------------");
                         break;
 
@@ -126,150 +160,6 @@ namespace Epam.DigitalLibrary.ConsolePL
             }
         }
 
-        private static void GroupByYear()
-        {
-            IEnumerable<IGrouping<int, Note>> groupedNotes = logic.GroupByYear();
-
-            foreach (var group in groupedNotes)
-            {
-                Console.WriteLine("Year: {0}\n---------------", group.Key);
-
-                foreach (var note in group)
-                {
-                    Console.WriteLine(note.ToString());
-                }
-            }
-        }
-
-        private static void SearchByCharset(string charSet)
-        {
-            IEnumerable<IGrouping<string, Book>> searchResults = logic.SearchBooksByCharset(charSet);
-
-            foreach (var group in searchResults)
-            {
-                Console.WriteLine("Publisher: {0}\n---------------", group.Key);
-
-                foreach (var book in group)
-                {
-                    Console.WriteLine(book.ToString());
-                }
-            }
-        }
-
-        private static void SearchBookAndPatentsByAuthor()
-        {
-            Console.Write("First name: ");
-            string firstName = Console.ReadLine();
-
-            Console.Write("Last name: ");
-            string lastName = Console.ReadLine();
-
-            List<Note> notes = logic.SearchBooksAndPatensByAuthor(new Author(firstName, lastName));
-
-            if (notes.Count == 0)
-            {
-                Console.WriteLine("Can't find this author notes");
-                return;
-            }
-
-            for (int i = 0; i < notes.Count; i++)
-            {
-                Console.WriteLine(notes[i].ToString());
-            }
-        }
-
-        private static void SearchPatentsByInventor()
-        {
-            Console.Write("First name: ");
-            string firstName = Console.ReadLine();
-
-            Console.Write("Last name: ");
-            string lastName = Console.ReadLine();
-
-            List<Patent> patents = logic.SearchPatentByInventor(new Author(firstName, lastName));
-
-            if (patents.Count == 0)
-            {
-                Console.WriteLine("Can't find this inventor patents");
-                return;
-            }
-
-            for (int i = 0; i < patents.Count; i++)
-            {
-                Console.WriteLine(patents[i].ToString());
-            }
-        }
-
-        private static void SearchBookByAuthor()
-        {
-            Console.Write("First name: ");
-            string firstName = Console.ReadLine();
-
-            Console.Write("Last name: ");
-            string lastName = Console.ReadLine();
-
-            List<Book> books = logic.SearchBooksByAuthor(new Author(firstName, lastName));
-
-            if (books.Count == 0)
-            {
-                Console.WriteLine("Can't find this author books");
-                return;
-            }
-
-            for (int i = 0; i < books.Count; i++)
-            {
-                Console.WriteLine(books[i].ToString());
-            }
-        }
-
-        private static void ReverseByYearSort()
-        {
-            List<Note> sortedLib = logic.SortInReverseOrder();
-
-            for (int i = 0; i < sortedLib.Count; i++)
-            {
-                Console.WriteLine(sortedLib[i].ToString());
-            }
-        }
-
-        private static void ForwardByYearSort()
-        {
-            List<Note> sortedLib = logic.SortInOrder();
-
-            for (int i = 0; i < sortedLib.Count; i++)
-            {
-                Console.WriteLine(sortedLib[i].ToString());
-            }
-        }
-
-        private static void SearchByName(string name)
-        {
-            Note note = logic.SearchByName(name);
-
-            if (note is null)
-            {
-                Console.WriteLine("Can't find this note");
-                return;
-            }
-
-            Console.WriteLine(note.ToString());
-        }
-
-        private static void ShowLibrary()
-        {
-            List<Note> notes = logic.GetCatalog();
-
-            if (notes.Count == 0)
-            {
-                Console.WriteLine("Library is empty");
-            }
-
-            for (int i = 0; i < notes.Count; i++)
-            {
-                Console.WriteLine(notes[i].ToString());
-            }
-        }
-
         private static void DeleteNote()
         {
             if (logic.GetCatalog().Count > 0)
@@ -282,7 +172,7 @@ namespace Epam.DigitalLibrary.ConsolePL
             Console.WriteLine("Catalog is empty");
         }
 
-        private static void AddNote()
+        private static int AddNote()
         {
             Console.WriteLine(
                 "Choose type of note:\n" +
@@ -299,31 +189,62 @@ namespace Epam.DigitalLibrary.ConsolePL
                     continue;
                 }
 
-                switch (option)
+                try
                 {
-                    case 1:
-                        AddBook();
-                        return;
+                    switch (option)
+                    {
+                        case 1:
+                            Book book = InputBook();
+                            return logic.AddNote(book);
 
-                    case 2:
-                        AddNewspaper();
-                        return;
+                        case 2:
+                            Newspaper newspaper = InputNewspaper();
+                            return logic.AddNote(newspaper);
 
-                    case 3:
-                        AddPatent();
-                        return;
+                        case 3:
+                            Patent patent = InputPatent();
+                            return logic.AddNote(patent);
 
-                    case 0:
-                        return;
+                        default:
+                            Console.WriteLine("Wrong input. Try again.");
+                            break;
+                    }
+                }
 
-                    default:
-                        Console.WriteLine("Wrong input. Try again.");
-                        break;
+                catch (InvalidCastException)
+                {
+                    return -3;
                 }
             }
         }
 
-        private static void AddPatent()
+        private static void PrintAddResult(int addResult)
+        {
+            switch (addResult)
+            {
+                case 0:
+                    Console.WriteLine("Note was added");
+                    return;
+
+                case -1:
+                    Console.WriteLine("Same note already exist");
+                    return;
+
+                case -2:
+                    Console.WriteLine("Error durring note adding");
+                    return;
+
+                case -3:
+                    Console.WriteLine("Some fields have wrong format");
+                    return;
+
+                default:
+                    Console.WriteLine("Unexpected output. Something went wrong");
+                    break;
+            }
+        }
+
+        private static Patent InputPatent()
         {
             Console.WriteLine("Leave unnecessary field empty if you don't want fill them");
 
@@ -341,54 +262,42 @@ namespace Epam.DigitalLibrary.ConsolePL
 
             Console.Write("Application date: ");
             string inputApplicationDate = Console.ReadLine();
+            if (!string.IsNullOrEmpty(inputApplicationDate))
+            {
+                if (!DateTime.TryParse(inputApplicationDate, out _))
+                {
+                    throw new InvalidCastException();
+                }
+            }
 
             Console.Write("Publication date: ");
             if (!DateTime.TryParse(Console.ReadLine(), out DateTime inputPublicationDate))
             {
-                Console.WriteLine("Wrong format of publication date input. No patent added");
-                return;
+                throw new InvalidCastException();
             }
 
             Console.Write("Pages count: ");
             if (!int.TryParse(Console.ReadLine(), out int inputPagesCount))
             {
-                Console.WriteLine("Wrong format of page count input. No patent added");
-                return;
+                throw new InvalidCastException();
             }
 
             Console.Write("Patent notes: ");
             string inputObjectNotes = Console.ReadLine();
 
-            int addResult = logic.AddNote(new Patent(
-            name: inputName,
-            authors: inputAuthors,
-            country: inputCountry,
-            registrationNumber: inputRegistrationNumber,
-            applicationDate: string.IsNullOrEmpty(inputApplicationDate) ? null : DateTime.Parse(inputApplicationDate),
-            publicationDate: inputPublicationDate,
-            pagesCount: inputPagesCount,
-            objectNotes: string.IsNullOrEmpty(inputObjectNotes) ? null : inputObjectNotes
-            ));
-
-            if (addResult == 0)
-            {
-                Console.WriteLine("Patent was added");
-                return;
-            }
-
-            if (addResult == -1)
-            {
-                Console.WriteLine("Same patent already exist");
-                return;
-            }
-
-            if (addResult == -2)
-            {
-                Console.WriteLine("Error adding patent");
-            }
+            return new Patent(
+                name: inputName,
+                authors: inputAuthors,
+                country: inputCountry,
+                registrationNumber: inputRegistrationNumber,
+                applicationDate: string.IsNullOrEmpty(inputApplicationDate) ? null : DateTime.Parse(inputApplicationDate),
+                publicationDate: inputPublicationDate,
+                pagesCount: inputPagesCount,
+                objectNotes: string.IsNullOrEmpty(inputObjectNotes) ? null : inputObjectNotes
+                );
         }
 
-        private static void AddNewspaper()
+        private static Newspaper InputNewspaper()
         {
             Console.WriteLine("Leave unnecessary field empty if you don't want fill them");
 
@@ -404,15 +313,14 @@ namespace Epam.DigitalLibrary.ConsolePL
             Console.Write("Publication date: ");
             if (!DateTime.TryParse(Console.ReadLine(), out DateTime inputPublicationDate))
             {
-                Console.WriteLine("Wrong format of publication date input. No newspaper added");
-                return;
+                throw new InvalidCastException();
             }
 
             Console.Write("Pages count: ");
             if (!int.TryParse(Console.ReadLine(), out int inputPagesCount))
             {
                 Console.WriteLine("Wrong format of page count input. No newspaper added");
-                return;
+                throw new InvalidCastException();
             }
 
             Console.Write("Newspaper notes: ");
@@ -425,43 +333,26 @@ namespace Epam.DigitalLibrary.ConsolePL
             if (!DateTime.TryParse(Console.ReadLine(), out DateTime inputReleaseDate))
             {
                 Console.WriteLine("Wrong format of release date input. No newspaper added");
-                return;
+                throw new InvalidCastException();
             }
 
             Console.Write("ISSN: ");
             string inputISSN = Console.ReadLine();
 
-            int addResult = logic.AddNote(new Newspaper(
-            name: inputName,
-            publicationPlace: inputPublicationPlace,
-            publisher: inputPublisher,
-            publicationDate: inputPublicationDate,
-            pagesCount: inputPagesCount,
-            objectNotes: string.IsNullOrEmpty(inputObjectNotes) ? null : inputObjectNotes,
-            number: string.IsNullOrEmpty(inputNumber) ? null : inputNumber,
-            releaseDate: inputReleaseDate,
-            iSSN: string.IsNullOrEmpty(inputISSN) ? null : inputISSN
-            ));
-
-            if (addResult == 0)
-            {
-                Console.WriteLine("Newspaper was added");
-                return;
-            }
-
-            if (addResult == -1)
-            {
-                Console.WriteLine("Same newspaper already exist");
-                return;
-            }
-
-            if (addResult == -2)
-            {
-                Console.WriteLine("Error adding newspaper");
-            }
+            return new Newspaper(
+                name: inputName,
+                publicationPlace: inputPublicationPlace,
+                publisher: inputPublisher,
+                publicationDate: inputPublicationDate,
+                pagesCount: inputPagesCount,
+                objectNotes: string.IsNullOrEmpty(inputObjectNotes) ? null : inputObjectNotes,
+                number: string.IsNullOrEmpty(inputNumber) ? null : inputNumber,
+                releaseDate: inputReleaseDate,
+                iSSN: string.IsNullOrEmpty(inputISSN) ? null : inputISSN
+                );
         }
 
-        private static void AddBook()
+        private static Book InputBook()
         {
             Console.WriteLine("Leave unnecessary field empty if you don't want fill them");
 
@@ -480,15 +371,14 @@ namespace Epam.DigitalLibrary.ConsolePL
             Console.Write("Publication date: ");
             if (!DateTime.TryParse(Console.ReadLine(), out DateTime inputPublicationDate))
             {
-                Console.WriteLine("Wrong format of publication date input. No newspaper added");
-                return;
+                throw new InvalidCastException();
             }
 
             Console.Write("Pages count: ");
             if (!int.TryParse(Console.ReadLine(), out int inputPagesCount))
             {
                 Console.WriteLine("Wrong format of page count input. No newspaper added");
-                return;
+                throw new InvalidCastException();
             }
 
             Console.Write("Book notes: ");
@@ -497,33 +387,16 @@ namespace Epam.DigitalLibrary.ConsolePL
             Console.Write("ISBN: ");
             string inputISBN = Console.ReadLine();
 
-            int addResult = logic.AddNote(new Book(
-            name: inputName,
-            authors: inputAuthors,
-            publicationPlace: inputPublicationPlace,
-            publisher: inputPublisher,
-            publicationDate: inputPublicationDate,
-            pagesCount: inputPagesCount,
-            objectNotes: string.IsNullOrEmpty(inputObjectNotes) ? null : inputObjectNotes,
-            iSBN: string.IsNullOrEmpty(inputISBN) ? null : inputISBN
-            ));
-
-            if (addResult == 0)
-            {
-                Console.WriteLine("Book was added");
-                return;
-            }
-
-            if (addResult == -1)
-            {
-                Console.WriteLine("Same book already exist");
-                return;
-            }
-
-            if (addResult == -2)
-            {
-                Console.WriteLine("Error adding book");
-            }
+            return new Book(
+                name: inputName,
+                authors: inputAuthors,
+                publicationPlace: inputPublicationPlace,
+                publisher: inputPublisher,
+                publicationDate: inputPublicationDate,
+                pagesCount: inputPagesCount,
+                objectNotes: string.IsNullOrEmpty(inputObjectNotes) ? null : inputObjectNotes,
+                iSBN: string.IsNullOrEmpty(inputISBN) ? null : inputISBN
+                );
         }
 
         private static List<Author> AddAuthors()
@@ -545,7 +418,15 @@ namespace Epam.DigitalLibrary.ConsolePL
                 switch (option)
                 {
                     case 1:
-                        AddAuthor(authors);
+                        try
+                        {
+                            Author author = InputAuthor();
+                            authors.Add(author);
+                        }
+                        catch (Exception e)
+                        {
+                            Console.WriteLine(e.Message + ". No author added");
+                        }
                         break;
 
                     case 2:
@@ -563,7 +444,83 @@ namespace Epam.DigitalLibrary.ConsolePL
             }
         }
 
-        private static void AddAuthor(List<Author> authors)
+        private static void PrintNote(Note note)
+        {
+            if (note is null)
+            {
+                Console.WriteLine("Such note is note exist");
+                return;
+            }
+
+            Console.WriteLine(note.ToString());
+        }
+
+        private static void PrintNotes(List<Note> notes)
+        {
+            if (notes.Count == 0)
+            {
+                Console.WriteLine("There is no notes");
+            }
+
+            for (int i = 0; i < notes.Count; i++)
+            {
+                Console.WriteLine(notes[i].ToString());
+            }
+        }
+
+        private static void PrintNotes(List<Book> books)
+        {
+            if (books.Count == 0)
+            {
+                Console.WriteLine("There is no books");
+            }
+
+            for (int i = 0; i < books.Count; i++)
+            {
+                Console.WriteLine(books[i].ToString());
+            }
+        }
+
+        private static void PrintNotes(List<Patent> patents)
+        {
+            if (patents.Count == 0)
+            {
+                Console.WriteLine("There is no patents");
+            }
+
+            for (int i = 0; i < patents.Count; i++)
+            {
+                Console.WriteLine(patents[i].ToString());
+            }
+        }
+
+        private static void PrintGroup(IEnumerable<IGrouping<string, Book>> gropedBooks)
+        {
+            foreach (var group in gropedBooks)
+            {
+                Console.WriteLine("Publisher: {0}\n---------------", group.Key);
+
+                foreach (var book in group)
+                {
+                    Console.WriteLine(book.ToString());
+                }
+            }
+        }
+
+        private static void PrintGroup(IEnumerable<IGrouping<int, Note>> groupedNotes)
+        {
+            foreach (var group in groupedNotes)
+            {
+                Console.WriteLine("Year: {0}\n---------------", group.Key);
+
+                foreach (var note in group)
+                {
+                    Console.WriteLine(note.ToString());
+                }
+            }
+        }
+
+        private static Author InputAuthor()
         {
             Console.Write("First name: ");
             string firstName = Console.ReadLine();
@@ -573,14 +530,12 @@ namespace Epam.DigitalLibrary.ConsolePL
 
             try
             {
-                authors.Add(new Author(firstName, lastName));
-                return;
+                return new Author(firstName, lastName);
             }
 
             catch (Exception)
             {
-                Console.WriteLine("Fields were filled incorrectly. No author added");
-                return;
+                throw new Exception("Fields were filled incorrectly");
             }
         }
     }
