@@ -121,23 +121,29 @@ namespace Epam.DigitalLibrary.Entities
             ISSN = iSSN;
         }
 
-        public override bool IsDuplicate(Note note)
+        public override bool IsUnique(List<Note> notes)
         {
-            if (!(note is Newspaper))
+            IEnumerable<Newspaper> newspapers = notes.OfType<Newspaper>();
+
+            foreach (var newspaper in newspapers)
             {
-                return false;
+                if (!string.IsNullOrEmpty(newspaper.ISSN))
+                {
+                    if (ISSN == newspaper.ISSN)
+                    {
+                        return false;
+                    }
+                }
+
+                if (Name == newspaper.Name &&
+                    Publisher == newspaper.Publisher &&
+                    PublicationDate == newspaper.PublicationDate)
+                {
+                    return false;
+                }
             }
 
-            Newspaper newspaper = note as Newspaper;
-
-            if (!string.IsNullOrEmpty(newspaper.ISSN))
-            {
-                return ISSN == newspaper.ISSN;
-            }
-
-            return Name == newspaper.Name &&
-                Publisher == newspaper.Publisher &&
-                PublicationDate == newspaper.PublicationDate;
+            return true;
         }
 
         public override string ToString()

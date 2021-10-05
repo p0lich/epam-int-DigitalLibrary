@@ -105,23 +105,29 @@ namespace Epam.DigitalLibrary.Entities
             ISBN = iSBN;
         }
 
-        public override bool IsDuplicate(Note note)
+        public override bool IsUnique(List<Note> notes)
         {
-            if (!(note is Book))
+            IEnumerable<Book> books = notes.OfType<Book>();
+
+            foreach (var book in books)
             {
-                return false;
+                if (!string.IsNullOrEmpty(book.ISBN))
+                {
+                    if (ISBN == book.ISBN)
+                    {
+                        return false;
+                    }
+                }
+
+                if (Name == book.Name &&
+                    Authors.SequenceEqual(book.Authors) &&
+                    PublicationDate == book.PublicationDate)
+                {
+                    return false;
+                }
             }
 
-            Book book = note as Book;
-
-            if (!string.IsNullOrEmpty(book.ISBN))
-            {
-                return ISBN == book.ISBN;
-            }
-
-            return Name == book.Name &&
-                Authors.SequenceEqual(book.Authors) &&
-                PublicationDate == book.PublicationDate;
+            return true;
         }
 
         public override string ToString()

@@ -110,17 +110,20 @@ namespace Epam.DigitalLibrary.Entities
             PublicationDate = publicationDate;
         }
 
-        public override bool IsDuplicate(Note note)
+        public override bool IsUnique(List<Note> notes)
         {
-            if (!(note is Patent))
+            IEnumerable<Patent> patents = notes.OfType<Patent>();
+
+            foreach (Patent patent in patents)
             {
-                return false;
+                if (Country == patent.Country &&
+                    RegistrationNumber == patent.RegistrationNumber)
+                {
+                    return false;
+                }
             }
 
-            Patent patent = note as Patent;
-
-            return Country == patent.Country &&
-                RegistrationNumber == patent.RegistrationNumber;
+            return true;
         }
 
         public override string ToString()

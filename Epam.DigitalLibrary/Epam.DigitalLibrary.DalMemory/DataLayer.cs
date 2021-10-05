@@ -21,7 +21,7 @@ namespace Epam.DigitalLibrary.DalMemory
         {
             try
             {
-                if (IsUnique(note))
+                if (note.IsUnique(GetAllNotes()))
                 {
                     _data.Add(note);
                     return 0;
@@ -48,19 +48,6 @@ namespace Epam.DigitalLibrary.DalMemory
             }
 
             _data.RemoveAt(0);
-            return true;
-        }
-
-        private bool IsUnique(Note note)
-        {
-            for (int i = 0; i < _data.Count; i++)
-            {
-                if (_data[i].IsDuplicate(note))
-                {
-                    return false;
-                }
-            }
-
             return true;
         }
     }

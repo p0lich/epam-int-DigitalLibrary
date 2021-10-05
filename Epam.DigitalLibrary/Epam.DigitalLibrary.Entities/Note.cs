@@ -80,7 +80,7 @@ namespace Epam.DigitalLibrary.Entities
             PublicationDate = publicationDate;
         }
 
-        public abstract bool IsDuplicate(Note note);
+        public abstract bool IsUnique(List<Note> notes);
 
         public abstract override string ToString();
     }
