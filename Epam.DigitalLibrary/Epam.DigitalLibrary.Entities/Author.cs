@@ -17,9 +17,14 @@ namespace Epam.DigitalLibrary.Entities
 
             private set
             {
+                if (value is null)
+                {
+                    throw new ArgumentNullException();
+                }
+
                 Regex regex = new Regex(@"^(([A-Z]([a-z]*(-[A-Z])?[a-z]+))|([А-ЯЁ]([а-яё]*(-[А-ЯЁ])?[а-яё]+)))$");
 
-                if (!regex.IsMatch(value) || value.Length > 50)
+                if (!regex.IsMatch(value) || value.Length == 0 || value.Length > 50)
                 {
                     throw new ArgumentException();
                 }
@@ -34,6 +39,11 @@ namespace Epam.DigitalLibrary.Entities
 
             private set
             {
+                if (value is null)
+                {
+                    throw new ArgumentNullException();
+                }
+
                 Regex regex = new Regex(@"^((([a-z]{2,3} )?[A-Z][a-z]*('?[a-z]+)?(-[A-Z][a-z]*('?[a-z]+))?)|(([а-яё]{2,3} )?[А-ЯЁ][а-яё]*('?[а-яё]+)?(-[А-ЯЁ][а-яё]*('?[а-яё]+))?))$");
 
                 if (!regex.IsMatch(value) || value.Length > 200)

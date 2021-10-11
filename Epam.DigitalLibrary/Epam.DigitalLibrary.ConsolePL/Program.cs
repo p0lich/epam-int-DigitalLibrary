@@ -520,7 +520,7 @@ namespace Epam.DigitalLibrary.ConsolePL
             }
         }
 
-        private static Author InputAuthor()
+        public static Author InputAuthor()
         {
             Console.Write("First name: ");
             string firstName = Console.ReadLine();

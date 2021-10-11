@@ -12,9 +12,21 @@ namespace Epam.DigitalLibrary.Entities
         private DateTime _publicationDate;
         private DateTime? _applicationDate;
         private string _country, _registrationNumber;
+        private List<Author> _authors;
 
-        // At the moment inventors are authors
-        public List<Author> Authors { get; set; }
+        public List<Author> Authors {
+            get => _authors;
+
+            private set
+            {
+                if ((value is null) || value.Count == 0)
+                {
+                    throw new ArgumentNullException();
+                }
+
+                _authors = value;
+            }
+        }
 
         public string Country
         {
@@ -27,9 +39,9 @@ namespace Epam.DigitalLibrary.Entities
                     throw new ArgumentNullException();
                 }
 
-                Regex regex = new Regex(@"^(([A-Z][a-z]+|[A-Z]{2,})|([А-ЯЁ][а-яё]+|[А-ЯЁ]{2,}))$"); // For EN language
+                Regex regex = new Regex(@"^(([A-Z][a-z]+|[A-Z]{2,})|([А-ЯЁ][а-яё]+|[А-ЯЁ]{2,}))$");
 
-                if (!regex.IsMatch(value))
+                if (!regex.IsMatch(value) || value.Length == 0 || value.Length > 200)
                 {
                     throw new ArgumentException();
                 }

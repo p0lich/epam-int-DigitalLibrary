@@ -24,7 +24,7 @@ namespace Epam.DigitalLibrary.Entities
                     throw new ArgumentNullException();
                 }
 
-                if (value.Length > 300)
+                if (value.Length == 0 || value.Length > 300)
                 {
                     throw new ArgumentOutOfRangeException();
                 }
