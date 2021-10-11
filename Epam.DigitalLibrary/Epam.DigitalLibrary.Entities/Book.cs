@@ -11,8 +11,22 @@ namespace Epam.DigitalLibrary.Entities
     {
         private string _publisher, _publicationPlace, _isbn;
         private DateTime _publicationDate;
+        private List<Author> _authors;
 
-        public List<Author> Authors { get; set; }
+        public List<Author> Authors
+        {
+            get => _authors;
+
+            private set
+            {
+                if ((value is null) || value.Count == 0)
+                {
+                    throw new ArgumentNullException();
+                }
+
+                _authors = value;
+            }
+        }
 
         public string PublicationPlace
         {
@@ -27,7 +41,7 @@ namespace Epam.DigitalLibrary.Entities
 
                 Regex regex = new Regex(@"^(([A-Z]([a-z]*( [A-Z]?)?[a-z]+((-[A-Z])|(-[a-z]+-[A-Z]))?[a-z]*( [A-Z]?)?[a-z]+))|([А-ЯЁ]([а-яё]*( [А-ЯЁ]?)?[а-яё]+((-[А-ЯЁ])|(-[а-яё]+-[А-ЯЁ]))?[а-яё]*( [А-ЯЁ]?)?[а-яё]+)))$");
 
-                if (!regex.IsMatch(value) || value.Length > 200)
+                if (!regex.IsMatch(value) || value.Length == 0 || value.Length > 200)
                 {
                     throw new ArgumentException();
                 }
@@ -47,7 +61,7 @@ namespace Epam.DigitalLibrary.Entities
                     throw new ArgumentNullException();
                 }
 
-                if (value.Length > 300)
+                if (value.Length == 0 || value.Length > 300)
                 {
                     throw new ArgumentOutOfRangeException();
                 }

@@ -23,7 +23,7 @@ namespace Epam.DigitalLibrary.Entities
                     throw new ArgumentNullException();
                 }
 
-                Regex regex = new Regex(@"^(([A-Z]([a-z]*( [A-Z]?)?[a-z]+((-[A-Z])|(-[a-z]+-[A-Z]))?[a-z]*( [A-Z]?)?[a-z]+))|([А-ЯЁ]([а-яё]*( [А-ЯЁ]?)?[а-яё]+((-[А-ЯЁ])|(-[а-яё]+-[А-ЯЁ]))?[а-яё]*( [А-ЯЁ]?)?[а-яё]+)))$");
+                Regex regex = new Regex(@"^(([A-Z]([a-z]*( [A-Z]?)?[a-z]+(-[A-Z])?[a-z]*( [A-Z]?)?[a-z]+))|([А-ЯЁ]([а-яё]*( [А-ЯЁ]?)?[а-яё]+(-[А-ЯЁ])?[а-яё]*( [А-ЯЁ]?)?[а-яё]+)))$");
 
                 if (!regex.IsMatch(value) || value.Length > 200)
                 {
@@ -45,7 +45,7 @@ namespace Epam.DigitalLibrary.Entities
                     throw new ArgumentNullException();
                 }
 
-                if (value.Length > 300)
+                if (value.Length == 0 || value.Length > 300)
                 {
                     throw new ArgumentOutOfRangeException();
                 }
