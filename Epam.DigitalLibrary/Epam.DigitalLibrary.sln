@@ -25,6 +25,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentation", "Presentatio
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{0E65C27A-83E5-402F-9070-CEC027C0F952}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Epam.DigitalLibrary.IntegrationTests", "Epam.DigitalLibrary.IntegrationTests\Epam.DigitalLibrary.IntegrationTests.csproj", "{78AAACBB-BA81-4E89-A88E-93FA26FE9E4E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -59,6 +61,10 @@ Global
 		{6B3624F5-1D16-4289-BEF7-015F65A19255}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6B3624F5-1D16-4289-BEF7-015F65A19255}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6B3624F5-1D16-4289-BEF7-015F65A19255}.Release|Any CPU.Build.0 = Release|Any CPU
+		{78AAACBB-BA81-4E89-A88E-93FA26FE9E4E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{78AAACBB-BA81-4E89-A88E-93FA26FE9E4E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{78AAACBB-BA81-4E89-A88E-93FA26FE9E4E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{78AAACBB-BA81-4E89-A88E-93FA26FE9E4E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

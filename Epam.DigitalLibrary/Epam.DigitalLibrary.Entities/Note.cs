@@ -73,7 +73,7 @@ namespace Epam.DigitalLibrary.Entities
 
         public Note(string name, string objectNotes, int pagesCount, DateTime publicationDate)
         {
-            ID = new Guid();
+            ID = Guid.NewGuid();
             Name = name;
             ObjectNotes = objectNotes;
             PagesCount = pagesCount;

@@ -41,6 +41,17 @@ namespace Epam.DigitalLibrary.Tests
                 iSBN: "ISBN 1-56389-668-0"
                 );
 
+        public static readonly Book uniqueBook11 = new Book(
+                name: "book1",
+                authors: new List<Author> { new Author("Ivan", "Karasev"), new Author("Aleksei", "Ivanov") },
+                publicationPlace: "Saratov",
+                publisher: "booker",
+                publicationDate: new DateTime(1900, 01, 01),
+                pagesCount: 50,
+                objectNotes: "aoaoaoaoa",
+                iSBN: "ISBN 3-56389-668-0"
+                );
+
         public static readonly Book uniqueBook2 = new Book(
                 name: "book2",
                 authors: new List<Author> { new Author("Ivan", "Karasev") },

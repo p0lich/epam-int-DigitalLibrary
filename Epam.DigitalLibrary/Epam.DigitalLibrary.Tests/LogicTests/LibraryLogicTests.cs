@@ -438,7 +438,7 @@ namespace Epam.DigitalLibrary.Tests.LogicTests
 
             Author authorWithNullRef = TestData.nullRefAuthor;
 
-            int searchResultCount = logic.SearchBooksByAuthor(authorWithNullRef).Count;
+            int searchResultCount = logic.SearchPatentByInventor(authorWithNullRef).Count;
 
             Assert.AreEqual(0, searchResultCount);
         }
@@ -448,7 +448,7 @@ namespace Epam.DigitalLibrary.Tests.LogicTests
         {
             Author author = TestData.existAuthor2;
 
-            int searhcResultInEmptyLibraryCount = logic.SearchBooksByAuthor(author).Count;
+            int searhcResultInEmptyLibraryCount = logic.SearchPatentByInventor(author).Count;
 
             Assert.AreEqual(0, searhcResultInEmptyLibraryCount);
         }
