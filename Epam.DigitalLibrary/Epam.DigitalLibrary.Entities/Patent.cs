@@ -122,6 +122,16 @@ namespace Epam.DigitalLibrary.Entities
             PublicationDate = publicationDate;
         }
 
+        public Patent(Guid id, string name, string objectNotes, int pagesCount, bool isDeleted,
+            List<Author> authors, string country, string registrationNumber, DateTime? applicationDate, DateTime publicationDate) :
+            base(id, name, objectNotes, pagesCount, publicationDate, isDeleted)
+        {
+            Authors = authors.OrderBy(a => a.FirstName).ToList();
+            Country = country;
+            RegistrationNumber = registrationNumber;
+            ApplicationDate = applicationDate;
+        }
+
         public override bool IsUnique(List<Note> notes)
         {
             IEnumerable<Patent> patents = notes.OfType<Patent>();
@@ -147,14 +157,61 @@ namespace Epam.DigitalLibrary.Entities
                 inventors.Append(Authors[i].ToString() + "\n");
             }
 
-            return $"Name: {Name};\n" +
-                   $"Inventors:\n{inventors}" +
-                   $"Country: {Country};\n" +
-                   $"Registration number: {RegistrationNumber};\n" +
-                   $"Application date: {(ApplicationDate is null ? "N/A" : ApplicationDate.ToString())};\n" +
-                   $"Publication date: {PublicationDate};\n" +
-                   $"Page count: {PagesCount};\n" +
-                   $"Patent notes: {ObjectNotes ?? "N/A"};\n";
+            string res = $"Name: {Name};\n" +
+                $"Inventors:\n{inventors}" +
+                $"Country: {Country};\n" +
+                $"Registration number: {RegistrationNumber};\n" +
+                $"Application date: {(ApplicationDate is null ? "N/A" : ApplicationDate.ToString())};\n" +
+                $"Publication date: {PublicationDate};\n" +
+                $"Page count: {PagesCount};\n" +
+                $"Patent notes: {ObjectNotes ?? "N/A"};\n";
+
+            if (IsDeleted)
+            {
+                res += "*****MUST BE DELETED*****";
+            }
+
+            return res;
+        }
+
+        public override bool NoteUpdate(Book note)
+        {
+            throw new InvalidCastException();
+        }
+
+        public override bool NoteUpdate(Newspaper note)
+        {
+            throw new InvalidCastException();
+        }
+
+        public override bool NoteUpdate(Patent note)
+        {
+            Name = note.Name;
+            ObjectNotes = note.ObjectNotes;
+            PagesCount = note.PagesCount;
+            Country = note.Country;
+            RegistrationNumber = note.RegistrationNumber;
+            ApplicationDate = note.ApplicationDate;
+            PublicationDate = note.PublicationDate;
+
+            return true;
+        }
+
+        public override Dictionary<string, object> ToObjectDict()
+        {
+            return new Dictionary<string, object>
+            {
+                { "ID", ID },
+                { "Name", Name },
+                { "Authors", Authors },
+                { "Country", Country },
+                { "RegistrationNumber", RegistrationNumber },
+                { "ApplicationDate", ApplicationDate },
+                { "PublicationDate", PublicationDate },
+                { "PagesCount", PagesCount },
+                { "ObjectNotes", ObjectNotes },
+                { "IsDeleted", IsDeleted },
+            };
         }
     }
 }

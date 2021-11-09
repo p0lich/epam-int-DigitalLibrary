@@ -69,7 +69,13 @@ namespace Epam.DigitalLibrary.Entities
             }
         }
 
-        public abstract DateTime PublicationDate { get; protected set; }   
+        public abstract DateTime PublicationDate { get; protected set; }
+
+        public bool IsDeleted { get; private set; }
+
+        public abstract bool NoteUpdate(Book note);
+        public abstract bool NoteUpdate(Newspaper note);
+        public abstract bool NoteUpdate(Patent note);
 
         public Note(string name, string objectNotes, int pagesCount, DateTime publicationDate)
         {
@@ -78,10 +84,23 @@ namespace Epam.DigitalLibrary.Entities
             ObjectNotes = objectNotes;
             PagesCount = pagesCount;
             PublicationDate = publicationDate;
+            IsDeleted = false;
+        }
+
+        public Note(Guid id, string name, string objectNotes, int pagesCount, DateTime publicationDate, bool isDeleted)
+        {
+            ID = id;
+            Name = name;
+            ObjectNotes = objectNotes;
+            PagesCount = pagesCount;
+            PublicationDate = publicationDate;
+            IsDeleted = isDeleted;
         }
 
         public abstract bool IsUnique(List<Note> notes);
 
         public abstract override string ToString();
+
+        public abstract Dictionary<string, object> ToObjectDict();
     }
 }

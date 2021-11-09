@@ -4,6 +4,7 @@ using Epam.DigitalLibrary.LogicContracts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -11,10 +12,15 @@ namespace Epam.DigitalLibrary.ConsolePL
 {
     public class Program
     {
-        private static readonly INoteLogic logic = new LibraryLogic();
+        private static INoteLogic logic;
+        private static IUserRightsProvider userRightsLogic;
 
         static void Main(string[] args)
         {
+            Authorize(out string login, out SecureString password);
+
+            logic = new LibraryLogic(login, password);
+
             while (true)
             {
                 Console.WriteLine(
@@ -29,6 +35,8 @@ namespace Epam.DigitalLibrary.ConsolePL
                     "9: Searhc all books and patents by author;\n" +
                     "10: Show books by given character set(group by publisher);\n" +
                     "11: Group by publication year;\n" +
+                    "12: Remove note by name;\n" +
+                    "13: Update note;\n" +
                     "0: Exit."
                     );
 
@@ -43,11 +51,19 @@ namespace Epam.DigitalLibrary.ConsolePL
                 switch (option)
                 {
                     case 1:
-                        Console.WriteLine("------------------------------------------");
-                        Console.WriteLine("Input note properties:");
+                        Console.WriteLine("------------------------------------------");   
 
-                        int addResult = AddNote();
-                        PrintAddResult(addResult);
+                        if (IsLibrarian())
+                        {
+                            Console.WriteLine("Input note properties:");
+                            int addResult = AddNote();
+                            PrintAddResult(addResult);
+                        }
+
+                        else
+                        {
+                            Console.WriteLine("You don't have permisson for note adding");
+                        }
 
                         Console.WriteLine("------------------------------------------");
                         break;
@@ -61,7 +77,18 @@ namespace Epam.DigitalLibrary.ConsolePL
                     case 3:
                         Console.WriteLine("------------------------------------------");
 
-                        List<Note> allNotes = logic.GetCatalog();
+                        List<Note> allNotes;
+
+                        if (IsLibrarian())
+                        {
+                            allNotes = logic.GetCatalog();
+                        }
+
+                        else
+                        {
+                            allNotes = logic.GetUnmarkedNotes();
+                        }
+
                         PrintNotes(allNotes);
 
                         Console.WriteLine("------------------------------------------");
@@ -148,6 +175,77 @@ namespace Epam.DigitalLibrary.ConsolePL
                         Console.WriteLine("------------------------------------------");
                         break;
 
+                    case 12:
+                        Console.WriteLine("------------------------------------------");
+
+                        Note noteForDelete;
+
+                        if (IsAdmin())
+                        {
+                            Console.WriteLine("Input note name for delete:");
+                            noteForDelete = logic.SearchByName(Console.ReadLine());
+
+                            if (noteForDelete is null)
+                            {
+                                Console.WriteLine("Can't find such note");
+                            }
+
+                            else
+                            {
+                                DeleteNote(noteForDelete);
+                            }                       
+                        }
+
+                        else if (IsLibrarian())
+                        {
+                            Console.WriteLine("Input note name for mark on delete:");
+                            noteForDelete = logic.SearchByName(Console.ReadLine());
+
+                            if (noteForDelete is null)
+                            {
+                                Console.WriteLine("Can't find such note");
+                            }
+
+                            else
+                            {
+                                logic.MarkForDelete(noteForDelete);
+                            }                            
+                        }
+
+                        else
+                        {
+                            Console.WriteLine("You don't have permisson for note deleting");
+                        }
+
+                        Console.WriteLine("------------------------------------------");
+                        break;
+
+                    case 13:
+                        Console.WriteLine("------------------------------------------");
+
+                        if (IsLibrarian())
+                        {
+                            Console.WriteLine("Input note name for update");
+                            Note noteForUpdate = logic.SearchByName(Console.ReadLine());
+                            if (noteForUpdate is null)
+                            {
+                                Console.WriteLine("Can't find such note");
+                            }
+
+                            else
+                            {
+                                PrintAddResult(UpdateNote(noteForUpdate.ID));
+                            }
+                        }
+
+                        else
+                        {
+                            Console.WriteLine("You don't have permission for note update");
+                        }
+
+                        Console.WriteLine("------------------------------------------");
+                        break;
+
                     case 0:
                         return;
 
@@ -178,8 +276,8 @@ namespace Epam.DigitalLibrary.ConsolePL
                 "Choose type of note:\n" +
                 "1 - Book;\n" +
                 "2 - Newspaper;\n" +
-                "3 - Patent;\n" +
-                "0 - Cancel.");
+                "3 - Patent."
+                );
 
             while (true)
             {
@@ -222,16 +320,16 @@ namespace Epam.DigitalLibrary.ConsolePL
         {
             switch (addResult)
             {
-                case 0:
-                    Console.WriteLine("Note was added");
+                case ResultCodes.Successfull:
+                    Console.WriteLine("Note was added/updated");
                     return;
 
-                case -1:
+                case ResultCodes.NoteExist:
                     Console.WriteLine("Same note already exist");
                     return;
 
-                case -2:
-                    Console.WriteLine("Error durring note adding");
+                case ResultCodes.Error:
+                    Console.WriteLine("Error durring note adding/updating");
                     return;
 
                 case -3:
@@ -448,7 +546,7 @@ namespace Epam.DigitalLibrary.ConsolePL
         {
             if (note is null)
             {
-                Console.WriteLine("Such note is note exist");
+                Console.WriteLine("Such note is not exist");
                 return;
             }
 
@@ -457,41 +555,66 @@ namespace Epam.DigitalLibrary.ConsolePL
 
         private static void PrintNotes(List<Note> notes)
         {
-            if (notes.Count == 0)
+            try
             {
-                Console.WriteLine("There is no notes");
-            }
+                if (notes.Count == 0)
+                {
+                    Console.WriteLine("There is no notes");
+                }
 
-            for (int i = 0; i < notes.Count; i++)
+                for (int i = 0; i < notes.Count; i++)
+                {
+                    Console.WriteLine(notes[i].ToString());
+                }
+            }
+            
+            catch (Exception e)
             {
-                Console.WriteLine(notes[i].ToString());
+                Console.WriteLine(e.Message);
             }
         }
 
         private static void PrintNotes(List<Book> books)
         {
-            if (books.Count == 0)
+            try
             {
-                Console.WriteLine("There is no books");
+
+                if (books.Count == 0)
+                {
+                    Console.WriteLine("There is no books");
+                }
+
+                for (int i = 0; i < books.Count; i++)
+                {
+                    Console.WriteLine(books[i].ToString());
+                }
             }
 
-            for (int i = 0; i < books.Count; i++)
+            catch (Exception e)
             {
-                Console.WriteLine(books[i].ToString());
+                Console.WriteLine(e.Message);
             }
         }
 
         private static void PrintNotes(List<Patent> patents)
         {
-            if (patents.Count == 0)
+            try
             {
-                Console.WriteLine("There is no patents");
+                if (patents.Count == 0)
+                {
+                    Console.WriteLine("There is no patents");
+                }
+
+                for (int i = 0; i < patents.Count; i++)
+                {
+                    Console.WriteLine(patents[i].ToString());
+                }
             }
 
-            for (int i = 0; i < patents.Count; i++)
+            catch (Exception e)
             {
-                Console.WriteLine(patents[i].ToString());
-            }
+                Console.WriteLine(e.Message);
+            } 
         }
 
         private static void PrintGroup(IEnumerable<IGrouping<string, Book>> gropedBooks)
@@ -537,6 +660,133 @@ namespace Epam.DigitalLibrary.ConsolePL
             {
                 throw new Exception("Fields were filled incorrectly");
             }
+        }
+
+        private static bool Authorize(out string userLogin, out SecureString password)
+        {
+            while (true)
+            {
+                userLogin = InputLogin();
+                password = InputPassword();
+
+                IUserRightsProvider rightsProvider = new UserLogic(userLogin, password);
+
+                if (rightsProvider.IsCredentialRight())
+                {
+                    userRightsLogic = rightsProvider;
+                    return true;
+                }
+
+                Console.WriteLine("Cannot find user with such login/password. Try again");
+            }
+        }
+
+        private static string InputLogin()
+        {
+            Console.WriteLine("Input login:");
+            return Console.ReadLine();
+        }
+
+        private static SecureString InputPassword()
+        {
+            SecureString password = new SecureString();
+            ConsoleKeyInfo key;
+
+            Console.WriteLine("Input password:");
+
+            do
+            {
+                key = Console.ReadKey(intercept: true);
+                if (key.Key != ConsoleKey.Enter)
+                {
+                    password.AppendChar(key.KeyChar);
+                }
+
+            } while (key.Key != ConsoleKey.Enter);
+
+            password.MakeReadOnly();
+
+            return password;
+        }
+
+        private static int UpdateNote(Guid noteId)
+        {
+            Console.WriteLine(
+                "Choose type of note:\n" +
+                "1 - Book;\n" +
+                "2 - Newspaper;\n" +
+                "3 - Patent.");
+
+            while (true)
+            {
+                if (!int.TryParse(Console.ReadLine(), out int option))
+                {
+                    Console.WriteLine("Input type must be integer. Try again");
+                    continue;
+                }
+
+                try
+                {
+                    switch (option)
+                    {
+                        case 1:
+                            Book book = InputBook();
+                            return logic.UpdateNote(noteId, book);
+
+                        case 2:
+                            Newspaper newspaper = InputNewspaper();
+                            return logic.UpdateNote(noteId, newspaper);
+
+                        case 3:
+                            Patent patent = InputPatent();
+                            return logic.UpdateNote(noteId, patent);
+
+                        default:
+                            Console.WriteLine("Wrong input. Try again.");
+                            break;
+                    }
+                }
+
+                catch (InvalidCastException)
+                {
+                    return -3;
+                }
+            }
+        }
+
+        private static bool DeleteNote(Note note)
+        {
+            return logic.RemoveNote(note);
+        }
+
+        private static Guid InputGuid()
+        {
+            while (true)
+            {
+                Console.WriteLine("Input note ID");
+
+                if (Guid.TryParse(Console.ReadLine(), out Guid noteId))
+                {
+                    return noteId;
+                }
+
+                Console.WriteLine("Wrong input. Try again");
+            }
+        }
+
+        private static bool IsReader()
+        {
+            return userRightsLogic?.IsInRole(UserRights.Reader) ?? false;
+        }
+
+        private static bool IsLibrarian()
+        {
+            return userRightsLogic?.IsInRole(UserRights.Librarian) ?? false;
+        }
+
+        private static bool IsAdmin()
+        {
+            return userRightsLogic?.IsInRole(UserRights.Admin) ?? false;
         }
     }
 }

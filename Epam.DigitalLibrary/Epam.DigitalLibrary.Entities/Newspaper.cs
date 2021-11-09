@@ -121,6 +121,17 @@ namespace Epam.DigitalLibrary.Entities
             ISSN = iSSN;
         }
 
+        public Newspaper(Guid id, string name, string objectNotes, int pagesCount, DateTime publicationDate, bool isDeleted,
+            string publicationPlace, string publisher, string number, DateTime releaseDate, string iSSN) :
+            base(id, name, objectNotes, pagesCount, publicationDate, isDeleted)
+        {
+            PublicationPlace = publicationPlace;
+            Publisher = publisher;
+            Number = number;
+            ReleaseDate = releaseDate;
+            ISSN = iSSN;
+        }
+
         public override bool IsUnique(List<Note> notes)
         {
             IEnumerable<Newspaper> newspapers = notes.OfType<Newspaper>();
@@ -148,15 +159,65 @@ namespace Epam.DigitalLibrary.Entities
 
         public override string ToString()
         {
-            return $"Name: {Name};\n" +
-                   $"Publication place: {PublicationPlace};\n" +
-                   $"Publisher: {Publisher};\n" +
-                   $"Publication date: {PublicationDate};\n" +
-                   $"Page count: {PagesCount};\n" +
-                   $"Newspaper notes: {ObjectNotes ?? "N/A"};\n" +
-                   $"Number: {Number ?? "N/A"};\n" +
-                   $"Release date: {ReleaseDate};\n" +
-                   $"ISBN: {ISSN ?? "N/A"};\n";
+            string res =  $"Name: {Name};\n" +
+                $"Publication place: {PublicationPlace};\n" +
+                $"Publisher: {Publisher};\n" +
+                $"Publication date: {PublicationDate};\n" +
+                $"Page count: {PagesCount};\n" +
+                $"Newspaper notes: {ObjectNotes ?? "N/A"};\n" +
+                $"Number: {Number ?? "N/A"};\n" +
+                $"Release date: {ReleaseDate};\n" +
+                $"ISBN: {ISSN ?? "N/A"};\n";
+
+            if (IsDeleted)
+            {
+                res += "*****MUST BE DELETED*****";
+            }
+
+            return res;
+        }
+
+        public override bool NoteUpdate(Book note)
+        {
+            throw new InvalidCastException();
+        }
+
+        public override bool NoteUpdate(Newspaper note)
+        {
+            Name = note.Name;
+            ObjectNotes = note.ObjectNotes;
+            PagesCount = note.PagesCount;
+            PublicationPlace = note.PublicationPlace;
+            Publisher = note.Publisher;
+            PublicationDate = note.PublicationDate;
+            Number = note.Number;
+            ReleaseDate = note.ReleaseDate;
+            ISSN = note.ISSN;
+
+            return true;
+        }
+
+        public override bool NoteUpdate(Patent note)
+        {
+            throw new InvalidCastException();
+        }
+
+        public override Dictionary<string, object> ToObjectDict()
+        {
+            return new Dictionary<string, object>
+            {
+                { "ID", ID },
+                { "Name", Name },
+                { "PublicationPlace", PublicationPlace },
+                { "Publisher", Publisher },
+                { "PublicationDate", PublicationDate },
+                { "PagesCount", PagesCount },
+                { "ObjectNotes", ObjectNotes },
+                { "Number", Number },
+                { "ReleaseDate", ReleaseDate },
+                { "ISSN", ISSN },
+                { "IsDeleted", IsDeleted },
+            };
         }
     }
 }

@@ -41,6 +41,16 @@ namespace Epam.DigitalLibrary.DalMemory
             return _data.Select(n => n).ToList();
         }
 
+        public List<Note> GetAllUnmarkedNotes()
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool MarkNote(Note note)
+        {
+            throw new NotImplementedException();
+        }
+
         public bool RemoveNote()
         {
             if (_data.Count == 0)
@@ -50,6 +60,16 @@ namespace Epam.DigitalLibrary.DalMemory
 
             _data.RemoveAt(0);
             return true;
+        }
+
+        public bool RemoveNote(Note note)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int UpdateNote(Guid noteId, Note updatedNote)
+        {
+            throw new NotImplementedException();
         }
     }
 }

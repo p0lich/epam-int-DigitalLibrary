@@ -1,15 +1,18 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <OutputType>Exe</OutputType>
     <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Epam.DigitalLibrary.DalContracts\Epam.DigitalLibrary.DalContracts.csproj" />
-    <ProjectReference Include="..\Epam.DigitalLibrary.DalMemory\Epam.DigitalLibrary.DalMemory.csproj" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Epam.DigitalLibrary.Entities\Epam.DigitalLibrary.Entities.csproj" />
     <ProjectReference Include="..\Epam.DigitalLibrary.LogicContracts\Epam.DigitalLibrary.LogicContracts.csproj" />
-    <ProjectReference Include="..\Epam.DigitalLibrary.SqlDal\Epam.DigitalLibrary.SqlDal.csproj" />
+    <ProjectReference Include="..\Epam.DigitalLibrary.Logic\Epam.DigitalLibrary.Logic.csproj" />
   </ItemGroup>
 
 </Project>
