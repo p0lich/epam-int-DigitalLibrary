@@ -119,6 +119,16 @@ namespace Epam.DigitalLibrary.Entities
             ISBN = iSBN;
         }
 
+        public Book(Guid id, string name, string objectNotes, int pagesCount, bool isDeleted,
+            List<Author> authors, string publicationPlace, string publisher, DateTime publicationDate, string iSBN) :
+            base(id, name, objectNotes, pagesCount, publicationDate, isDeleted)
+        {
+            Authors = authors.OrderBy(a => a.FirstName).ToList();
+            PublicationPlace = publicationPlace;
+            Publisher = publisher;
+            ISBN = iSBN;
+        }
+
         public override bool IsUnique(List<Note> notes)
         {
             IEnumerable<Book> books = notes.OfType<Book>();
@@ -153,14 +163,61 @@ namespace Epam.DigitalLibrary.Entities
                 authors.Append(Authors[i].ToString() + "\n");
             }
 
-            return $"Name: {Name};\n" +
-                   $"Authors:\n{authors}" +
-                   $"Publication place: {PublicationPlace};\n" +
-                   $"Publisher: {Publisher};\n" +
-                   $"Publication date: {PublicationDate};\n" +
-                   $"Page count: {PagesCount};\n" +
-                   $"Book notes: {ObjectNotes ?? "N/A"};\n" +
-                   $"ISBN: {ISBN ?? "N/A"};\n";
+            string res =  $"Name: {Name};\n" +
+                $"Authors:\n{authors}" +
+                $"Publication place: {PublicationPlace};\n" +
+                $"Publisher: {Publisher};\n" +
+                $"Publication date: {PublicationDate};\n" +
+                $"Page count: {PagesCount};\n" +
+                $"Book notes: {ObjectNotes ?? "N/A"};\n" +
+                $"ISBN: {ISBN ?? "N/A"};\n";
+
+            if (IsDeleted)
+            {
+                res += "*****MUST BE DELETED*****";
+            }
+
+            return res;
+        }
+
+        public override bool NoteUpdate(Book note)
+        {
+            Name = note.Name;
+            ObjectNotes = note.ObjectNotes;
+            PagesCount = note.PagesCount;
+            PublicationPlace = note.PublicationPlace;
+            Publisher = note.Publisher;
+            PublicationDate = note.PublicationDate;
+            ISBN = note.ISBN;
+
+            return true;
+        }
+
+        public override bool NoteUpdate(Newspaper note)
+        {
+            throw new InvalidCastException();
+        }
+
+        public override bool NoteUpdate(Patent note)
+        {
+            throw new InvalidCastException();
+        }
+
+        public override Dictionary<string, object> ToObjectDict()
+        {
+            return new Dictionary<string, object>
+            {
+                { "ID", ID },
+                { "Name", Name },
+                { "Authors", Authors },
+                { "PublicationPlace", PublicationPlace },
+                { "Publisher", Publisher },
+                { "PublicationDate", PublicationDate },
+                { "PagesCount", PagesCount },
+                { "ObjectNotes", ObjectNotes },
+                { "ISBN", ISBN },
+                { "IsDeleted", IsDeleted },
+            };
         }
     }
 }

@@ -30,5 +30,13 @@ namespace Epam.DigitalLibrary.LogicContracts
         public IEnumerable<IGrouping<string, Book>> SearchBooksByCharset(string charSet);
 
         public IEnumerable<IGrouping<int, Note>> GroupByYear();
+
+        public int UpdateNote(Guid noteId, Note updatedNote);
+
+        public bool RemoveNote(Note note);
+
+        public List<Note> GetUnmarkedNotes();
+
+        public bool MarkForDelete(Note note);
     }
 }

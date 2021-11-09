@@ -5,11 +5,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.3" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Epam.DigitalLibrary.DalContracts\Epam.DigitalLibrary.DalContracts.csproj" />
-    <ProjectReference Include="..\Epam.DigitalLibrary.DalMemory\Epam.DigitalLibrary.DalMemory.csproj" />
     <ProjectReference Include="..\Epam.DigitalLibrary.Entities\Epam.DigitalLibrary.Entities.csproj" />
-    <ProjectReference Include="..\Epam.DigitalLibrary.LogicContracts\Epam.DigitalLibrary.LogicContracts.csproj" />
-    <ProjectReference Include="..\Epam.DigitalLibrary.SqlDal\Epam.DigitalLibrary.SqlDal.csproj" />
   </ItemGroup>
 
 </Project>
