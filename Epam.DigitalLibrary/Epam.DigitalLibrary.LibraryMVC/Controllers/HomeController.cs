@@ -8,16 +8,19 @@ using System.Linq;
 using System.Threading.Tasks;
 using Epam.DigitalLibrary.LogicContracts;
 using Epam.DigitalLibrary.Logic;
+using Epam.DigitalLibrary.Entities;
 
 namespace Epam.DigitalLibrary.LibraryMVC.Controllers
 {
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly INoteLogic _logic;
 
         public HomeController(ILogger<HomeController> logger)
         {
             _logger = logger;
+            _logic = new LibraryLogic();
         }
 
         public IActionResult Index()
@@ -38,20 +41,30 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
 
         public IActionResult GetLibrary()
         {
-            string login = "lib_admin";
-            System.Security.SecureString password = new System.Security.SecureString();
-
-            password.AppendChar('1');
-            password.AppendChar('2');
-            password.AppendChar('3');
-
-            password.MakeReadOnly();
-
-            INoteLogic logic = new LibraryLogic(login, password);
-
-            var model = logic.GetCatalog();
+            var model = _logic.GetCatalog();
 
             return View(model);
+        }
+
+        [HttpPost]
+        public IActionResult InputBook(Book book)
+        {
+            _logic.AddNote(book);
+            return RedirectToAction("GetLibrary");
+        }
+
+        [HttpPost]
+        public IActionResult InputNewspaper(Newspaper newspaper)
+        {
+            _logic.AddNote(newspaper);
+            return RedirectToAction("GetLibrary");
+        }
+
+        [HttpPost]
+        public IActionResult InputPatent(Patent patent)
+        {
+            _logic.AddNote(patent);
+            return RedirectToAction("GetLibrary");
         }
     }
 }

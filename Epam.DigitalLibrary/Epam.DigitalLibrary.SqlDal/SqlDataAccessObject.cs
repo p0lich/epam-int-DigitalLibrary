@@ -13,7 +13,7 @@ namespace Epam.DigitalLibrary.SqlDal
 {
     public class SqlDataAccessObject : IDataLayer
     {
-        private string connectionString = ConfigurationManager.ConnectionStrings["SSPIConnString"].ConnectionString;
+        private string connectionString = ConfigurationManager.ConnectionStrings[0].ConnectionString;
         private SqlCredential _credential;
         private SqlConnection _connection;
 
