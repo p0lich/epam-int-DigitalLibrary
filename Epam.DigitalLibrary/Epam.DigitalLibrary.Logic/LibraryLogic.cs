@@ -28,6 +28,11 @@ namespace Epam.DigitalLibrary.Logic
             _dataLayer = new DataLayer();
         }
 
+        //public LibraryLogic(IDataLayer dataLayer)
+        //{
+        //    _dataLayer = dataLayer;
+        //}
+
         public int AddNote(Note note)
         {
             return _dataLayer.AddNote(note);

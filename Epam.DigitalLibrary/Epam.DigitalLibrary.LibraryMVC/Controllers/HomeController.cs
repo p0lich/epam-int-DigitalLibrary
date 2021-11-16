@@ -17,10 +17,21 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly INoteLogic _logic;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, INoteLogic logic)
         {
             _logger = logger;
-            _logic = new LibraryLogic();
+            _logic = logic;
+
+            _logic.AddNote(new Book(
+                name: "book1",
+                authors: new List<Author> { new Author("Ivan", "Karasev"), new Author("Aleksei", "Ivanov") },
+                publicationPlace: "Saratov",
+                publisher: "booker",
+                publicationDate: new DateTime(1900, 01, 01),
+                pagesCount: 50,
+                objectNotes: "aoaoaoaoa",
+                iSBN: "ISBN 1-56389-668-0"
+                ));
         }
 
         public IActionResult Index()
@@ -46,11 +57,10 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
             return View(model);
         }
 
-        [HttpPost]
-        public IActionResult InputBook(Book book)
+        [HttpGet]
+        public IActionResult InputNewspaper()
         {
-            _logic.AddNote(book);
-            return RedirectToAction("GetLibrary");
+            return View();
         }
 
         [HttpPost]
@@ -58,6 +68,15 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
         {
             _logic.AddNote(newspaper);
             return RedirectToAction("GetLibrary");
+        }
+
+
+
+
+        [HttpGet]
+        public IActionResult InputPatent()
+        {
+            return View();
         }
 
         [HttpPost]
