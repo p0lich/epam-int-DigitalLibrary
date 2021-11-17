@@ -62,7 +62,7 @@ namespace Epam.DigitalLibrary.LibraryMVC
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Book}/{action=CreateBook}/{id?}");
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
             });
         }
     }
