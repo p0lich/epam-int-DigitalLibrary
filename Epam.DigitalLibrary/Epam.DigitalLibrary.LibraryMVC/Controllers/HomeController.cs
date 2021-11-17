@@ -22,16 +22,19 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
             _logger = logger;
             _logic = logic;
 
-            _logic.AddNote(new Book(
-                name: "book1",
+            for (int i = 0; i < 65; i++)
+            {
+                _logic.AddNote(new Book(
+                name: ("book" + (i + 1).ToString()),
                 authors: new List<Author> { new Author("Ivan", "Karasev"), new Author("Aleksei", "Ivanov") },
                 publicationPlace: "Saratov",
                 publisher: "booker",
                 publicationDate: new DateTime(1900, 01, 01),
                 pagesCount: 50,
                 objectNotes: "aoaoaoaoa",
-                iSBN: "ISBN 1-56389-668-0"
+                iSBN: null
                 ));
+            }
         }
 
         public IActionResult Index()
@@ -50,9 +53,11 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
-        public IActionResult GetLibrary()
+        public IActionResult GetLibrary(int pageId = 1)
         {
-            var model = _logic.GetCatalog();
+            List<BookLinkViewModel> booksLink = _logic.GetCatalog().OfType<Book>().Select(n => new BookLinkViewModel(n)).ToList();
+
+            var model = PagingList<BookLinkViewModel>.GetPageItems(booksLink, pageId, 20);
 
             return View(model);
         }
