@@ -61,34 +61,5 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
 
             return View(model);
         }
-
-        [HttpGet]
-        public IActionResult InputNewspaper()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        public IActionResult InputNewspaper(Newspaper newspaper)
-        {
-            _logic.AddNote(newspaper);
-            return RedirectToAction("GetLibrary");
-        }
-
-
-
-
-        [HttpGet]
-        public IActionResult InputPatent()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        public IActionResult InputPatent(Patent patent)
-        {
-            _logic.AddNote(patent);
-            return RedirectToAction("GetLibrary");
-        }
     }
 }
