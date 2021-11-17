@@ -29,12 +29,29 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
         }
 
         // GET: BookController/Details/5
+        [Route("Book/Details/{id:Guid}")]
         public ActionResult Details(Guid id)
         {
-            return View();
+            Book book = _logic.GetById(id) as Book;
+
+            BookDetailsViewModel bookDetails = new BookDetailsViewModel
+            {
+                ID = book.ID,
+                Name = book.Name,
+                Authors = book.Authors,
+                PublicationPlace = book.PublicationPlace,
+                Publisher = book.Publisher,
+                PublicationDate = book.PublicationDate,
+                PagesCount = book.PagesCount,
+                ObjectNotes = book.ObjectNotes,
+                ISBN = book.ISBN
+            };
+
+            return View(bookDetails);
         }
 
         // GET: BookController/Create
+        [Route("Book/Create")]
         public ActionResult Create()
         {
             return View();
@@ -42,6 +59,7 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
 
         // POST: BookController/Create
         [HttpPost]
+        [Route("Book/Create")]
         [ValidateAntiForgeryToken]
         public ActionResult Create(BookInputViewModel bookModel)
         {
@@ -60,6 +78,7 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
         }
 
         // GET: BookController/Edit/5
+        [Route("Book/Edit/{id:Guid}")]
         public ActionResult Edit(Guid id)
         {
             return View();
@@ -67,6 +86,7 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
 
         // POST: BookController/Edit/5
         [HttpPost]
+        [Route("Book/Edit/{id:Guid}")]
         [ValidateAntiForgeryToken]
         public ActionResult Edit(Guid id, BookInputViewModel bookModel)
         {
@@ -85,6 +105,7 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
         }
 
         // GET: BookController/Delete/5
+        [Route("Book/Delete/{id:Guid}")]
         public ActionResult Delete(Guid id)
         {
             return View();
@@ -92,6 +113,7 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
 
         // POST: BookController/Delete/5
         [HttpPost]
+        [Route("Book/Delete/{id:Guid}")]
         [ValidateAntiForgeryToken]
         public ActionResult Delete(Guid id, BookInputViewModel bookModel)
         {
