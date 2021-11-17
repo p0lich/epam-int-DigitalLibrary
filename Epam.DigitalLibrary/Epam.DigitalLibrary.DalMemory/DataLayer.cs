@@ -46,6 +46,11 @@ namespace Epam.DigitalLibrary.DalMemory
             throw new NotImplementedException();
         }
 
+        public Note GetById(Guid id)
+        {
+            return _data.FirstOrDefault(n => n.ID == id);
+        }
+
         public bool MarkNote(Note note)
         {
             throw new NotImplementedException();

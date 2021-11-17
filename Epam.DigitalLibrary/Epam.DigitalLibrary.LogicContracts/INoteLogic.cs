@@ -38,5 +38,7 @@ namespace Epam.DigitalLibrary.LogicContracts
         public List<Note> GetUnmarkedNotes();
 
         public bool MarkForDelete(Note note);
+
+        public Note GetById(Guid id);
     }
 }

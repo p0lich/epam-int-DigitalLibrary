@@ -134,6 +134,11 @@ namespace Epam.DigitalLibrary.SqlDal
             return _patentDAO.MarkForDelete(note.ID);
         }
 
+        public Note GetById(Guid id)
+        {
+            return GetAllNotes().FirstOrDefault(n => n.ID == id);
+        }
+
         public int UpdateNote(Guid noteId, Note updatedNote)
         {
             try

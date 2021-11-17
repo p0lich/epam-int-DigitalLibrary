@@ -13,6 +13,8 @@ namespace Epam.DigitalLibrary.DalContracts
 
         public List<Note> GetAllNotes();
 
+        public Note GetById(Guid id);
+
         public bool RemoveNote();
 
         public bool RemoveNote(Note note);

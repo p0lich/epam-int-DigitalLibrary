@@ -118,5 +118,10 @@ namespace Epam.DigitalLibrary.Logic
         {
             return _dataLayer.MarkNote(note);
         }
+
+        public Note GetById(Guid id)
+        {
+            return _dataLayer.GetById(id);
+        }
     }
 }
