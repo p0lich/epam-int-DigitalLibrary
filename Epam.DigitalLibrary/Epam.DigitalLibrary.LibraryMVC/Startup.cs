@@ -11,6 +11,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Epam.DigitalLibrary.LogicContracts;
 using Epam.DigitalLibrary.Logic;
+using System.Security;
 
 namespace Epam.DigitalLibrary.LibraryMVC
 {
@@ -29,7 +30,17 @@ namespace Epam.DigitalLibrary.LibraryMVC
             services.AddControllersWithViews();
             services.AddMvc();
 
-            services.AddSingleton<INoteLogic, LibraryLogic>();
+            //services.AddSingleton<INoteLogic, LibraryLogic>();
+
+            SecureString password = new SecureString();
+
+            password.AppendChar('1');
+            password.AppendChar('2');
+            password.AppendChar('3');
+
+            password.MakeReadOnly();
+
+            services.AddSingleton<INoteLogic>(new LibraryLogic("lib_admin", password));
 
             //services.AddSingleton<INoteLogic>();
             //services.AddIdentity<IdentityUser, IdentityRole>();

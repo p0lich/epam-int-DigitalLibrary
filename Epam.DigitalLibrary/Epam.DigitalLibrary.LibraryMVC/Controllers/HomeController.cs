@@ -22,19 +22,19 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
             _logger = logger;
             _logic = logic;
 
-            for (int i = 0; i < 65; i++)
-            {
-                _logic.AddNote(new Book(
-                name: ("book" + (i + 1).ToString()),
-                authors: new List<Author> { new Author("Ivan", "Karasev"), new Author("Aleksei", "Ivanov") },
-                publicationPlace: "Saratov",
-                publisher: "booker",
-                publicationDate: new DateTime(1900, 01, 01),
-                pagesCount: 50,
-                objectNotes: "aoaoaoaoa",
-                iSBN: null
-                ));
-            }
+            //for (int i = 0; i < 10; i++)
+            //{
+            //    _logic.AddNote(new Book(
+            //    name: ("book" + (i + 1).ToString()),
+            //    authors: new List<Author> { new Author("Ivan", "Karasev"), new Author("Aleksei", "Ivanov") },
+            //    publicationPlace: "Saratov",
+            //    publisher: "booker",
+            //    publicationDate: new DateTime(1900, 01, 01),
+            //    pagesCount: 50,
+            //    objectNotes: "aoaoaoaoa",
+            //    iSBN: null
+            //    ));
+            //}
         }
 
         public IActionResult Index()

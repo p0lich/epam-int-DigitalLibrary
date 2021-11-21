@@ -13,7 +13,8 @@ namespace Epam.DigitalLibrary.SqlDal
 {
     public class SqlDataAccessObject : IDataLayer
     {
-        private string connectionString = ConfigurationManager.ConnectionStrings[0].ConnectionString;
+        //private string connectionString = ConfigurationManager.ConnectionStrings[0].ConnectionString;
+        private string connectionString = @"Data Source=DESKTOP-83KP24G;Initial Catalog=LibraryDb;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
         private SqlCredential _credential;
         private SqlConnection _connection;
 
@@ -137,6 +138,55 @@ namespace Epam.DigitalLibrary.SqlDal
         public Note GetById(Guid id)
         {
             return GetAllNotes().FirstOrDefault(n => n.ID == id);
+        }
+
+        public Book GetBookById(Guid id)
+        {
+            return _bookDAO.GetById(id) as Book;
+        }
+
+        public Newspaper GetNewspaperById(Guid id)
+        {
+            return _newspaperDAO.GetById(id) as Newspaper;
+        }
+
+        public Patent GetPatentById(Guid id)
+        {
+            return _patentDAO.GetById(id) as Patent;
+        }
+
+        public List<Author> GetAvailableAuthors()
+        {
+            try
+            {
+                using (_connection = new SqlConnection(connectionString, _credential))
+                {
+                    string stProc = "dbo.Get_AvailableAuthors";
+                    using (SqlCommand command = new SqlCommand(stProc, _connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+
+                        List<Author> authors = new List<Author>();
+                        _connection.Open();
+                        var reader = command.ExecuteReader();
+
+                        while (reader.Read())
+                        {
+                            authors.Add(new Author(
+                                firstName: reader["FirstName"] as string,
+                                lastName: reader["LastName"] as string
+                                ));
+                        }
+
+                        return authors;
+                    }
+                }
+            }
+
+            catch (Exception e)
+            {
+                throw;
+            }
         }
 
         public int UpdateNote(Guid noteId, Note updatedNote)

@@ -46,9 +46,29 @@ namespace Epam.DigitalLibrary.DalMemory
             throw new NotImplementedException();
         }
 
+        public List<Author> GetAvailableAuthors()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Book GetBookById(Guid id)
+        {
+            throw new NotImplementedException();
+        }
+
         public Note GetById(Guid id)
         {
             return _data.FirstOrDefault(n => n.ID == id);
+        }
+
+        public Newspaper GetNewspaperById(Guid id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Patent GetPatentById(Guid id)
+        {
+            throw new NotImplementedException();
         }
 
         public bool MarkNote(Note note)

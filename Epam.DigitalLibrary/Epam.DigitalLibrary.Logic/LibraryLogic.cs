@@ -123,5 +123,25 @@ namespace Epam.DigitalLibrary.Logic
         {
             return _dataLayer.GetById(id);
         }
+
+        public Book GetBookById(Guid id)
+        {
+            return _dataLayer.GetBookById(id);
+        }
+
+        public Newspaper GetNewspaperId(Guid id)
+        {
+            return _dataLayer.GetNewspaperById(id);
+        }
+
+        public Patent GetPatentById(Guid id)
+        {
+            return _dataLayer.GetPatentById(id);
+        }
+
+        public List<Author> GetAvailableAuthorsId()
+        {
+            return _dataLayer.GetAvailableAuthors();
+        }
     }
 }

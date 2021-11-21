@@ -13,7 +13,8 @@ namespace Epam.DigitalLibrary.SqlDal
 {
     public class UserDAO : IUserDAO
     {
-        private string connectionString = ConfigurationManager.ConnectionStrings["SSPIConnString"].ConnectionString;
+        //private string connectionString = ConfigurationManager.ConnectionStrings["SSPIConnString"].ConnectionString;
+        private string connectionString = @"Data Source=DESKTOP-83KP24G;Initial Catalog=LibraryDb;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
         private SqlCredential _userCredential;
         private SqlConnection _connection;
 

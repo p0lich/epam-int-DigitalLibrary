@@ -4,6 +4,24 @@
     ViewData["Title"] = "CreateBook";
 }
 
+@*@section scripts{
+<script>
+    var $form = $('#authorForm');
+    $form.submit(() => {
+        $.ajax({
+            url: '@Url.Action("")',
+            type: 'post'
+        }).done((data) => {
+            if (data.success) {
+                alert('ajax work');
+                document.location.reload();
+            }
+        });
+        return false;
+    });
+</script>
+}*@
+
 <h1>CreateBook</h1>
 
 <h4>BookInputViewModel</h4>
@@ -56,6 +74,6 @@
 
 <div>
     <a asp-controller="Home"
-       asp-action="GetLibrary">Back to List</a>
+       asp-action="GetAllBooks">Back to List</a>
 </div>
 

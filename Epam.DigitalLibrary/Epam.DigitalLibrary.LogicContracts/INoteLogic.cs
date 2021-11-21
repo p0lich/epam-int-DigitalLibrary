@@ -40,5 +40,13 @@ namespace Epam.DigitalLibrary.LogicContracts
         public bool MarkForDelete(Note note);
 
         public Note GetById(Guid id);
+
+        public Book GetBookById(Guid id);
+
+        public Newspaper GetNewspaperId(Guid id);
+
+        public Patent GetPatentById(Guid id);
+
+        public List<Author> GetAvailableAuthorsId();
     }
 }

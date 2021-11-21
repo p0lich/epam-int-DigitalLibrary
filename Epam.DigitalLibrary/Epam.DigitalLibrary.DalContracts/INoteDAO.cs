@@ -22,5 +22,7 @@ namespace Epam.DigitalLibrary.DalContracts
         public Guid GetMainNoteId(Guid noteId);
 
         public List<Note> GetUnmarkedNotes();
+
+        public Note GetById(Guid id);
     }
 }

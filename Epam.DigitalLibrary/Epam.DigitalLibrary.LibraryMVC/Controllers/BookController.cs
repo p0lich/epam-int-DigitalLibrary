@@ -28,6 +28,16 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
             return View();
         }
 
+        [Route("Book/GetAllBooks/{id:int}")]
+        public ActionResult GetAllBooks(int pageId = 1)
+        {
+            List<BookLinkViewModel> booksLink = _logic.GetCatalog().OfType<Book>().Select(n => new BookLinkViewModel(n)).ToList();
+
+            var model = PagingList<BookLinkViewModel>.GetPageItems(booksLink, pageId, 20);
+
+            return View(model);
+        }
+
         // GET: BookController/Details/5
         [Route("Book/Details/{id:Guid}")]
         public ActionResult Details(Guid id)
@@ -69,7 +79,7 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
 
                 _logic.AddNote(book);
 
-                return RedirectToAction(nameof(HomeController.GetLibrary));
+                return RedirectToAction(nameof(GetAllBooks));
             }
             catch
             {
@@ -81,6 +91,8 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
         [Route("Book/Edit/{id:Guid}")]
         public ActionResult Edit(Guid id)
         {
+            Book book = _logic.GetById(id) as Book;
+
             return View();
         }
 
@@ -96,7 +108,7 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
 
                 _logic.UpdateNote(id, book);
 
-                return RedirectToAction(nameof(HomeController.GetLibrary));
+                return RedirectToAction(nameof(GetAllBooks));
             }
             catch
             {
@@ -123,7 +135,7 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
 
                 _logic.RemoveNote(book);
 
-                return RedirectToAction(nameof(HomeController.GetLibrary));
+                return RedirectToAction(nameof(GetAllBooks));
             }
             catch
             {

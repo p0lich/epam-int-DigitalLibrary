@@ -13,7 +13,8 @@ namespace Epam.DigitalLibrary.SqlDal
 {
     public class PatentDAO : INoteDAO
     {
-        private string connectionString = ConfigurationManager.ConnectionStrings["SSPIConnString"].ConnectionString;
+        //private string connectionString = ConfigurationManager.ConnectionStrings["SSPIConnString"].ConnectionString;
+        private string connectionString = @"Data Source=DESKTOP-83KP24G;Initial Catalog=LibraryDb;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
         private SqlCredential _credential;
         private SqlConnection _connection;
 
@@ -364,6 +365,49 @@ namespace Epam.DigitalLibrary.SqlDal
             {
                 _connection.Close();
                 throw new Exception("Error. Unable to get patents from server\n" + e.Message);
+            }
+        }
+
+        public Note GetById(Guid id)
+        {
+            try
+            {
+                using (_connection = new SqlConnection(connectionString, _credential))
+                {
+                    string stProc = "dbo.GetById_PatentInfo";
+                    using (SqlCommand command = new SqlCommand(stProc, _connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+
+                        command.Parameters.AddWithValue("@id", id);
+
+                        _connection.Open();
+                        var reader = command.ExecuteReader();
+
+                        if (reader.Read())
+                        {
+                            return new Patent(
+                                id: (Guid)reader["ID"],
+                                name: reader["Name"] as string,
+                                authors: SqlObjectToAuthors(reader["Authors"]),
+                                country: reader["Country"] as string,
+                                registrationNumber: reader["RegistrationNumber"] as string,
+                                applicationDate: reader["ApplicationDate"] as DateTime?,
+                                publicationDate: (DateTime)reader["PublicationDate"],
+                                pagesCount: (int)reader["PagesCount"],
+                                objectNotes: reader["ObjectNotes"] as string,
+                                isDeleted: (bool)reader["IsDeleted"]
+                                );
+                        }
+
+                        return null;
+                    }
+                }
+            }
+
+            catch (Exception e)
+            {
+                throw;
             }
         }
     }

@@ -24,5 +24,13 @@ namespace Epam.DigitalLibrary.DalContracts
         public int UpdateNote(Guid noteId, Note updatedNote);
 
         public List<Note> GetAllUnmarkedNotes();
+
+        public Book GetBookById(Guid id);
+
+        public Newspaper GetNewspaperById(Guid id);
+
+        public Patent GetPatentById(Guid id);
+
+        public List<Author> GetAvailableAuthors();
     }
 }

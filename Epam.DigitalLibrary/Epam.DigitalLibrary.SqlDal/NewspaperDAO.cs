@@ -13,7 +13,8 @@ namespace Epam.DigitalLibrary.SqlDal
 {
     public class NewspaperDAO : INoteDAO
     {
-        private string connectionString = ConfigurationManager.ConnectionStrings["SSPIConnString"].ConnectionString;
+        //private string connectionString = ConfigurationManager.ConnectionStrings["SSPIConnString"].ConnectionString;
+        private string connectionString = @"Data Source=DESKTOP-83KP24G;Initial Catalog=LibraryDb;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
         private SqlCredential _credential;
         private SqlConnection _connection;
 
@@ -289,6 +290,50 @@ namespace Epam.DigitalLibrary.SqlDal
             {
                 _connection.Close();
                 throw new Exception("Error. Unable to get newspapers from server\n" + e.Message);
+            }
+        }
+
+        public Note GetById(Guid id)
+        {
+            try
+            {
+                using (_connection = new SqlConnection(connectionString, _credential))
+                {
+                    string stProc = "dbo.GetById_NewspaperInfo";
+                    using (SqlCommand command = new SqlCommand(stProc, _connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+
+                        command.Parameters.AddWithValue("@id", id);
+
+                        _connection.Open();
+                        var reader = command.ExecuteReader();
+
+                        if (reader.Read())
+                        {
+                            return new Newspaper(
+                                id: (Guid)reader["ID"],
+                                name: reader["Name"] as string,
+                                publicationPlace: reader["PublicationPlace"] as string,
+                                publisher: reader["Publisher"] as string,
+                                publicationDate: (DateTime)reader["PublicationDate"],
+                                pagesCount: (int)reader["PagesCount"],
+                                objectNotes: reader["ObjectNotes"] as string,
+                                number: reader["Number"] as string,
+                                releaseDate: (DateTime)reader["ReleaseDate"],
+                                iSSN: reader["ISSN"] as string,
+                                isDeleted: (bool)reader["IsDeleted"]
+                                );
+                        }
+
+                        return null;
+                    }
+                }
+            }
+
+            catch (Exception e)
+            {
+                throw;
             }
         }
     }
