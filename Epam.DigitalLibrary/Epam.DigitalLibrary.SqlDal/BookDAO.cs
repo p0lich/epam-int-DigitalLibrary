@@ -393,7 +393,7 @@ namespace Epam.DigitalLibrary.SqlDal
                                 publicationPlace: reader["PublicationPlace"] as string,
                                 publisher: reader["Publisher"] as string,
                                 publicationDate: (DateTime)reader["PublicationDate"],
-                                pagesCount: (int)reader["PagesCount"],
+                                pagesCount: (short)reader["PagesCount"],
                                 objectNotes: reader["ObjectNotes"] as string,
                                 iSBN: reader["ISBN"] as string,
                                 isDeleted: (bool)reader["IsDeleted"]

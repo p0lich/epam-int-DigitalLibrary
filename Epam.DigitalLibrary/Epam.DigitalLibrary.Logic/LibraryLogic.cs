@@ -139,7 +139,7 @@ namespace Epam.DigitalLibrary.Logic
             return _dataLayer.GetPatentById(id);
         }
 
-        public List<Author> GetAvailableAuthorsId()
+        public List<Author> GetAvailableAuthors()
         {
             return _dataLayer.GetAvailableAuthors();
         }

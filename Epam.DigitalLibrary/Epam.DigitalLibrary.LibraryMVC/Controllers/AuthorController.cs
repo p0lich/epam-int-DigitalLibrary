@@ -1,4 +1,5 @@
-﻿using Epam.DigitalLibrary.LogicContracts;
+﻿using Epam.DigitalLibrary.Entities;
+using Epam.DigitalLibrary.LogicContracts;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -51,6 +52,13 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
             {
                 return View();
             }
+        }
+
+        public ActionResult GetAvaliableAuthors()
+        {
+            var model = _logic.GetAvailableAuthors();
+
+            return View(model);
         }
 
         //// GET: AuthorController/Edit/5

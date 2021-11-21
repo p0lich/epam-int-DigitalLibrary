@@ -394,7 +394,7 @@ namespace Epam.DigitalLibrary.SqlDal
                                 registrationNumber: reader["RegistrationNumber"] as string,
                                 applicationDate: reader["ApplicationDate"] as DateTime?,
                                 publicationDate: (DateTime)reader["PublicationDate"],
-                                pagesCount: (int)reader["PagesCount"],
+                                pagesCount: (short)reader["PagesCount"],
                                 objectNotes: reader["ObjectNotes"] as string,
                                 isDeleted: (bool)reader["IsDeleted"]
                                 );

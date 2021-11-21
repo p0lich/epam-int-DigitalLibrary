@@ -47,6 +47,6 @@ namespace Epam.DigitalLibrary.LogicContracts
 
         public Patent GetPatentById(Guid id);
 
-        public List<Author> GetAvailableAuthorsId();
+        public List<Author> GetAvailableAuthors();
     }
 }

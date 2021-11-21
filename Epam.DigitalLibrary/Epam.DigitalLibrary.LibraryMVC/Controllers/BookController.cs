@@ -42,7 +42,7 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
         [Route("Book/Details/{id:Guid}")]
         public ActionResult Details(Guid id)
         {
-            Book book = _logic.GetById(id) as Book;
+            Book book = _logic.GetBookById(id);
 
             BookDetailsViewModel bookDetails = new BookDetailsViewModel
             {
@@ -54,7 +54,8 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
                 PublicationDate = book.PublicationDate,
                 PagesCount = book.PagesCount,
                 ObjectNotes = book.ObjectNotes,
-                ISBN = book.ISBN
+                ISBN = book.ISBN,
+                IsDeleted = book.IsDeleted
             };
 
             return View(bookDetails);
@@ -91,16 +92,33 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
         [Route("Book/Edit/{id:Guid}")]
         public ActionResult Edit(Guid id)
         {
-            Book book = _logic.GetById(id) as Book;
+            Book book = _logic.GetBookById(id);
 
-            return View();
+            if (book is null)
+            {
+                return NotFound();
+            }
+
+            BookInputViewModel bookModel = new BookInputViewModel
+            {
+                Name = book.Name,
+                PublicationPlace = book.PublicationPlace,
+                Publisher = book.Publisher,
+                PublicationDate = book.PublicationDate,
+                PagesCount = book.PagesCount,
+                ObjectNotes = book.ObjectNotes,
+                ISBN = book.ISBN
+            };            
+
+            return View(bookModel);
         }
 
         // POST: BookController/Edit/5
         [HttpPost]
         [Route("Book/Edit/{id:Guid}")]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(Guid id, BookInputViewModel bookModel)
+        public ActionResult Edit(Guid id,
+            [Bind("ID,Name,PublicationPlace,Publisher,PublicationDate,PagesCount,ObjectNotes,ISBN")] BookInputViewModel bookModel)
         {
             try
             {
@@ -120,18 +138,52 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
         [Route("Book/Delete/{id:Guid}")]
         public ActionResult Delete(Guid id)
         {
-            return View();
+            Book book = _logic.GetBookById(id);
+
+            if (book is null)
+            {
+                return NotFound();
+            }
+
+            BookDetailsViewModel bookModel = new BookDetailsViewModel
+            {
+                ID = book.ID,
+                Name = book.Name,
+                Authors = book.Authors,
+                PublicationPlace = book.PublicationPlace,
+                Publisher = book.Publisher,
+                PublicationDate = book.PublicationDate,
+                PagesCount = book.PagesCount,
+                ObjectNotes = book.ObjectNotes,
+                ISBN = book.ISBN,
+                IsDeleted = book.IsDeleted
+            };
+
+            return View(bookModel);
         }
 
         // POST: BookController/Delete/5
         [HttpPost]
         [Route("Book/Delete/{id:Guid}")]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(Guid id, BookInputViewModel bookModel)
+        public ActionResult CompleteDelete(Guid id)
         {
             try
             {
-                Book book = GetBook(bookModel);
+                //Book book = new Book(
+                //    id: bookModel.ID,
+                //    name: bookModel.Name,
+                //    authors: bookModel.Authors,
+                //    publicationPlace: bookModel.PublicationPlace,
+                //    publisher: bookModel.Publisher,
+                //    publicationDate: bookModel.PublicationDate,
+                //    pagesCount: bookModel.PagesCount,
+                //    objectNotes: bookModel.ObjectNotes,
+                //    iSBN: (bookModel.ISBN == "N/A") ? null : bookModel.ISBN,
+                //    isDeleted: bookModel.IsDeleted
+                //    );
+
+                Book book = _logic.GetBookById(id);
 
                 _logic.RemoveNote(book);
 

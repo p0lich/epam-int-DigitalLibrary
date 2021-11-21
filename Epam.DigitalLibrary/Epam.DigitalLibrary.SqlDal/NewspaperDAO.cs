@@ -317,7 +317,7 @@ namespace Epam.DigitalLibrary.SqlDal
                                 publicationPlace: reader["PublicationPlace"] as string,
                                 publisher: reader["Publisher"] as string,
                                 publicationDate: (DateTime)reader["PublicationDate"],
-                                pagesCount: (int)reader["PagesCount"],
+                                pagesCount: (short)reader["PagesCount"],
                                 objectNotes: reader["ObjectNotes"] as string,
                                 number: reader["Number"] as string,
                                 releaseDate: (DateTime)reader["ReleaseDate"],
