@@ -28,7 +28,7 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
             return View();
         }
 
-        [Route("Book/GetAllBooks/{id:int}")]
+        [Route("Book/GetAllBooks/{id:int?}")]
         public ActionResult GetAllBooks(int pageId = 1)
         {
             List<BookLinkViewModel> booksLink = _logic.GetCatalog().OfType<Book>().Select(n => new BookLinkViewModel(n)).ToList();
