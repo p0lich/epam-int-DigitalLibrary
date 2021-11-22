@@ -29,7 +29,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Epam.DigitalLibrary.Integra
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Epam.DigitalLibrary.SqlDal", "Epam.DigitalLibrary.SqlDal\Epam.DigitalLibrary.SqlDal.csproj", "{62353A3E-2EFB-488F-B5BD-706BE118F6D6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Epam.DigitalLibrary.LibraryMVC", "Epam.DigitalLibrary.LibraryMVC\Epam.DigitalLibrary.LibraryMVC.csproj", "{E86DFECA-DBD3-49FD-AA35-42D021F5CEC3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Epam.DigitalLibrary.LibraryMVC", "Epam.DigitalLibrary.LibraryMVC\Epam.DigitalLibrary.LibraryMVC.csproj", "{E86DFECA-DBD3-49FD-AA35-42D021F5CEC3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -12,6 +12,8 @@ using System.Threading.Tasks;
 using Epam.DigitalLibrary.LogicContracts;
 using Epam.DigitalLibrary.Logic;
 using System.Security;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using System.Security.Claims;
 
 namespace Epam.DigitalLibrary.LibraryMVC
 {
@@ -41,6 +43,27 @@ namespace Epam.DigitalLibrary.LibraryMVC
             password.MakeReadOnly();
 
             services.AddSingleton<INoteLogic>(new LibraryLogic("lib_admin", password));
+            services.AddSingleton<IUserRightsProvider>(new UserLogic("lib_admin", password));
+
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options => {
+                    options.LoginPath = "/Login";
+                    options.AccessDeniedPath = "/Denied";
+                    //options.Events = new CookieAuthenticationEvents()
+                    //{
+                    //    OnSigningIn = async context =>
+                    //    {
+                    //        var principal = context.Principal;
+                    //        if (principal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value == "lib_admin")
+                    //        {
+                    //            var claimsIdentity = principal.Identity as ClaimsIdentity;
+                    //            claimsIdentity.AddClaim(new Claim(ClaimTypes.Role, "library_admin"));
+                    //        }
+
+                    //        await Task.CompletedTask;
+                    //    }
+                    //};
+                });
 
             //services.AddSingleton<INoteLogic>();
             //services.AddIdentity<IdentityUser, IdentityRole>();
@@ -66,6 +89,9 @@ namespace Epam.DigitalLibrary.LibraryMVC
             app.UseStaticFiles();
 
             app.UseRouting();
+
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseAuthorization();
 

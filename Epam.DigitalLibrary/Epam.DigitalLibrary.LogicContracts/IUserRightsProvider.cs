@@ -12,5 +12,7 @@ namespace Epam.DigitalLibrary.LogicContracts
         public bool IsInRole(string role);
 
         public bool IsCredentialRight();
+
+        public List<string> GetRoles();
     }
 }

@@ -43,5 +43,10 @@ namespace Epam.DigitalLibrary.Logic
         {
             return _userDAO.IsConnectionAllowed();
         }
+
+        public List<string> GetRoles()
+        {
+            return _userDAO.GetUserRoles(_login);
+        }
     }
 }
