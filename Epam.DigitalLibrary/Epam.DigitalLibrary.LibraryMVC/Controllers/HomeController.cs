@@ -28,6 +28,8 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
             _logic = logic;
             _userLogic = userLogic;
 
+            //_logger.LogDebug(1, "NLog was injected");
+
             //for (int i = 0; i < 10; i++)
             //{
             //    _logic.AddNote(new Book(
@@ -59,7 +61,7 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
-        [Authorize(Roles = "library_reader")]
+        [Authorize(Roles = UserRights.Reader)]
         public IActionResult GetLibrary(int pageId = 1)
         {
             List<BookLinkViewModel> booksLink = _logic.GetCatalog().OfType<Book>().Select(n => new BookLinkViewModel(n)).ToList();
@@ -70,23 +72,22 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
         }
 
         [HttpGet("Login")]
-        public IActionResult Login(string returnUrl)
+        public IActionResult Login()
         {
-            ViewData["ReturnUrl"] = returnUrl;
+            //ViewData["ReturnUrl"] = returnUrl;
             return View();
         }
 
         [HttpPost("Login")]
-        public async Task<IActionResult> Validate(string login, string password, string returnUrl)
+        public async Task<IActionResult> Validate(string login, string password)
         {
-            ViewData["ReturnUrl"] = returnUrl;
+            //ViewData["ReturnUrl"] = returnUrl;
 
             if (!_userLogic.IsCredentialRight())
             {
                 TempData["Error"] = "Error. Login/Password is invalid";
                 return View("Login");
             }
-
 
             var claims = new List<Claim>();
 
@@ -104,8 +105,10 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
 
+            _logger.LogInformation(0, $"User {login} has log in");
+
             await HttpContext.SignInAsync(claimsPrincipal);
-            return Redirect(returnUrl);
+            return RedirectToAction(nameof(Index));
         }
 
         [Authorize]
@@ -118,6 +121,7 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
         [HttpGet("Denied")]
         public IActionResult DeniedPage()
         {
+            _logger.LogWarning(1, "Unauthorized access attempt");
             return View();
         }
     }

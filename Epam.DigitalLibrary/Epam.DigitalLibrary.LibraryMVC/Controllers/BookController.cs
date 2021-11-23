@@ -1,6 +1,7 @@
 ﻿using Epam.DigitalLibrary.Entities;
 using Epam.DigitalLibrary.LibraryMVC.Models;
 using Epam.DigitalLibrary.LogicContracts;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -62,6 +63,7 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
         }
 
         // GET: BookController/Create
+        [Authorize(Roles = UserRights.Librarian)]
         [Route("Book/Create")]
         public ActionResult Create()
         {
@@ -70,6 +72,7 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
 
         // POST: BookController/Create
         [HttpPost]
+        [Authorize(Roles = UserRights.Librarian)]
         [Route("Book/Create")]
         [ValidateAntiForgeryToken]
         public ActionResult Create(BookInputViewModel bookModel)
@@ -89,6 +92,7 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
         }
 
         // GET: BookController/Edit/5
+        [Authorize(Roles = UserRights.Librarian)]
         [Route("Book/Edit/{id:Guid}")]
         public ActionResult Edit(Guid id)
         {
@@ -115,6 +119,7 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
 
         // POST: BookController/Edit/5
         [HttpPost]
+        [Authorize(Roles = UserRights.Librarian)]
         [Route("Book/Edit/{id:Guid}")]
         [ValidateAntiForgeryToken]
         public ActionResult Edit(Guid id,
@@ -135,6 +140,7 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
         }
 
         // GET: BookController/Delete/5
+        [Authorize(Roles = UserRights.Admin)]
         [Route("Book/Delete/{id:Guid}")]
         public ActionResult Delete(Guid id)
         {
@@ -164,28 +170,63 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
 
         // POST: BookController/Delete/5
         [HttpPost]
+        [Authorize(Roles = UserRights.Admin)]
         [Route("Book/Delete/{id:Guid}")]
         [ValidateAntiForgeryToken]
         public ActionResult CompleteDelete(Guid id)
         {
             try
             {
-                //Book book = new Book(
-                //    id: bookModel.ID,
-                //    name: bookModel.Name,
-                //    authors: bookModel.Authors,
-                //    publicationPlace: bookModel.PublicationPlace,
-                //    publisher: bookModel.Publisher,
-                //    publicationDate: bookModel.PublicationDate,
-                //    pagesCount: bookModel.PagesCount,
-                //    objectNotes: bookModel.ObjectNotes,
-                //    iSBN: (bookModel.ISBN == "N/A") ? null : bookModel.ISBN,
-                //    isDeleted: bookModel.IsDeleted
-                //    );
-
                 Book book = _logic.GetBookById(id);
 
                 _logic.RemoveNote(book);
+
+                return RedirectToAction(nameof(GetAllBooks));
+            }
+            catch
+            {
+                return View();
+            }
+        }
+
+        [Route("Book/Mark/{id:Guid}")]
+        [Authorize(Roles = UserRights.Librarian)]
+        public IActionResult Mark(Guid id)
+        {
+            Book book = _logic.GetBookById(id);
+
+            if (book is null)
+            {
+                return NotFound();
+            }
+
+            BookDetailsViewModel bookModel = new BookDetailsViewModel
+            {
+                ID = book.ID,
+                Name = book.Name,
+                Authors = book.Authors,
+                PublicationPlace = book.PublicationPlace,
+                Publisher = book.Publisher,
+                PublicationDate = book.PublicationDate,
+                PagesCount = book.PagesCount,
+                ObjectNotes = book.ObjectNotes,
+                ISBN = book.ISBN,
+                IsDeleted = book.IsDeleted
+            };
+
+            return View(bookModel);
+        }
+
+        [HttpPost]
+        [Route("Book/Mark/{id:Guid}")]
+        [Authorize(Roles = UserRights.Librarian)]
+        public IActionResult MarkForDelete(Guid id)
+        {
+            try
+            {
+                Book book = _logic.GetBookById(id);
+
+                _logic.MarkForDelete(book);
 
                 return RedirectToAction(nameof(GetAllBooks));
             }

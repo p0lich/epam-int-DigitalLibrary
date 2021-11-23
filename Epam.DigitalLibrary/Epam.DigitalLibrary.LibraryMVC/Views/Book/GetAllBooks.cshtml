@@ -30,12 +30,15 @@
             <td>
                 @item.ToString()
             </td>
-            @*<td>
+            <td>
+                @Html.DisplayFor(model => item.ID)
+            </td>
+            <td>
                 @Html.DisplayFor(modelItem => item.Name)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.PublicationDate)
-            </td>*@
+            </td>
             <td>
                 @Html.ActionLink("Edit", "Edit", new { id=item.ID }) |
                 @Html.ActionLink("Details", "Details", new { id = item.ID }) |

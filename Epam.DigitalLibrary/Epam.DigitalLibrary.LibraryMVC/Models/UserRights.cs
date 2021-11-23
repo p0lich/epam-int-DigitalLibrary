@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using Epam.DigitalLibrary.LogicContracts;
 
-namespace Epam.DigitalLibrary.ConsolePL
+namespace Epam.DigitalLibrary.LibraryMVC.Models
 {
     public static class UserRights
     {
