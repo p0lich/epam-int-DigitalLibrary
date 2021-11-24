@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
@@ -17,6 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Epam.DigitalLibrary.CustomExeptions\Epam.DigitalLibrary.CustomExeptions.csproj" />
     <ProjectReference Include="..\Epam.DigitalLibrary.Entities\Epam.DigitalLibrary.Entities.csproj" />
     <ProjectReference Include="..\Epam.DigitalLibrary.LogicContracts\Epam.DigitalLibrary.LogicContracts.csproj" />
     <ProjectReference Include="..\Epam.DigitalLibrary.Logic\Epam.DigitalLibrary.Logic.csproj" />

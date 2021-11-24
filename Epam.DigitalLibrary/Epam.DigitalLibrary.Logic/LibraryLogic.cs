@@ -11,6 +11,7 @@ using Epam.DigitalLibrary.DalMemory;
 using System.Text.RegularExpressions;
 using System.Data.SqlClient;
 using System.Security;
+using Epam.DigitalLibrary.CustomExeptions;
 
 namespace Epam.DigitalLibrary.Logic
 {
@@ -35,113 +36,274 @@ namespace Epam.DigitalLibrary.Logic
 
         public int AddNote(Note note)
         {
-            return _dataLayer.AddNote(note);
+            try
+            {
+                return _dataLayer.AddNote(note);
+            }
+
+            catch (Exception e) when (e is not DataAccessException)
+            {
+                throw new BusinessLogicException();
+            }
         }
 
         public IEnumerable<IGrouping<int, Note>> GroupByYear()
         {
-            return _dataLayer.GetAllUnmarkedNotes().GroupBy(n => n.PublicationDate.Year);
+            try
+            {
+                return _dataLayer.GetAllUnmarkedNotes().GroupBy(n => n.PublicationDate.Year);
+            }
+
+            catch (Exception e) when (e is not DataAccessException)
+            {
+                throw new BusinessLogicException();
+            }
         }
 
         public bool RemoveNote()
         {
-            return _dataLayer.RemoveNote();
+            try
+            {
+                return _dataLayer.RemoveNote();
+            }
+            
+            catch (Exception e) when (e is not DataAccessException)
+            {
+                throw new BusinessLogicException();
+            }
         }
 
         public List<Note> SearchBooksAndPatensByAuthor(Author author)
         {
-            IEnumerable<Note> books = _dataLayer.GetAllUnmarkedNotes().OfType<Book>()
+            try
+            {
+                IEnumerable<Note> books = _dataLayer.GetAllUnmarkedNotes().OfType<Book>()
                 .Where(b => b.Authors.Contains(author));
 
-            IEnumerable<Note> patents = _dataLayer.GetAllUnmarkedNotes().OfType<Patent>()
-                .Where(p => p.Authors.Contains(author));
+                IEnumerable<Note> patents = _dataLayer.GetAllUnmarkedNotes().OfType<Patent>()
+                    .Where(p => p.Authors.Contains(author));
 
-            return books.Concat(patents).ToList();
+                return books.Concat(patents).ToList();
+            }
+   
+            catch (Exception e) when (e is not DataAccessException)
+            {
+                throw new BusinessLogicException();
+            }
         }
 
         public List<Book> SearchBooksByAuthor(Author author)
         {
-            return _dataLayer.GetAllUnmarkedNotes().OfType<Book>()
+            try
+            {
+                return _dataLayer.GetAllUnmarkedNotes().OfType<Book>()
                 .Where(p => p.Authors.Contains(author)).ToList();
+            }
+
+            catch (Exception e) when (e is not DataAccessException)
+            {
+                throw new BusinessLogicException();
+            }
         }
 
         public IEnumerable<IGrouping<string, Book>> SearchBooksByCharset(string charSet)
         {
             Regex regex = new Regex($@"^{charSet}");
 
-            return _dataLayer.GetAllUnmarkedNotes().OfType<Book>()
+            try
+            {
+                return _dataLayer.GetAllUnmarkedNotes().OfType<Book>()
                 .Where(b => regex.IsMatch(b.Name)).GroupBy(b => b.Publisher);
+            }
+
+            catch (Exception e) when (e is not DataAccessException)
+            {
+                throw new BusinessLogicException();
+            }
         }
 
         public Note SearchByName(string name)
         {
-            return _dataLayer.GetAllUnmarkedNotes().FirstOrDefault(n => n.Name == name);
+            try
+            {
+                return _dataLayer.GetAllUnmarkedNotes().FirstOrDefault(n => n.Name == name);
+            }
+
+            catch (Exception e) when (e is not DataAccessException)
+            {
+                throw new BusinessLogicException();
+            }
         }
 
         public List<Patent> SearchPatentByInventor(Author author)
         {
-            return _dataLayer.GetAllUnmarkedNotes().OfType<Patent>()
+            try
+            {
+                return _dataLayer.GetAllUnmarkedNotes().OfType<Patent>()
                 .Where(p => p.Authors.Contains(author)).ToList();
+            }
+
+            catch (Exception e) when (e is not DataAccessException)
+            {
+                throw new BusinessLogicException();
+            }
         }
 
         public List<Note> GetCatalog()
         {
-            return _dataLayer.GetAllNotes();
+            try
+            {
+                return _dataLayer.GetAllNotes();
+            }
+
+            catch (Exception e) when (e is not DataAccessException)
+            {
+                throw new BusinessLogicException();
+            }
         }
 
         public List<Note> SortInOrder()
         {
-            return _dataLayer.GetAllUnmarkedNotes().OrderBy(n => n.PublicationDate.Year).ToList();
+            try
+            {
+                return _dataLayer.GetAllUnmarkedNotes().OrderBy(n => n.PublicationDate.Year).ToList();
+            }
+
+            catch (Exception e) when (e is not DataAccessException)
+            {
+                throw new BusinessLogicException();
+            }
         }
 
         public List<Note> SortInReverseOrder()
         {
-            return _dataLayer.GetAllUnmarkedNotes().OrderByDescending(n => n.PublicationDate.Year).ToList();
+            try
+            {
+                return _dataLayer.GetAllUnmarkedNotes().OrderByDescending(n => n.PublicationDate.Year).ToList();
+            }
+
+            catch (Exception e) when (e is not DataAccessException)
+            {
+                throw new BusinessLogicException();
+            }
         }
 
         public int UpdateNote(Guid noteId, Note updatedNote)
         {
-            return _dataLayer.UpdateNote(noteId, updatedNote);
+            try
+            {
+                return _dataLayer.UpdateNote(noteId, updatedNote);
+            }
+
+            catch (Exception e) when (e is not DataAccessException)
+            {
+                throw new BusinessLogicException();
+            } 
         }
 
         public bool RemoveNote(Note note)
         {
-            return _dataLayer.RemoveNote(note);
+            try
+            {
+                return _dataLayer.RemoveNote(note);
+            }
+
+            catch (Exception e) when (e is not DataAccessException)
+            {
+                throw new BusinessLogicException();
+            }
         }
 
         public List<Note> GetUnmarkedNotes()
         {
-            return _dataLayer.GetAllUnmarkedNotes();
+            try
+            {
+                return _dataLayer.GetAllUnmarkedNotes();
+            }
+
+            catch (Exception e) when (e is not DataAccessException)
+            {
+                throw new BusinessLogicException();
+            }
         }
 
         public bool MarkForDelete(Note note)
         {
-            return _dataLayer.MarkNote(note);
+            try
+            {
+                return _dataLayer.MarkNote(note);
+            }
+
+            catch (Exception e) when (e is not DataAccessException)
+            {
+                throw new BusinessLogicException();
+            }
         }
 
         public Note GetById(Guid id)
         {
-            return _dataLayer.GetById(id);
+            try
+            {
+                return _dataLayer.GetById(id);
+            }
+
+            catch (Exception e) when (e is not DataAccessException)
+            {
+                throw new BusinessLogicException();
+            }
         }
 
         public Book GetBookById(Guid id)
         {
-            return _dataLayer.GetBookById(id);
+            try
+            {
+                return _dataLayer.GetBookById(id);
+            }
+
+            catch (Exception e) when (e is not DataAccessException)
+            {
+                throw new BusinessLogicException();
+            }
         }
 
         public Newspaper GetNewspaperId(Guid id)
         {
-            return _dataLayer.GetNewspaperById(id);
+            try
+            {
+                return _dataLayer.GetNewspaperById(id);
+            }
+
+            catch (Exception e) when (e is not DataAccessException)
+            {
+                throw new BusinessLogicException();
+            }
         }
 
         public Patent GetPatentById(Guid id)
         {
-            return _dataLayer.GetPatentById(id);
+            try
+            {
+                return _dataLayer.GetPatentById(id);
+
+            }
+
+            catch (Exception e) when (e is not DataAccessException)
+            {
+                throw new BusinessLogicException();
+            }
         }
 
         public List<Author> GetAvailableAuthors()
         {
-            return _dataLayer.GetAvailableAuthors();
+            try
+            {
+                return _dataLayer.GetAvailableAuthors();
+            }
+
+            catch (Exception e) when (e is not DataAccessException)
+            {
+                throw new BusinessLogicException();
+            }
         }
     }
 }

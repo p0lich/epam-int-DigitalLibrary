@@ -1,4 +1,5 @@
-﻿using Epam.DigitalLibrary.Entities;
+﻿using Epam.DigitalLibrary.CustomExeptions;
+using Epam.DigitalLibrary.Entities;
 using Epam.DigitalLibrary.LibraryMVC.Models;
 using Epam.DigitalLibrary.LogicContracts;
 using Microsoft.AspNetCore.Authorization;
@@ -85,8 +86,9 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
 
                 return RedirectToAction(nameof(GetAllBooks));
             }
-            catch
+            catch (Exception e) when (e is BusinessLogicException || e is DataAccessException)
             {
+                _logger.LogError(2, $"Error was occured during book creation");
                 return View();
             }
         }
