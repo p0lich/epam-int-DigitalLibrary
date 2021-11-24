@@ -80,6 +80,11 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
         {
             try
             {
+                if (!ModelState.IsValid)
+                {
+                    return View();
+                }
+
                 Book book = GetBook(bookModel);
 
                 _logic.AddNote(book);

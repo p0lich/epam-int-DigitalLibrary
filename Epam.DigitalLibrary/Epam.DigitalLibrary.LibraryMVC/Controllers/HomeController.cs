@@ -79,9 +79,14 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
         }
 
         [HttpPost("Login")]
-        public async Task<IActionResult> Validate(string login, string password)
+        public async Task<IActionResult> Validate(UserView user)
         {
             //ViewData["ReturnUrl"] = returnUrl;
+
+            if (!ModelState.IsValid)
+            {
+                return View("Login");
+            }
 
             if (!_userLogic.IsCredentialRight())
             {
@@ -91,9 +96,9 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
 
             var claims = new List<Claim>();
 
-            claims.Add(new Claim("login", login));
-            claims.Add(new Claim(ClaimTypes.NameIdentifier, login));
-            claims.Add(new Claim(ClaimTypes.Name, login));
+            claims.Add(new Claim("login", user.Login));
+            claims.Add(new Claim(ClaimTypes.NameIdentifier, user.Login));
+            claims.Add(new Claim(ClaimTypes.Name, user.Login));
 
             List<string> roles = _userLogic.GetRoles();
 
@@ -105,7 +110,7 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
 
-            _logger.LogInformation(0, $"User {login} has log in");
+            _logger.LogInformation(0, $"User {user.Login} has log in");
 
             await HttpContext.SignInAsync(claimsPrincipal);
             return RedirectToAction(nameof(Index));

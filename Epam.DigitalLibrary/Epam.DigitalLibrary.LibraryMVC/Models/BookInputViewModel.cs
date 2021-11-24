@@ -24,9 +24,11 @@ namespace Epam.DigitalLibrary.LibraryMVC.Models
         public string Publisher { get; set; }
 
         [Required]
+        [DataType(DataType.Date)]
         public DateTime PublicationDate { get; set; }
 
         [Required]
+        [Range(0, short.MaxValue)]
         public int PagesCount { get; set; }
 
         [StringLength(2000)]
