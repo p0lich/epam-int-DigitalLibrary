@@ -29,6 +29,12 @@ namespace Epam.DigitalLibrary.SqlDal
             _patentDAO = new PatentDAO(userCredential);
         }
 
+        public SqlDataAccessObject(string connString, SqlCredential userCredential)
+        {
+            connectionString = connString;
+            _credential = userCredential;
+        }
+
         public int AddNote(Note note)
         {
             try
@@ -173,6 +179,7 @@ namespace Epam.DigitalLibrary.SqlDal
                         while (reader.Read())
                         {
                             authors.Add(new Author(
+                                id: (Guid)reader["Id"],
                                 firstName: reader["FirstName"] as string,
                                 lastName: reader["LastName"] as string
                                 ));

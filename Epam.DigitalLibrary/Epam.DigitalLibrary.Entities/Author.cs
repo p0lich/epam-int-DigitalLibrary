@@ -11,6 +11,8 @@ namespace Epam.DigitalLibrary.Entities
     {
         private string _firstName, _lastName;
 
+        public Guid ID { get; set; }
+
         public string FirstName
         {
             get => _firstName;
@@ -57,6 +59,14 @@ namespace Epam.DigitalLibrary.Entities
 
         public Author(string firstName, string lastName)
         {
+            ID = Guid.NewGuid();
+            FirstName = firstName;
+            LastName = lastName;
+        }
+
+        public Author(Guid id, string firstName, string lastName)
+        {
+            ID = id;
             FirstName = firstName;
             LastName = lastName;
         }
