@@ -1,7 +1,16 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Epam.DigitalLibrary.DalContracts\Epam.DigitalLibrary.DalContracts.csproj" />
+    <ProjectReference Include="..\Epam.DigitalLibrary.DalMemory\Epam.DigitalLibrary.DalMemory.csproj" />
+    <ProjectReference Include="..\Epam.DigitalLibrary.Entities\Epam.DigitalLibrary.Entities.csproj" />
+    <ProjectReference Include="..\Epam.DigitalLibrary.LogicContracts\Epam.DigitalLibrary.LogicContracts.csproj" />
+    <ProjectReference Include="..\Epam.DigitalLibrary.Logic\Epam.DigitalLibrary.Logic.csproj" />
+    <ProjectReference Include="..\Epam.DigitalLibrary.SqlDal\Epam.DigitalLibrary.SqlDal.csproj" />
+  </ItemGroup>
 
 </Project>
