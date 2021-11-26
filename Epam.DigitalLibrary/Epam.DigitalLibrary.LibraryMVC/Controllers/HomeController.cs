@@ -79,7 +79,7 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
         }
 
         [HttpPost("Login")]
-        public async Task<IActionResult> Validate(UserView user)
+        public async Task<IActionResult> Validate(UserView userView)
         {
             //ViewData["ReturnUrl"] = returnUrl;
 
@@ -88,10 +88,18 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
                 return View("Login");
             }
 
-            if (!_userLogic.IsCredentialRight())
+            User user = _userLogic.GetUser(userView.Login);
+
+            if (user is null)
             {
-                TempData["Error"] = "Error. Login/Password is invalid";
-                return View("Login");
+                TempData["Error"] = "Error. User with such login isn't exist";
+                return View(nameof(Login));
+            }
+
+            if (user.Login != userView.Login)
+            {
+                TempData["Error"] = "Error. Password is invalid";
+                return View(nameof(Login));
             }
 
             var claims = new List<Claim>();
@@ -100,7 +108,7 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
             claims.Add(new Claim(ClaimTypes.NameIdentifier, user.Login));
             claims.Add(new Claim(ClaimTypes.Name, user.Login));
 
-            List<string> roles = _userLogic.GetRoles();
+            List<string> roles = _userLogic.GetRoles(user.ID);
 
             foreach (var role in roles)
             {
@@ -120,7 +128,7 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync();
-            return Redirect("/");
+            return Redirect(nameof(Index));
         }
 
         [HttpGet("Denied")]

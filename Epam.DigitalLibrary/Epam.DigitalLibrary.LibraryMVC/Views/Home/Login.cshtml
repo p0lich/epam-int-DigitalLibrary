@@ -10,7 +10,16 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+@{
+    var error = TempData["Error"] as string;
+}
+
 <h1>Login</h1>
+
+@if (!string.IsNullOrEmpty(error))
+{
+    <h2 class="alert-danger" style="padding:20px;">@error</h2>
+}
 
 <h4>UserView</h4>
 <hr />

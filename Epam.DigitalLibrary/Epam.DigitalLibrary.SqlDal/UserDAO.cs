@@ -8,6 +8,7 @@ using System.Linq;
 using System.Security;
 using System.Text;
 using System.Threading.Tasks;
+using Epam.DigitalLibrary.Entities;
 
 namespace Epam.DigitalLibrary.SqlDal
 {
@@ -23,7 +24,81 @@ namespace Epam.DigitalLibrary.SqlDal
             _userCredential = userCredential;
         }
 
-        public List<string> GetUserRoles(string userLogin)
+        public User GetUser(Guid id)
+        {
+            try
+            {
+                using (_connection = new SqlConnection(connectionString, _userCredential))
+                {
+                    string stProc = "dbo.User_GetById";
+                    using (SqlCommand command = new SqlCommand(stProc, _connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+
+                        command.Parameters.AddWithValue("@id", id);
+
+                        _connection.Open();
+                        var reader = command.ExecuteReader();
+
+                        if (reader.Read())
+                        {
+                            return new User(
+                                id: (Guid)reader["Id"],
+                                login: reader["Login"] as string,
+                                password: reader["Password"] as string
+                                );
+                        }
+
+                        return null;
+                    }
+                }
+            }
+
+            catch (Exception e)
+            {
+                _connection.Close();
+                throw;
+            }
+        }
+
+        public User GetUser(string login)
+        {
+            try
+            {
+                using (_connection = new SqlConnection(connectionString, _userCredential))
+                {
+                    string stProc = "dbo.User_GetByLogin";
+                    using (SqlCommand command = new SqlCommand(stProc, _connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+
+                        command.Parameters.AddWithValue("@login", login);
+
+                        _connection.Open();
+                        var reader = command.ExecuteReader();
+
+                        if (reader.Read())
+                        {
+                            return new User(
+                                id: (Guid)reader["Id"],
+                                login: reader["Login"] as string,
+                                password: reader["Password"] as string
+                                );
+                        }
+
+                        return null;
+                    }
+                }
+            }
+
+            catch (Exception e)
+            {
+                _connection.Close();
+                throw;
+            }
+        }
+
+        public List<string> GetUserRoles(Guid userId)
         {
             try
             {
@@ -36,20 +111,21 @@ namespace Epam.DigitalLibrary.SqlDal
                     {
                         command.CommandType = CommandType.StoredProcedure;
 
-                        command.Parameters.AddWithValue("@login", userLogin);
+                        command.Parameters.AddWithValue("@id_User", userId);
 
                         _connection.Open();
                         var reader = command.ExecuteReader();
 
                         while (reader.Read())
                         {
-                            roles.Add(reader["Role"] as string);
+                            roles.Add(reader["RoleName"] as string);
                         }
                     }
                 }
 
                 return roles;
             }
+
             catch (Exception e)
             {
                 _connection.Close();
@@ -73,6 +149,35 @@ namespace Epam.DigitalLibrary.SqlDal
             {
                 _connection.Close();
                 return false;
+            }
+        }
+
+        public bool RegisterUser(User user)
+        {
+            try
+            {
+                using (_connection = new SqlConnection(connectionString, _userCredential))
+                {
+                    string stProc = "dbo.Add_User";
+                    using (SqlCommand command = new SqlCommand(stProc, _connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+
+                        command.Parameters.AddWithValue("@login", user.Login);
+                        command.Parameters.AddWithValue("@password", user.Password);
+
+                        _connection.Open();
+                        var result = command.ExecuteScalar();
+
+                        return true;
+                    }
+                }
+            }
+
+            catch (Exception e)
+            {
+                _connection.Close();
+                throw;
             }
         }
     }

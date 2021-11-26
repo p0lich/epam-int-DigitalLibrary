@@ -776,17 +776,20 @@ namespace Epam.DigitalLibrary.ConsolePL
 
         private static bool IsReader()
         {
-            return userRightsLogic?.IsInRole(UserConstRights.Reader) ?? false;
+            throw new NotImplementedException();
+            //return userRightsLogic?.IsInRole(UserConstRights.Reader) ?? false;
         }
 
         private static bool IsLibrarian()
         {
-            return userRightsLogic?.IsInRole(UserConstRights.Librarian) ?? false;
+            throw new NotImplementedException();
+            //return userRightsLogic?.IsInRole(UserConstRights.Librarian) ?? false;
         }
 
         private static bool IsAdmin()
         {
-            return userRightsLogic?.IsInRole(UserConstRights.Admin) ?? false;
+            throw new NotImplementedException();
+            //return userRightsLogic?.IsInRole(UserConstRights.Admin) ?? false;
         }
     }
 }

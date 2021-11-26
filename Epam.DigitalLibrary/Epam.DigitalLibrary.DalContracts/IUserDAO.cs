@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security;
 using System.Text;
 using System.Threading.Tasks;
+using Epam.DigitalLibrary.Entities;
 
 namespace Epam.DigitalLibrary.DalContracts
 {
@@ -11,6 +12,12 @@ namespace Epam.DigitalLibrary.DalContracts
     {
         public bool IsConnectionAllowed();
 
-        public List<string> GetUserRoles(string userLogin);
+        public User GetUser(Guid id);
+
+        public User GetUser(string login);
+
+        public bool RegisterUser(User user);
+
+        public List<string> GetUserRoles(Guid userId);
     }
 }
