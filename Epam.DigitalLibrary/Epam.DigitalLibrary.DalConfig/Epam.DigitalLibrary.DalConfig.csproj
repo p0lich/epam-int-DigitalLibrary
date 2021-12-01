@@ -5,12 +5,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Epam.DigitalLibrary.DalContracts\Epam.DigitalLibrary.DalContracts.csproj" />
-    <ProjectReference Include="..\Epam.DigitalLibrary.DalMemory\Epam.DigitalLibrary.DalMemory.csproj" />
-    <ProjectReference Include="..\Epam.DigitalLibrary.Entities\Epam.DigitalLibrary.Entities.csproj" />
-    <ProjectReference Include="..\Epam.DigitalLibrary.LogicContracts\Epam.DigitalLibrary.LogicContracts.csproj" />
-    <ProjectReference Include="..\Epam.DigitalLibrary.Logic\Epam.DigitalLibrary.Logic.csproj" />
-    <ProjectReference Include="..\Epam.DigitalLibrary.SqlDal\Epam.DigitalLibrary.SqlDal.csproj" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />
   </ItemGroup>
 
 </Project>
