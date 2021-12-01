@@ -1,0 +1,75 @@
+﻿@model Epam.DigitalLibrary.LibraryMVC.Models.NewspaperModels.NewspaperFullInput
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Create</h1>
+
+<h4>NewspaperFullInput</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <h4>Newspaper create</h4>
+            <div class="form-group">
+                <label asp-for="NewspaperInput.Name" class="control-label"></label>
+                <input asp-for="NewspaperInput.Name" class="form-control" />
+                <span asp-validation-for="NewspaperInput.Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="NewspaperInput.PublicationPlace" class="control-label"></label>
+                <input asp-for="NewspaperInput.PublicationPlace" class="form-control" />
+                <span asp-validation-for="NewspaperInput.PublicationPlace" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="NewspaperInput.Publisher" class="control-label"></label>
+                <input asp-for="NewspaperInput.Publisher" class="form-control" />
+                <span asp-validation-for="NewspaperInput.Publisher" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="NewspaperInput.PublicationDate" class="control-label"></label>
+                <input asp-for="NewspaperInput.PublicationDate" class="form-control" />
+                <span asp-validation-for="NewspaperInput.PublicationDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="NewspaperInput.ObjectNotes" class="control-label"></label>
+                <input asp-for="NewspaperInput.ObjectNotes" class="form-control" />
+                <span asp-validation-for="NewspaperInput.ObjectNotes" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="NewspaperInput.ISSN" class="control-label"></label>
+                <input asp-for="NewspaperInput.ISSN" class="form-control" />
+                <span asp-validation-for="NewspaperInput.ISSN" class="text-danger"></span>
+            </div>
+
+            <h4>Release Create</h4>
+            <div class="form-group">
+                <label asp-for="ReleaseInput.PagesCount" class="control-label"></label>
+                <input asp-for="ReleaseInput.PagesCount" class="form-control" />
+                <span asp-validation-for="ReleaseInput.PagesCount" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ReleaseInput.Number" class="control-label"></label>
+                <input asp-for="ReleaseInput.Number" class="form-control" />
+                <span asp-validation-for="ReleaseInput.Number" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ReleaseInput.ReleaseDate" class="control-label"></label>
+                <input asp-for="ReleaseInput.ReleaseDate" class="form-control" />
+                <span asp-validation-for="ReleaseInput.ReleaseDate" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="GetAllReleases">Back to List</a>
+</div>
+
