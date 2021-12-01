@@ -133,6 +133,43 @@ namespace Epam.DigitalLibrary.SqlDal
             }
         }
 
+        public List<User> GetUsers()
+        {
+            try
+            {
+                List<User> users = new List<User>();
+
+                using (_connection = new SqlConnection(connectionString, _userCredential))
+                {
+                    string stProc = "dbo.User_GetAll";
+                    using (SqlCommand command = new SqlCommand(stProc, _connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+
+                        _connection.Open();
+                        var reader = command.ExecuteReader();
+
+                        while (reader.Read())
+                        {
+                            users.Add(new User(
+                                id: (Guid)reader["Id"],
+                                login: reader["Login"] as string,
+                                password: reader["Password"] as string
+                                ));
+                        }
+
+                        return users;
+                    }
+                }
+            }
+
+            catch (Exception e)
+            {
+                _connection.Close();
+                throw;
+            }
+        }
+
         public bool IsConnectionAllowed()
         {
             try
@@ -168,6 +205,64 @@ namespace Epam.DigitalLibrary.SqlDal
 
                         _connection.Open();
                         var result = command.ExecuteScalar();
+
+                        return true;
+                    }
+                }
+            }
+
+            catch (Exception e)
+            {
+                _connection.Close();
+                throw;
+            }
+        }
+
+        public bool RemoveRoleFromUser(Guid userId, Guid roleId)
+        {
+            try
+            {
+                using (_connection = new SqlConnection(connectionString, _userCredential))
+                {
+                    string stProc = "dbo.User_RemoveRole";
+                    using (SqlCommand command = new SqlCommand(stProc, _connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+
+                        command.Parameters.AddWithValue("@id_User", userId);
+                        command.Parameters.AddWithValue("@id_Role", roleId);
+
+                        _connection.Open();
+                        command.ExecuteScalar();
+
+                        return true;
+                    }
+                }
+            }
+
+            catch (Exception e)
+            {
+                _connection.Close();
+                throw;
+            }
+        }
+
+        public bool SetUserToRole(Guid userId, Guid roleId)
+        {
+            try
+            {
+                using (_connection = new SqlConnection(connectionString, _userCredential))
+                {
+                    string stProc = "dbo.Set_UserRoles";
+                    using (SqlCommand command = new SqlCommand(stProc, _connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+
+                        command.Parameters.AddWithValue("@id_User", userId);
+                        command.Parameters.AddWithValue("@id_Role", roleId);
+
+                        _connection.Open();
+                        command.ExecuteScalar();
 
                         return true;
                     }

@@ -21,5 +21,11 @@ namespace Epam.DigitalLibrary.LogicContracts
         public bool RegisterUser(User user);
 
         public List<string> GetRoles(Guid userId);
+
+        public List<User> GetUsers();
+
+        public bool SetUserToRole(Guid userId, Guid roleId);
+
+        public bool RemoveRoleFromUser(Guid userId, Guid roleId);
     }
 }

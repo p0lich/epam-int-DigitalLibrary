@@ -19,5 +19,11 @@ namespace Epam.DigitalLibrary.DalContracts
         public bool RegisterUser(User user);
 
         public List<string> GetUserRoles(Guid userId);
+
+        public List<User> GetUsers();
+
+        public bool SetUserToRole(Guid userId, Guid roleId);
+
+        public bool RemoveRoleFromUser(Guid userId, Guid roleId);
     }
 }

@@ -93,5 +93,47 @@ namespace Epam.DigitalLibrary.Logic
                 throw;
             }
         }
+
+        public List<User> GetUsers()
+        {
+            try
+            {
+                return _userDAO.GetUsers();
+            }
+
+            catch (Exception e) when (e is not DataAccessException)
+            {
+
+                throw;
+            }
+        }
+
+        public bool SetUserToRole(Guid userId, Guid roleId)
+        {
+            try
+            {
+                return _userDAO.SetUserToRole(userId, roleId);
+            }
+
+            catch (Exception e) when (e is not DataAccessException)
+            {
+
+                throw;
+            }
+        }
+
+        public bool RemoveRoleFromUser(Guid userId, Guid roleId)
+        {
+            try
+            {
+                return _userDAO.RemoveRoleFromUser(userId, roleId);
+            }
+
+            catch (Exception e) when (e is not DataAccessException)
+            {
+
+                throw;
+            }
+        }
     }
 }
