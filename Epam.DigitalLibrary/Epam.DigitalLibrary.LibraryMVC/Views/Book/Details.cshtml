@@ -23,6 +23,23 @@
             @Html.DisplayFor(model => model.Name)
         </dd>
         <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Authors)
+        </dt>
+
+        <dd class="col-sm-10">
+            @foreach (var author in Model.Authors)
+            {
+                <h6>
+                    First Name: @author.FirstName
+                </h6>
+
+                <h6>
+                    Last Name: @author.LastName
+                </h6>
+            }
+        </dd>
+
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.PublicationPlace)
         </dt>
         <dd class="col-sm-10">

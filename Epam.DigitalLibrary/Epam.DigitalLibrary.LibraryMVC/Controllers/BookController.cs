@@ -5,6 +5,7 @@ using Epam.DigitalLibrary.LogicContracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -15,10 +16,10 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
 {
     public class BookController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly ILogger<BookController> _logger;
         private readonly INoteLogic _logic;
 
-        public BookController(ILogger<HomeController> logger, INoteLogic logic)
+        public BookController(ILogger<BookController> logger, INoteLogic logic)
         {
             _logger = logger;
             _logic = logic;
@@ -68,7 +69,15 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
         [Route("Book/Create")]
         public ActionResult Create()
         {
-            return View();
+            try
+            {
+                ViewBag.AvailableAuthors = new SelectList(_logic.GetAvailableAuthors(), "Select author");
+                return View();
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
         }
 
         // POST: BookController/Create

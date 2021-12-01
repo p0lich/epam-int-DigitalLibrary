@@ -1,26 +1,30 @@
 ﻿@model Epam.DigitalLibrary.LibraryMVC.Models.BookInputViewModel
 
+@section Scripts {
+    <script src="@Url.Content("~/js/js_validation_scripts/book_validation.js")"></script>
+}
+
 @{
     ViewData["Title"] = "CreateBook";
 }
 
 @*@section scripts{
-<script>
-    var $form = $('#authorForm');
-    $form.submit(() => {
-        $.ajax({
-            url: '@Url.Action("")',
-            type: 'post'
-        }).done((data) => {
-            if (data.success) {
-                alert('ajax work');
-                document.location.reload();
-            }
+    <script>
+        var $form = $('#authorForm');
+        $form.submit(() => {
+            $.ajax({
+                url: '@Url.Action("")',
+                type: 'post'
+            }).done((data) => {
+                if (data.success) {
+                    alert('ajax work');
+                    document.location.reload();
+                }
+            });
+            return false;
         });
-        return false;
-    });
-</script>
-}*@
+    </script>
+    }*@
 
 <h1>CreateBook</h1>
 
@@ -28,13 +32,21 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
+        <form asp-action="Create" name="bookInputForm">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
                 <input asp-for="Name" class="form-control" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
+
+            @Html.DropDownList("authorsList", ViewBag.AvailableAuthors as SelectList)
+
+            <div>
+                <button class="btn-toolbar">Add exisitng author</button>
+                <button class="btn-toolbar">Add new author</button>
+            </div>
+
             <div class="form-group">
                 <label asp-for="PublicationPlace" class="control-label"></label>
                 <input asp-for="PublicationPlace" class="form-control" />
