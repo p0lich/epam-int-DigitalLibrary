@@ -77,7 +77,7 @@ namespace Epam.DigitalLibrary.Entities
 
             private set
             {
-                if (_publicationDate.Year != value.Year)
+                if (_publicationDate.Year < value.Year)
                 {
                     throw new ArgumentException();
                 }
@@ -132,7 +132,7 @@ namespace Epam.DigitalLibrary.Entities
             ISSN = iSSN;
         }
 
-        public override bool IsUnique(List<Note> notes)
+        public override bool IsUnique(List<Note> notes, Guid updateId)
         {
             IEnumerable<Newspaper> newspapers = notes.OfType<Newspaper>();
 
@@ -140,15 +140,15 @@ namespace Epam.DigitalLibrary.Entities
             {
                 if (!string.IsNullOrEmpty(newspaper.ISSN))
                 {
-                    if (ISSN == newspaper.ISSN)
+                    if (newspaper.ID != updateId && ISSN == newspaper.ISSN && Name != newspaper.Name)
                     {
                         return false;
                     }
                 }
 
-                if (Name == newspaper.Name &&
+                if (newspaper.ID != updateId && Name == newspaper.Name &&
                     Publisher == newspaper.Publisher &&
-                    PublicationDate == newspaper.PublicationDate)
+                    ReleaseDate == newspaper.ReleaseDate)
                 {
                     return false;
                 }

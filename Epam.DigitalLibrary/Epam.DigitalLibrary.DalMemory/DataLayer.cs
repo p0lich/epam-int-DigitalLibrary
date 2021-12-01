@@ -21,7 +21,7 @@ namespace Epam.DigitalLibrary.DalMemory
         {
             try
             {
-                if (note.IsUnique(GetAllNotes()))
+                if (note.IsUnique(GetAllNotes(), note.ID))
                 {
                     _data.Add(note);
                     return 0;

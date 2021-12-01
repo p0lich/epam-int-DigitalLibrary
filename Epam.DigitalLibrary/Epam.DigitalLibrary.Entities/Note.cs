@@ -97,7 +97,7 @@ namespace Epam.DigitalLibrary.Entities
             IsDeleted = isDeleted;
         }
 
-        public abstract bool IsUnique(List<Note> notes);
+        public abstract bool IsUnique(List<Note> notes, Guid updateId);
 
         public abstract override string ToString();
 

@@ -129,13 +129,13 @@ namespace Epam.DigitalLibrary.Entities
             ISBN = iSBN;
         }
 
-        public override bool IsUnique(List<Note> notes)
+        public override bool IsUnique(List<Note> notes, Guid updateId)
         {
             IEnumerable<Book> books = notes.OfType<Book>();
 
             foreach (var book in books)
             {
-                if (!string.IsNullOrEmpty(book.ISBN))
+                if (book.ID != updateId && !string.IsNullOrEmpty(book.ISBN))
                 {
                     if (ISBN == book.ISBN)
                     {
@@ -143,7 +143,7 @@ namespace Epam.DigitalLibrary.Entities
                     }
                 }
 
-                if (Name == book.Name &&
+                if (book.ID != updateId && Name == book.Name &&
                     Authors.SequenceEqual(book.Authors) &&
                     PublicationDate == book.PublicationDate)
                 {

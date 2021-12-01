@@ -266,7 +266,7 @@ namespace Epam.DigitalLibrary.Logic
             }
         }
 
-        public Newspaper GetNewspaperId(Guid id)
+        public Newspaper GetNewspaperById(Guid id)
         {
             try
             {
@@ -298,6 +298,38 @@ namespace Epam.DigitalLibrary.Logic
             try
             {
                 return _dataLayer.GetAvailableAuthors();
+            }
+
+            catch (Exception e) when (e is not DataAccessException)
+            {
+                throw new BusinessLogicException();
+            }
+        }
+
+        public IEnumerable<IGrouping<string, Newspaper>> GroupNewspapersByName()
+        {
+            try
+            {
+                return _dataLayer.GetAllNotes().OfType<Newspaper>().GroupBy(n => n.Name);
+            }
+
+            catch (Exception e) when (e is not DataAccessException)
+            {
+                throw new BusinessLogicException();
+            }
+        }
+
+        public List<Newspaper> GetNewspaperReleases(Guid newspaperId)
+        {
+            try
+            {
+                var newspaperGroups = GroupNewspapersByName();
+
+                Newspaper newspaper = _dataLayer.GetNewspaperById(newspaperId);
+
+                return newspaperGroups
+                    .FirstOrDefault(g => g.Key == newspaper.Name)
+                    .ToList();
             }
 
             catch (Exception e) when (e is not DataAccessException)

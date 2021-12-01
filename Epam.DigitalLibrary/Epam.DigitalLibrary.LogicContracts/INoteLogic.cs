@@ -43,10 +43,14 @@ namespace Epam.DigitalLibrary.LogicContracts
 
         public Book GetBookById(Guid id);
 
-        public Newspaper GetNewspaperId(Guid id);
+        public Newspaper GetNewspaperById(Guid id);
 
         public Patent GetPatentById(Guid id);
 
         public List<Author> GetAvailableAuthors();
+
+        public IEnumerable<IGrouping<string, Newspaper>> GroupNewspapersByName();
+
+        public List<Newspaper> GetNewspaperReleases(Guid newspaperId);
     }
 }

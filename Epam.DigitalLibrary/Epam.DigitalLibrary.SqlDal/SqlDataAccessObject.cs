@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Epam.DigitalLibrary.DalContracts;
 using Epam.DigitalLibrary.Entities;
 using System.Configuration;
+using Epam.DigitalLibrary.DalConfig;
 
 namespace Epam.DigitalLibrary.SqlDal
 {
@@ -15,6 +16,7 @@ namespace Epam.DigitalLibrary.SqlDal
     {
         //private string connectionString = ConfigurationManager.ConnectionStrings[0].ConnectionString;
         private string connectionString = @"Data Source=DESKTOP-83KP24G;Initial Catalog=LibraryDb;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+        private string connStr = SqlConfig.connString;
         private SqlCredential _credential;
         private SqlConnection _connection;
 
@@ -22,6 +24,8 @@ namespace Epam.DigitalLibrary.SqlDal
 
         public SqlDataAccessObject(SqlCredential userCredential)
         {
+            var a = connStr;
+
             _credential = userCredential;
 
             _bookDAO = new BookDAO(userCredential);
@@ -39,7 +43,7 @@ namespace Epam.DigitalLibrary.SqlDal
         {
             try
             {
-                if (!note.IsUnique(GetAllNotes()))
+                if (!note.IsUnique(GetAllNotes(), note.ID))
                 {
                     return ResultCodes.NoteExist;
                 }
@@ -200,7 +204,7 @@ namespace Epam.DigitalLibrary.SqlDal
         {
             try
             {
-                if (!updatedNote.IsUnique(GetAllNotes()))
+                if (!updatedNote.IsUnique(GetAllNotes(), noteId))
                 {
                     return ResultCodes.NoteExist;
                 }

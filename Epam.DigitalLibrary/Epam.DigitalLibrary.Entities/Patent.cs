@@ -132,13 +132,13 @@ namespace Epam.DigitalLibrary.Entities
             ApplicationDate = applicationDate;
         }
 
-        public override bool IsUnique(List<Note> notes)
+        public override bool IsUnique(List<Note> notes, Guid updateId)
         {
             IEnumerable<Patent> patents = notes.OfType<Patent>();
 
             foreach (Patent patent in patents)
             {
-                if (Country == patent.Country &&
+                if (patent.ID != updateId && Country == patent.Country &&
                     RegistrationNumber == patent.RegistrationNumber)
                 {
                     return false;
