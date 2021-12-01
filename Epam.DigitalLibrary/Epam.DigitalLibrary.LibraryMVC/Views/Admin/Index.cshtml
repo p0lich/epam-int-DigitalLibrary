@@ -1,0 +1,78 @@
+﻿@model IEnumerable<Epam.DigitalLibrary.LibraryMVC.Models.UserLinkView>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Admin page</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Login)
+            </th>
+            <th>
+                Roles
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Login)
+            </td>
+            <td>
+                @foreach (var role in item.Roles)
+                {
+                    @Html.DisplayFor(modelItem => role)
+                }
+            </td>
+            <td>
+                @{
+                    if (!item.Roles.Contains(UserRights.Librarian))
+                    {
+                        <form asp-action="GrantRole"
+                              asp-route-id="@UserRights.LibrarianRoleId"
+                              asp-route-secondId="@item.Id">
+                            <input type="submit" value="Grant librarian privileges" class="btn btn-primary" />
+                        </form>
+                    }
+
+                    else
+                    {
+                        <form asp-action="RemoveRole"
+                              asp-route-id="@UserRights.LibrarianRoleId"
+                              asp-route-secondId="@item.Id">
+                            <input type="submit" value="Remove librarian privileges" class="btn btn-primary" />
+                        </form>
+                    }
+                }
+
+                @{
+                    if (!item.Roles.Contains(UserRights.Admin))
+                    {
+                        <form asp-action="GrantRole"
+                              asp-route-id="@UserRights.AdminRoleId"
+                              asp-route-secondId="@item.Id">
+                            <input type="submit" value="Grant admin privileges" class="btn btn-primary" />
+                        </form>
+                    }
+
+                    else
+                    {
+                        <form asp-action="RemoveRole"
+                              asp-route-id="@UserRights.AdminRoleId"
+                              asp-route-secondId="@item.Id">
+                            <input type="submit" value="Remove admin privileges" class="btn btn-primary" />
+                        </form>
+                    }
+                }
+
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
