@@ -17,6 +17,21 @@
        asp-route-id="1">
         Show library
     </a>
+    <a asp-controller="Book"
+       asp-action="GetAllBooks"
+       asp-route-id="1">
+        Show All books
+    </a>
+    <a asp-controller="Newspaper"
+       asp-action="GetAllReleases"
+       asp-route-id="1">
+        Show All newspaper releases
+    </a>
+    <a asp-controller="Patent"
+       asp-action="GetAllPatents"
+       asp-route-id="1">
+        Show all patents
+    </a>
     @if (User.Identity.IsAuthenticated)
     {
         <a asp-controller="Home"
@@ -24,6 +39,11 @@
             LogOut
         </a>
     }
+
+    <a asp-controller="Admin"
+       asp-action="Index">
+        Admin page
+    </a>
 
     <br />
 

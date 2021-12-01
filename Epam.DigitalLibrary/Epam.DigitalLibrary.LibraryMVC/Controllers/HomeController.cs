@@ -96,7 +96,7 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
                 return View(nameof(Login));
             }
 
-            if (user.Login != userView.Login)
+            if (user.Password != userView.Password)
             {
                 TempData["Error"] = "Error. Password is invalid";
                 return View(nameof(Login));

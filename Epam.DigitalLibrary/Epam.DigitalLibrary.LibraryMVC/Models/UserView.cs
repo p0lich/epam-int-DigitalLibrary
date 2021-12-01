@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Epam.DigitalLibrary.LibraryMVC.Models
 {
-    public class UserView
+    public class UserView : IValidatableObject
     {
-        private string _login, _password;
+        private string _login;
 
         [Required]
         [StringLength(20, MinimumLength = 3)]
@@ -31,15 +31,15 @@ namespace Epam.DigitalLibrary.LibraryMVC.Models
         [StringLength(20, MinimumLength = 3)]
         public string Password { get; set; }
 
-        //public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
-        //{
-        //    if (Password.Contains(Login))
-        //    {
-        //        yield return new ValidationResult(
-        //            "Login cannot be part of password.",
-        //            new[] { nameof(Password) }
-        //            );
-        //    }
-        //}
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+        {
+            if (Password.Contains(Login))
+            {
+                yield return new ValidationResult(
+                    "Login cannot be part of password.",
+                    new[] { nameof(Password) }
+                    );
+            }
+        }
     }
 }
