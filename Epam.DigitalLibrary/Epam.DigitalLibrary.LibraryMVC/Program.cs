@@ -23,7 +23,7 @@ namespace Epam.DigitalLibrary.LibraryMVC
 
             catch (Exception e)
             {
-                logger.Error(e, "NLog setup errors");
+                logger.Error(e, "Setup errors");
                 throw;
             }
 
