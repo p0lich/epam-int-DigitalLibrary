@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Epam.DigitalLibrary.CustomExeptions\Epam.DigitalLibrary.CustomExeptions.csproj" />
     <ProjectReference Include="..\Epam.DigitalLibrary.DalConfig\Epam.DigitalLibrary.DalConfig.csproj" />
     <ProjectReference Include="..\Epam.DigitalLibrary.DalContracts\Epam.DigitalLibrary.DalContracts.csproj" />
     <ProjectReference Include="..\Epam.DigitalLibrary.Entities\Epam.DigitalLibrary.Entities.csproj" />

@@ -15,7 +15,8 @@ namespace Epam.DigitalLibrary.SqlDal
     public class SqlDataAccessObject : IDataLayer
     {
         //private string connectionString = ConfigurationManager.ConnectionStrings[0].ConnectionString;
-        private string connectionString = @"Data Source=DESKTOP-83KP24G;Initial Catalog=LibraryDb;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+        //private string connectionString = @"Data Source=DESKTOP-83KP24G;Initial Catalog=LibraryDb;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+        private string connectionString;
         private string connStr = SqlConfig.connString;
         private SqlCredential _credential;
         private SqlConnection _connection;
@@ -37,6 +38,10 @@ namespace Epam.DigitalLibrary.SqlDal
         {
             connectionString = connString;
             _credential = userCredential;
+
+            _bookDAO = new BookDAO(connString, userCredential);
+            _newspaperDAO = new NewspaperDAO(connString, userCredential);
+            _patentDAO = new PatentDAO(connString, userCredential);
         }
 
         public int AddNote(Note note)

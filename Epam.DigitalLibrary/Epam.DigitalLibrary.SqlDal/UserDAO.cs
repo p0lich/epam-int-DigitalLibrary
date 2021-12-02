@@ -9,19 +9,27 @@ using System.Security;
 using System.Text;
 using System.Threading.Tasks;
 using Epam.DigitalLibrary.Entities;
+using Epam.DigitalLibrary.CustomExeptions;
 
 namespace Epam.DigitalLibrary.SqlDal
 {
     public class UserDAO : IUserDAO
     {
         //private string connectionString = ConfigurationManager.ConnectionStrings["SSPIConnString"].ConnectionString;
-        private string connectionString = @"Data Source=DESKTOP-83KP24G;Initial Catalog=LibraryDb;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+        //private string connectionString = @"Data Source=DESKTOP-83KP24G;Initial Catalog=LibraryDb;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+        private string connectionString;
         private SqlCredential _userCredential;
         private SqlConnection _connection;
 
         public UserDAO(SqlCredential userCredential)
         {
             _userCredential = userCredential;
+        }
+
+        public UserDAO(string connString, SqlCredential credential)
+        {
+            connectionString = connString;
+            _userCredential = credential;
         }
 
         public User GetUser(Guid id)
@@ -273,6 +281,35 @@ namespace Epam.DigitalLibrary.SqlDal
             {
                 _connection.Close();
                 throw;
+            }
+        }
+
+        public bool SetUserToRole(Guid userId, string roleName)
+        {
+            try
+            {
+                using (_connection = new SqlConnection(connectionString, _userCredential))
+                {
+                    string stProc = "dbo.Set_UserRoles_ByRoleName";
+                    using (SqlCommand command = new SqlCommand(stProc, _connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+
+                        command.Parameters.AddWithValue("@id_User", userId);
+                        command.Parameters.AddWithValue("@roleName", roleName);
+
+                        _connection.Open();
+                        command.ExecuteScalar();
+
+                        return true;
+                    }
+                }
+            }
+
+            catch (Exception e)
+            {
+                _connection.Close();
+                throw new DataAccessException(e.Message, e.InnerException);
             }
         }
     }

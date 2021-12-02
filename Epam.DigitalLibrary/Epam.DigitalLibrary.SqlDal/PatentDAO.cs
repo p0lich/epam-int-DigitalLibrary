@@ -14,13 +14,20 @@ namespace Epam.DigitalLibrary.SqlDal
     public class PatentDAO : INoteDAO
     {
         //private string connectionString = ConfigurationManager.ConnectionStrings["SSPIConnString"].ConnectionString;
-        private string connectionString = @"Data Source=DESKTOP-83KP24G;Initial Catalog=LibraryDb;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+        //private string connectionString = @"Data Source=DESKTOP-83KP24G;Initial Catalog=LibraryDb;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+        private string connectionString;
         private SqlCredential _credential;
         private SqlConnection _connection;
 
         public PatentDAO(SqlCredential userCredential)
         {
             _credential = userCredential;
+        }
+
+        public PatentDAO(string connString, SqlCredential credential)
+        {
+            connectionString = connString;
+            _credential = credential;
         }
 
         public bool DeleteNote(Guid noteId)

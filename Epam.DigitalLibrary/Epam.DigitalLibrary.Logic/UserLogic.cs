@@ -27,6 +27,11 @@ namespace Epam.DigitalLibrary.Logic
             _userDAO = new UserDAO(_userCredential);
         }
 
+        public UserLogic(string connString, SqlCredential credential)
+        {
+            _userDAO = new UserDAO(connString, credential);
+        }
+
         public bool IsInRole(Guid userId, string targetRole)
         {
             List<string> roles = _userDAO.GetUserRoles(userId);
@@ -113,6 +118,20 @@ namespace Epam.DigitalLibrary.Logic
             try
             {
                 return _userDAO.SetUserToRole(userId, roleId);
+            }
+
+            catch (Exception e) when (e is not DataAccessException)
+            {
+
+                throw;
+            }
+        }
+
+        public bool SetUserToRole(Guid userId, string roleName)
+        {
+            try
+            {
+                return _userDAO.SetUserToRole(userId, roleName);
             }
 
             catch (Exception e) when (e is not DataAccessException)

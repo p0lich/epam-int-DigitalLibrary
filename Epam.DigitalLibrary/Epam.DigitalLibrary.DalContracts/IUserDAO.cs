@@ -24,6 +24,8 @@ namespace Epam.DigitalLibrary.DalContracts
 
         public bool SetUserToRole(Guid userId, Guid roleId);
 
+        public bool SetUserToRole(Guid userId, string roleName);
+
         public bool RemoveRoleFromUser(Guid userId, Guid roleId);
     }
 }

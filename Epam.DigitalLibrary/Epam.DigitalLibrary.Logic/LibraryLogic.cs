@@ -24,6 +24,11 @@ namespace Epam.DigitalLibrary.Logic
             _dataLayer = new SqlDataAccessObject(new SqlCredential(login, password));
         }
 
+        public LibraryLogic(string connectionString, SqlCredential credential)
+        {
+            _dataLayer = new SqlDataAccessObject(connectionString, credential);
+        }
+
         public LibraryLogic()
         {
             _dataLayer = new DataLayer();
@@ -56,7 +61,7 @@ namespace Epam.DigitalLibrary.Logic
 
             catch (Exception e) when (e is not DataAccessException)
             {
-                throw new BusinessLogicException();
+                throw new BusinessLogicException(e.Message, e.InnerException);
             }
         }
 
