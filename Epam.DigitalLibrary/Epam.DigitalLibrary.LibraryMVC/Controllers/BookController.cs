@@ -51,19 +51,19 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
 
             catch (DataAccessException e)
             {
-                _logger.LogInformation(4, "Error on data acces layer");
+                _logger.LogError(4, $"Error on data acces layer |Method: {e.TargetSite.Name} | User: {User.Identity.Name} | Exception Path: {e.StackTrace}");
                 return Redirect("/");
             }
 
-            catch (BusinessLogicException)
+            catch (BusinessLogicException e)
             {
-                _logger.LogInformation(4, "Error on business layer");
+                _logger.LogError(4, $"Error on business layer |Method: {e.TargetSite.Name} | User: {User.Identity.Name} | Exception Path: {e.StackTrace}");
                 return Redirect("/");
             }
 
-            catch (Exception e) when (e is not DataAccessException && e is not BusinessLogicException)
+            catch (Exception e)
             {
-                _logger.LogInformation(4, "Unhandled exception");
+                _logger.LogError(4, $"Unhandled exception | Method: {e.TargetSite.Name} | User: {User.Identity.Name} | Exception Path: {e.StackTrace}");
                 return Redirect("/");
             }
         }
@@ -74,7 +74,10 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
         {
             try
             {
-                Book book = _logic.GetBookById(id);
+                if (!IsBookExist(id, out Book book))
+                {
+                    return NotFound();
+                }
 
                 BookDetailsViewModel bookDetails = new BookDetailsViewModel
                 {
@@ -92,22 +95,22 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
 
                 return View(bookDetails);
             }
-            
+
             catch (DataAccessException e)
             {
-                _logger.LogInformation(4, "Error on data acces layer");
+                _logger.LogError(4, $"Error on data acces layer |Method: {e.TargetSite.Name} | User: {User.Identity.Name} | Exception Path: {e.StackTrace}");
                 return Redirect("/");
             }
 
-            catch (BusinessLogicException)
+            catch (BusinessLogicException e)
             {
-                _logger.LogInformation(4, "Error on business layer");
+                _logger.LogError(4, $"Error on business layer |Method: {e.TargetSite.Name} | User: {User.Identity.Name} | Exception Path: {e.StackTrace}");
                 return Redirect("/");
             }
 
-            catch (Exception e) when (e is not DataAccessException && e is not BusinessLogicException)
+            catch (Exception e)
             {
-                _logger.LogInformation(4, "Unhandled exception");
+                _logger.LogError(4, $"Unhandled exception | Method: {e.TargetSite.Name} | User: {User.Identity.Name} | Exception Path: {e.StackTrace}");
                 return Redirect("/");
             }
         }
@@ -126,19 +129,19 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
 
             catch (DataAccessException e)
             {
-                _logger.LogInformation(4, "Error on data acces layer");
+                _logger.LogError(4, $"Error on data acces layer |Method: {e.TargetSite.Name} | User: {User.Identity.Name} | Exception Path: {e.StackTrace}");
                 return Redirect("/");
             }
 
-            catch (BusinessLogicException)
+            catch (BusinessLogicException e)
             {
-                _logger.LogInformation(4, "Error on business layer");
+                _logger.LogError(4, $"Error on business layer |Method: {e.TargetSite.Name} | User: {User.Identity.Name} | Exception Path: {e.StackTrace}");
                 return Redirect("/");
             }
 
-            catch (Exception e) when (e is not DataAccessException && e is not BusinessLogicException)
+            catch (Exception e)
             {
-                _logger.LogInformation(4, "Unhandled exception");
+                _logger.LogError(4, $"Unhandled exception | Method: {e.TargetSite.Name} | User: {User.Identity.Name} | Exception Path: {e.StackTrace}");
                 return Redirect("/");
             }
         }
@@ -171,37 +174,30 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
 
                 int addResult = _logic.AddNote(book);
 
-                if (addResult == ResultCodes.NoteExist)
+                if (FillCreateError(addResult) is not null)
                 {
-                    TempData["Error"] = "Same note already exist";
-                    return View(nameof(Create));
+                    return RedirectToAction(nameof(Create));
                 }
 
-                if (addResult == ResultCodes.Error)
-                {
-                    TempData["Error"] = "Unable add note";
-                    return View(nameof(Create));
-                }
-
-                _logger.LogInformation(2, "Note was added");
+                _logger.LogInformation(2, $"Presentation layer | User: {User.Identity.Name} | Note was added");
                 return RedirectToAction(nameof(GetAllBooks));
             }
 
             catch (DataAccessException e)
             {
-                _logger.LogInformation(4, "Error on data acces layer");
+                _logger.LogError(4, $"Error on data acces layer |Method: {e.TargetSite.Name} | User: {User.Identity.Name} | Exception Path: {e.StackTrace}");
                 return Redirect("/");
             }
 
-            catch (BusinessLogicException)
+            catch (BusinessLogicException e)
             {
-                _logger.LogInformation(4, "Error on business layer");
+                _logger.LogError(4, $"Error on business layer |Method: {e.TargetSite.Name} | User: {User.Identity.Name} | Exception Path: {e.StackTrace}");
                 return Redirect("/");
             }
 
-            catch (Exception e) when (e is not DataAccessException && e is not BusinessLogicException)
+            catch (Exception e)
             {
-                _logger.LogInformation(4, "Unhandled exception");
+                _logger.LogError(4, $"Unhandled exception | Method: {e.TargetSite.Name} | User: {User.Identity.Name} | Exception Path: {e.StackTrace}");
                 return Redirect("/");
             }
         }
@@ -212,9 +208,7 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
         {
             try
             {
-                Book book = _logic.GetBookById(id);
-
-                if (book is null)
+                if (!IsBookExist(id, out Book book))
                 {
                     return NotFound();
                 }
@@ -235,19 +229,19 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
 
             catch (DataAccessException e)
             {
-                _logger.LogInformation(4, "Error on data acces layer");
+                _logger.LogError(4, $"Error on data acces layer |Method: {e.TargetSite.Name} | User: {User.Identity.Name} | Exception Path: {e.StackTrace}");
                 return Redirect("/");
             }
 
-            catch (BusinessLogicException)
+            catch (BusinessLogicException e)
             {
-                _logger.LogInformation(4, "Error on business layer");
+                _logger.LogError(4, $"Error on business layer |Method: {e.TargetSite.Name} | User: {User.Identity.Name} | Exception Path: {e.StackTrace}");
                 return Redirect("/");
             }
 
-            catch (Exception e) when (e is not DataAccessException && e is not BusinessLogicException)
+            catch (Exception e)
             {
-                _logger.LogInformation(4, "Unhandled exception");
+                _logger.LogError(4, $"Unhandled exception | Method: {e.TargetSite.Name} | User: {User.Identity.Name} | Exception Path: {e.StackTrace}");
                 return Redirect("/");
             }
         }
@@ -261,7 +255,12 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
         {
             try
             {
-                Book book = new Book(
+                if (!IsBookExist(id, out Book book))
+                {
+                    return NotFound();
+                }
+
+                Book updateBook = new Book(
                     name: bookModel.Name,
                     authors: _logic.GetBookById(id).Authors,
                     publicationPlace: bookModel.PublicationPlace,
@@ -272,7 +271,7 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
                     iSBN: bookModel.ISBN
                     );
 
-                int updateResult = _logic.UpdateNote(id, book);
+                int updateResult = _logic.UpdateNote(id, updateBook);
 
                 if (updateResult == ResultCodes.NoteExist)
                 {
@@ -286,25 +285,25 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
                     return View(nameof(Edit));
                 }
 
-                _logger.LogInformation(2, "Note was edited");
+                _logger.LogInformation(2, $"Presentation layer | User: {User.Identity.Name} | Note was edited");
                 return RedirectToAction(nameof(GetAllBooks));
             }
 
             catch (DataAccessException e)
             {
-                _logger.LogInformation(4, "Error on data acces layer");
+                _logger.LogError(4, $"Error on data acces layer |Method: {e.TargetSite.Name} | User: {User.Identity.Name} | Exception Path: {e.StackTrace}");
                 return Redirect("/");
             }
 
-            catch (BusinessLogicException)
+            catch (BusinessLogicException e)
             {
-                _logger.LogInformation(4, "Error on business layer");
+                _logger.LogError(4, $"Error on business layer |Method: {e.TargetSite.Name} | User: {User.Identity.Name} | Exception Path: {e.StackTrace}");
                 return Redirect("/");
             }
 
-            catch (Exception e) when (e is not DataAccessException && e is not BusinessLogicException)
+            catch (Exception e)
             {
-                _logger.LogInformation(4, "Unhandled exception");
+                _logger.LogError(4, $"Unhandled exception | Method: {e.TargetSite.Name} | User: {User.Identity.Name} | Exception Path: {e.StackTrace}");
                 return Redirect("/");
             }
         }
@@ -315,9 +314,7 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
         {
             try
             {
-                Book book = _logic.GetBookById(id);
-
-                if (book is null)
+                if (!IsBookExist(id, out Book book))
                 {
                     return NotFound();
                 }
@@ -341,19 +338,19 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
 
             catch (DataAccessException e)
             {
-                _logger.LogInformation(4, "Error on data acces layer");
+                _logger.LogError(4, $"Error on data acces layer |Method: {e.TargetSite.Name} | User: {User.Identity.Name} | Exception Path: {e.StackTrace}");
                 return Redirect("/");
             }
 
-            catch (BusinessLogicException)
+            catch (BusinessLogicException e)
             {
-                _logger.LogInformation(4, "Error on business layer");
+                _logger.LogError(4, $"Error on business layer |Method: {e.TargetSite.Name} | User: {User.Identity.Name} | Exception Path: {e.StackTrace}");
                 return Redirect("/");
             }
 
-            catch (Exception e) when (e is not DataAccessException && e is not BusinessLogicException)
+            catch (Exception e)
             {
-                _logger.LogInformation(4, "Unhandled exception");
+                _logger.LogError(4, $"Unhandled exception | Method: {e.TargetSite.Name} | User: {User.Identity.Name} | Exception Path: {e.StackTrace}");
                 return Redirect("/");
             }
         }
@@ -366,7 +363,10 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
         {
             try
             {
-                Book book = _logic.GetBookById(id);
+                if (!IsBookExist(id, out Book book))
+                {
+                    return NotFound();
+                }
 
                 bool deleteResult = _logic.RemoveNote(book);
 
@@ -376,109 +376,73 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
                     return View(nameof(Delete));
                 }
 
-                _logger.LogInformation(2, "Note was deleted");
+                _logger.LogInformation(2, $"Presentation layer | User: {User.Identity.Name} | Note was deleted");
                 return RedirectToAction(nameof(GetAllBooks));
             }
 
             catch (DataAccessException e)
             {
-                _logger.LogInformation(4, "Error on data acces layer");
+                _logger.LogError(4, $"Error on data acces layer |Method: {e.TargetSite.Name} | User: {User.Identity.Name} | Exception Path: {e.StackTrace}");
                 return Redirect("/");
             }
 
-            catch (BusinessLogicException)
+            catch (BusinessLogicException e)
             {
-                _logger.LogInformation(4, "Error on business layer");
+                _logger.LogError(4, $"Error on business layer |Method: {e.TargetSite.Name} | User: {User.Identity.Name} | Exception Path: {e.StackTrace}");
                 return Redirect("/");
             }
 
-            catch (Exception e) when (e is not DataAccessException && e is not BusinessLogicException)
+            catch (Exception e)
             {
-                _logger.LogInformation(4, "Unhandled exception");
-                return Redirect("/");
-            }
-        }
-
-        [Route("Book/Mark/{id:Guid}")]
-        [Authorize(Roles = UserRights.Librarian + "," + UserRights.Admin)]
-        public IActionResult Mark(Guid id)
-        {
-            try
-            {
-                Book book = _logic.GetBookById(id);
-
-                if (book is null)
-                {
-                    return NotFound();
-                }
-
-                BookDetailsViewModel bookModel = new BookDetailsViewModel
-                {
-                    ID = book.ID,
-                    Name = book.Name,
-                    Authors = book.Authors,
-                    PublicationPlace = book.PublicationPlace,
-                    Publisher = book.Publisher,
-                    PublicationDate = book.PublicationDate,
-                    PagesCount = book.PagesCount,
-                    ObjectNotes = book.ObjectNotes,
-                    ISBN = book.ISBN,
-                    IsDeleted = book.IsDeleted
-                };
-
-                return View(bookModel);
-            }
-
-            catch (DataAccessException e)
-            {
-                _logger.LogInformation(4, "Error on data acces layer");
-                return Redirect("/");
-            }
-
-            catch (BusinessLogicException)
-            {
-                _logger.LogInformation(4, "Error on business layer");
-                return Redirect("/");
-            }
-
-            catch (Exception e) when (e is not DataAccessException && e is not BusinessLogicException)
-            {
-                _logger.LogInformation(4, "Unhandled exception");
+                _logger.LogError(4, $"Unhandled exception | Method: {e.TargetSite.Name} | User: {User.Identity.Name} | Exception Path: {e.StackTrace}");
                 return Redirect("/");
             }
         }
 
-        [HttpPost]
-        [Route("Book/Mark/{id:Guid}")]
-        [Authorize(Roles = UserRights.Librarian + "," + UserRights.Admin)]
-        public IActionResult MarkForDelete(Guid id)
+        private bool IsBookExist(Guid noteId, out Book foundBook)
         {
-            try
+            foundBook = _logic.GetBookById(noteId);
+            return foundBook is not null;
+        }
+
+        private object FillCreateError(int addResult)
+        {
+            if (addResult == ResultCodes.NoteExist)
             {
-                Book book = _logic.GetBookById(id);
-
-                _logic.MarkForDelete(book);
-
-                return RedirectToAction(nameof(GetAllBooks));
+                TempData["Error"] = "Cannot add. Same note already exist";
             }
 
-            catch (DataAccessException e)
+            if (addResult == ResultCodes.Error)
             {
-                _logger.LogInformation(4, "Error on data acces layer");
-                return Redirect("/");
+                TempData["Error"] = "Cannot add. Unexpected error";
             }
 
-            catch (BusinessLogicException)
+            return TempData["Error"];
+        }
+
+        private object FillUpdateError(int updateResult)
+        {
+            if (updateResult == ResultCodes.NoteExist)
             {
-                _logger.LogInformation(4, "Error on business layer");
-                return Redirect("/");
+                TempData["Error"] = "Cannot update. Same note already exist";
             }
 
-            catch (Exception e) when (e is not DataAccessException && e is not BusinessLogicException)
+            if (updateResult == ResultCodes.Error)
             {
-                _logger.LogInformation(4, "Unhandled exception");
-                return Redirect("/");
+                TempData["Error"] = "Cannot update. Unexpected error";
             }
+
+            return TempData["Error"];
+        }
+
+        private object FillDeleteError(bool deleteResult)
+        {
+            if (deleteResult == ResultCodes.ErrorDelete)
+            {
+                TempData["Error"] = "Cannot delete. Undexpected error";
+            }
+
+            return TempData["Error"];
         }
     }
 }

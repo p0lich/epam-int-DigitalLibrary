@@ -51,19 +51,19 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
 
             catch (DataAccessException e)
             {
-                _logger.LogInformation(4, "Error on data acces layer");
+                _logger.LogError(4, $"Error on data acces layer |Method: {e.TargetSite.Name} | User: {User.Identity.Name} | Exception Path: {e.StackTrace}");
                 return Redirect("/");
             }
 
-            catch (BusinessLogicException)
+            catch (BusinessLogicException e)
             {
-                _logger.LogInformation(4, "Error on business layer");
+                _logger.LogError(4, $"Error on business layer |Method: {e.TargetSite.Name} | User: {User.Identity.Name} | Exception Path: {e.StackTrace}");
                 return Redirect("/");
             }
 
-            catch (Exception e) when (e is not DataAccessException && e is not BusinessLogicException)
+            catch (Exception e)
             {
-                _logger.LogInformation(4, "Unhandled exception");
+                _logger.LogError(4, $"Unhandled exception | Method: {e.TargetSite.Name} | User: {User.Identity.Name} | Exception Path: {e.StackTrace}");
                 return Redirect("/");
             }
         }
@@ -74,9 +74,7 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
         {
             try
             {
-                Patent patent = _logic.GetPatentById(id);
-
-                if (patent is null)
+                if (!IsPatentExist(id, out Patent patent))
                 {
                     return NotFound();
                 }
@@ -100,19 +98,19 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
 
             catch (DataAccessException e)
             {
-                _logger.LogInformation(4, "Error on data acces layer");
+                _logger.LogError(4, $"Error on data acces layer |Method: {e.TargetSite.Name} | User: {User.Identity.Name} | Exception Path: {e.StackTrace}");
                 return Redirect("/");
             }
 
-            catch (BusinessLogicException)
+            catch (BusinessLogicException e)
             {
-                _logger.LogInformation(4, "Error on business layer");
+                _logger.LogError(4, $"Error on business layer |Method: {e.TargetSite.Name} | User: {User.Identity.Name} | Exception Path: {e.StackTrace}");
                 return Redirect("/");
             }
 
-            catch (Exception e) when (e is not DataAccessException && e is not BusinessLogicException)
+            catch (Exception e)
             {
-                _logger.LogInformation(4, "Unhandled exception");
+                _logger.LogError(4, $"Unhandled exception | Method: {e.TargetSite.Name} | User: {User.Identity.Name} | Exception Path: {e.StackTrace}");
                 return Redirect("/");
             }
         }
@@ -152,37 +150,30 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
 
                 int addResult = _logic.AddNote(patent);
 
-                if (addResult == ResultCodes.NoteExist)
+                if (FillCreateError(addResult) is not null)
                 {
-                    TempData["Error"] = "Same note already exist";
-                    return View(nameof(Create));
+                    return RedirectToAction(nameof(Create));
                 }
 
-                if (addResult == ResultCodes.Error)
-                {
-                    TempData["Error"] = "Unable add note";
-                    return View(nameof(Create));
-                }
-
-                _logger.LogInformation(2, "Note was added");
+                _logger.LogInformation(2, $"Presentation layer | User: {User.Identity.Name} | Note was added");
                 return RedirectToAction(nameof(GetAllPatents));
             }
 
             catch (DataAccessException e)
             {
-                _logger.LogInformation(4, "Error on data acces layer");
+                _logger.LogError(4, $"Error on data acces layer |Method: {e.TargetSite.Name} | User: {User.Identity.Name} | Exception Path: {e.StackTrace}");
                 return Redirect("/");
             }
 
-            catch (BusinessLogicException)
+            catch (BusinessLogicException e)
             {
-                _logger.LogInformation(4, "Error on business layer");
+                _logger.LogError(4, $"Error on business layer |Method: {e.TargetSite.Name} | User: {User.Identity.Name} | Exception Path: {e.StackTrace}");
                 return Redirect("/");
             }
 
-            catch (Exception e) when (e is not DataAccessException && e is not BusinessLogicException)
+            catch (Exception e)
             {
-                _logger.LogInformation(4, "Unhandled exception");
+                _logger.LogError(4, $"Unhandled exception | Method: {e.TargetSite.Name} | User: {User.Identity.Name} | Exception Path: {e.StackTrace}");
                 return Redirect("/");
             }
         }
@@ -193,9 +184,7 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
         {
             try
             {
-                Patent patent = _logic.GetPatentById(id);
-
-                if (patent is null)
+                if (!IsPatentExist(id, out Patent patent))
                 {
                     return NotFound();
                 }
@@ -203,7 +192,6 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
                 PatentInputViewModel patentModel = new PatentInputViewModel()
                 {
                     Name = patent.Name,
-                    //Authors = patent.Authors,
                     Country = patent.Country,
                     RegistrationNumber = patent.RegistrationNumber,
                     ApplicationDate = patent.ApplicationDate,
@@ -217,19 +205,19 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
 
             catch (DataAccessException e)
             {
-                _logger.LogInformation(4, "Error on data acces layer");
+                _logger.LogError(4, $"Error on data acces layer |Method: {e.TargetSite.Name} | User: {User.Identity.Name} | Exception Path: {e.StackTrace}");
                 return Redirect("/");
             }
 
-            catch (BusinessLogicException)
+            catch (BusinessLogicException e)
             {
-                _logger.LogInformation(4, "Error on business layer");
+                _logger.LogError(4, $"Error on business layer |Method: {e.TargetSite.Name} | User: {User.Identity.Name} | Exception Path: {e.StackTrace}");
                 return Redirect("/");
             }
 
-            catch (Exception e) when (e is not DataAccessException && e is not BusinessLogicException)
+            catch (Exception e)
             {
-                _logger.LogInformation(4, "Unhandled exception");
+                _logger.LogError(4, $"Unhandled exception | Method: {e.TargetSite.Name} | User: {User.Identity.Name} | Exception Path: {e.StackTrace}");
                 return Redirect("/");
             }
         }
@@ -242,12 +230,17 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
         {
             try
             {
+                if (!IsPatentExist(id, out Patent patent))
+                {
+                    return NotFound();
+                }
+
                 if (!ModelState.IsValid)
                 {
                     return View(patentInput);
                 }
 
-                Patent patent = new Patent(
+                Patent updatedPatent = new Patent(
                     name: patentInput.Name,
                     authors: _logic.GetPatentById(id).Authors,
                     country: patentInput.Country,
@@ -258,39 +251,32 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
                     objectNotes: patentInput.ObjectNotes
                     );
 
-                int updateResult = _logic.UpdateNote(id, patent);
+                int updateResult = _logic.UpdateNote(id, updatedPatent);
 
-                if (updateResult == ResultCodes.NoteExist)
+                if (FillUpdateError(updateResult) is not null)
                 {
-                    TempData["Error"] = "Same note already exist";
-                    return View(nameof(Edit));
+                    return RedirectToAction(nameof(Edit));
                 }
 
-                if (updateResult == ResultCodes.Error)
-                {
-                    TempData["Error"] = "Unable update note";
-                    return View(nameof(Edit));
-                }
-
-                _logger.LogInformation(2, "Note was edited");
+                _logger.LogInformation(2, $"Presentation layer | User: {User.Identity.Name} | Note was edited");
                 return RedirectToAction(nameof(GetAllPatents));
             }
 
             catch (DataAccessException e)
             {
-                _logger.LogInformation(4, "Error on data acces layer");
+                _logger.LogError(4, $"Error on data acces layer |Method: {e.TargetSite.Name} | User: {User.Identity.Name} | Exception Path: {e.StackTrace}");
                 return Redirect("/");
             }
 
-            catch (BusinessLogicException)
+            catch (BusinessLogicException e)
             {
-                _logger.LogInformation(4, "Error on business layer");
+                _logger.LogError(4, $"Error on business layer |Method: {e.TargetSite.Name} | User: {User.Identity.Name} | Exception Path: {e.StackTrace}");
                 return Redirect("/");
             }
 
-            catch (Exception e) when (e is not DataAccessException && e is not BusinessLogicException)
+            catch (Exception e)
             {
-                _logger.LogInformation(4, "Unhandled exception");
+                _logger.LogError(4, $"Unhandled exception | Method: {e.TargetSite.Name} | User: {User.Identity.Name} | Exception Path: {e.StackTrace}");
                 return Redirect("/");
             }
         }
@@ -301,9 +287,7 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
         {
             try
             {
-                Patent patent = _logic.GetPatentById(id);
-
-                if (patent is null)
+                if(!IsPatentExist(id, out Patent patent))
                 {
                     return NotFound();
                 }
@@ -327,19 +311,19 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
 
             catch (DataAccessException e)
             {
-                _logger.LogInformation(4, "Error on data acces layer");
+                _logger.LogError(4, $"Error on data acces layer |Method: {e.TargetSite.Name} | User: {User.Identity.Name} | Exception Path: {e.StackTrace}");
                 return Redirect("/");
             }
 
-            catch (BusinessLogicException)
+            catch (BusinessLogicException e)
             {
-                _logger.LogInformation(4, "Error on business layer");
+                _logger.LogError(4, $"Error on business layer |Method: {e.TargetSite.Name} | User: {User.Identity.Name} | Exception Path: {e.StackTrace}");
                 return Redirect("/");
             }
 
-            catch (Exception e) when (e is not DataAccessException && e is not BusinessLogicException)
+            catch (Exception e)
             {
-                _logger.LogInformation(4, "Unhandled exception");
+                _logger.LogError(4, $"Unhandled exception | Method: {e.TargetSite.Name} | User: {User.Identity.Name} | Exception Path: {e.StackTrace}");
                 return Redirect("/");
             }
         }
@@ -352,42 +336,85 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
         {
             try
             {
-                Patent patent = _logic.GetPatentById(id);
-
-                if (patent is null)
+                if (!IsPatentExist(id, out Patent patent))
                 {
                     return NotFound();
                 }
 
                 bool deleteResult = _logic.RemoveNote(patent);
 
-                if (!deleteResult)
+                if (FillDeleteError(deleteResult) is not null)
                 {
-                    TempData["Error"] = "Unable to delete note";
-                    return View(nameof(Delete));
+                    return RedirectToAction(nameof(Delete));
                 }
 
-                _logger.LogInformation(2, "Note was deleted");
+                _logger.LogInformation(2, $"Presentation layer | User: {User.Identity.Name} | Note was deleted");
                 return RedirectToAction(nameof(GetAllPatents));
             }
 
             catch (DataAccessException e)
             {
-                _logger.LogInformation(4, "Error on data acces layer");
+                _logger.LogError(4, $"Error on data acces layer |Method: {e.TargetSite.Name} | User: {User.Identity.Name} | Exception Path: {e.StackTrace}");
                 return Redirect("/");
             }
 
-            catch (BusinessLogicException)
+            catch (BusinessLogicException e)
             {
-                _logger.LogInformation(4, "Error on business layer");
+                _logger.LogError(4, $"Error on business layer |Method: {e.TargetSite.Name} | User: {User.Identity.Name} | Exception Path: {e.StackTrace}");
                 return Redirect("/");
             }
 
-            catch (Exception e) when (e is not DataAccessException && e is not BusinessLogicException)
+            catch (Exception e)
             {
-                _logger.LogInformation(4, "Unhandled exception");
+                _logger.LogError(4, $"Unhandled exception | Method: {e.TargetSite.Name} | User: {User.Identity.Name} | Exception Path: {e.StackTrace}");
                 return Redirect("/");
             }
+        }
+
+        private bool IsPatentExist(Guid noteId, out Patent foundPatent)
+        {
+            foundPatent = _logic.GetPatentById(noteId);
+            return foundPatent is not null;
+        }
+
+        private object FillCreateError(int addResult)
+        {
+            if (addResult == ResultCodes.NoteExist)
+            {
+                TempData["Error"] = "Cannot add. Same note already exist";
+            }
+
+            if (addResult == ResultCodes.Error)
+            {
+                TempData["Error"] = "Cannot add. Unexpected error";
+            }
+
+            return TempData["Error"];
+        }
+
+        private object FillUpdateError(int updateResult)
+        {
+            if (updateResult == ResultCodes.NoteExist)
+            {
+                TempData["Error"] = "Cannot update. Same note already exist";
+            }
+
+            if (updateResult == ResultCodes.Error)
+            {
+                TempData["Error"] = "Cannot update. Unexpected error";
+            }
+
+            return TempData["Error"];
+        }
+
+        private object FillDeleteError(bool deleteResult)
+        {
+            if (deleteResult == ResultCodes.ErrorDelete)
+            {
+                TempData["Error"] = "Cannot delete. Undexpected error";
+            }
+
+            return TempData["Error"];
         }
     }
 }

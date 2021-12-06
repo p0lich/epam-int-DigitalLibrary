@@ -1,4 +1,5 @@
-﻿using Epam.DigitalLibrary.Entities;
+﻿using Epam.DigitalLibrary.CustomExeptions;
+using Epam.DigitalLibrary.Entities;
 using Epam.DigitalLibrary.LibraryMVC.CustomIdentity;
 using Epam.DigitalLibrary.LibraryMVC.Models;
 using Epam.DigitalLibrary.LogicContracts;
@@ -36,33 +37,52 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
         [Route("Authenticate/Login")]
         public async Task<IActionResult> LoginValidate(UserView userView)
         {
-            //ViewData["ReturnUrl"] = returnUrl;
-
-            if (!ModelState.IsValid)
+            try
             {
-                return View("Login");
+                if (!ModelState.IsValid)
+                {
+                    return View("Login");
+                }
+
+                int authResult = _userLogic.AuthenticateUser(userView.Login, userView.Password);
+
+                if (authResult == AuthenticationCodes.NotExist)
+                {
+                    TempData["Error"] = "Error. User with such login isn't exist";
+                    return View(nameof(Login));
+                }
+
+                if (authResult == AuthenticationCodes.PasswordMismatch)
+                {
+                    TempData["Error"] = "Error. Password is invalid";
+                    return View(nameof(Login));
+                }
+
+                var claims = _userLogic.GetUserClaims(userView.Login);
+
+                _logger.LogInformation(2, $"User {userView.Login} has log in");
+
+                await HttpContext.SignInAsync(_userLogic.GetPrincipals(claims));
+                return Redirect("/");
             }
 
-            int authResult = _userLogic.AuthenticateUser(userView.Login, userView.Password);
-
-            if (authResult == AuthenticationCodes.NotExist)
+            catch (DataAccessException e)
             {
-                TempData["Error"] = "Error. User with such login isn't exist";
-                return View(nameof(Login));
+                _logger.LogError(4, $"Error on data acces layer |Method: {e.TargetSite.Name} | User: {User.Identity.Name} | Exception Path: {e.StackTrace}");
+                return Redirect("/");
             }
 
-            if (authResult == AuthenticationCodes.PasswordMismatch)
+            catch (BusinessLogicException e)
             {
-                TempData["Error"] = "Error. Password is invalid";
-                return View(nameof(Login));
+                _logger.LogError(4, $"Error on business layer |Method: {e.TargetSite.Name} | User: {User.Identity.Name} | Exception Path: {e.StackTrace}");
+                return Redirect("/");
             }
 
-            var claims = _userLogic.GetUserClaims(userView.Login);
-
-            _logger.LogInformation(2, $"User {userView.Login} has log in");
-
-            await HttpContext.SignInAsync(_userLogic.GetPrincipals(claims));
-            return Redirect("/");
+            catch (Exception e)
+            {
+                _logger.LogError(4, $"Unhandled exception | Method: {e.TargetSite.Name} | User: {User.Identity.Name} | Exception Path: {e.StackTrace}");
+                return Redirect("/");
+            }
         }
 
         [HttpGet("Register")]
@@ -74,38 +94,67 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
         [HttpPost("Register")]
         public async Task<IActionResult> RegisterValidate(UserRegisterView registerUser)
         {
-            if (!ModelState.IsValid)
+            try
             {
-                return View(nameof(Register));
+                if (!ModelState.IsValid)
+                {
+                    return View(nameof(Register));
+                }
+
+                int registerResult = _userLogic.RegisterUser(registerUser.Login, registerUser.Password);
+
+                if (registerResult != AuthenticationCodes.RegisterSuccess)
+                {
+                    TempData["Error"] = "Unable to register user";
+                    return View(nameof(Register));
+                }
+
+                var claims = _userLogic.GetUserClaims(registerUser.Login);
+
+                await HttpContext.SignInAsync(_userLogic.GetPrincipals(claims));
+                _logger.LogInformation(2, $"Presentation layer | User: {User.Identity.Name} | User {registerUser.Login} has registered");
+
+                return Redirect("/");
             }
 
-            int registerResult = _userLogic.RegisterUser(registerUser.Login, registerUser.Password);
-
-            if (registerResult != AuthenticationCodes.RegisterSuccess)
+            catch (DataAccessException e)
             {
-                TempData["Error"] = "Unable to register user";
-                return View(nameof(Register));
+                _logger.LogError(4, $"Error on data acces layer |Method: {e.TargetSite.Name} | User: {User.Identity.Name} | Exception Path: {e.StackTrace}");
+                return Redirect("/");
             }
 
-            var claims = _userLogic.GetUserClaims(registerUser.Login);
+            catch (BusinessLogicException e)
+            {
+                _logger.LogError(4, $"Error on business layer |Method: {e.TargetSite.Name} | User: {User.Identity.Name} | Exception Path: {e.StackTrace}");
+                return Redirect("/");
+            }
 
-            _logger.LogInformation(2, $"User {registerUser.Login} has registered");
-
-            await HttpContext.SignInAsync(_userLogic.GetPrincipals(claims));
-            return Redirect("/");
+            catch (Exception e)
+            {
+                _logger.LogError(4, $"Unhandled exception | Method: {e.TargetSite.Name} | User: {User.Identity.Name} | Exception Path: {e.StackTrace}");
+                return Redirect("/");
+            }
         }
 
         [Authorize]
         public async Task<IActionResult> LogOut()
         {
             await HttpContext.SignOutAsync();
+            _logger.LogInformation(2, $"Presentation layer | User: {User.Identity.Name} | User {User.Identity.Name} has log out");
             return Redirect("/");
         }
 
         [Route("Denied")]
         public ActionResult Denied()
         {
-            _logger.LogWarning(1, "Unauthorized access attempt. Leave this page");
+            _logger.LogWarning(3, $"Presentation layer | User: {User.Identity.Name} | Unauthorized access attempt.");
+            return View();
+        }
+
+        [Route("Authenticate/LoginRedirect")]
+        public ActionResult LoginRedirect()
+        {
+            _logger.LogWarning(3, $"Presentation layer | User: guest | Unauthorized acces from guest.");
             return View();
         }
     }

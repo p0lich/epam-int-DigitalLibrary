@@ -44,19 +44,19 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
 
             catch (DataAccessException e)
             {
-                _logger.LogInformation(4, "Error on data acces layer");
+                _logger.LogError(4, $"Error on data acces layer |Method: {e.TargetSite.Name} | User: {User.Identity.Name} | Exception Path: {e.StackTrace}");
                 return Redirect("/");
             }
 
-            catch (BusinessLogicException)
+            catch (BusinessLogicException e)
             {
-                _logger.LogInformation(4, "Error on business layer");
+                _logger.LogError(4, $"Error on business layer |Method: {e.TargetSite.Name} | User: {User.Identity.Name} | Exception Path: {e.StackTrace}");
                 return Redirect("/");
             }
 
-            catch (Exception e) when (e is not DataAccessException && e is not BusinessLogicException)
+            catch (Exception e)
             {
-                _logger.LogInformation(4, "Unhandled exception");
+                _logger.LogError(4, $"Unhandled exception | Method: {e.TargetSite.Name} | User: {User.Identity.Name} | Exception Path: {e.StackTrace}");
                 return Redirect("/");
             }
         }
@@ -75,25 +75,25 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
                     TempData["Error"] = "Unable set user role";
                 }
 
-                _logger.LogInformation(2, $"Role with id {roleId} was granted to user {_userLogic.GetUser(userId).Login}");
+                _logger.LogInformation(2, $"Presentation layer | User: {User.Identity.Name} | Role with id {roleId} was granted to user {_userLogic.GetUser(userId).Login}");
                 return RedirectToAction(nameof(Index));
             }
 
             catch (DataAccessException e)
             {
-                _logger.LogInformation(4, "Error on data acces layer");
+                _logger.LogError(4, $"Error on data acces layer |Method: {e.TargetSite.Name} | User: {User.Identity.Name} | Exception Path: {e.StackTrace}");
                 return Redirect("/");
             }
 
-            catch (BusinessLogicException)
+            catch (BusinessLogicException e)
             {
-                _logger.LogInformation(4, "Error on business layer");
+                _logger.LogError(4, $"Error on business layer |Method: {e.TargetSite.Name} | User: {User.Identity.Name} | Exception Path: {e.StackTrace}");
                 return Redirect("/");
             }
 
-            catch (Exception e) when (e is not DataAccessException && e is not BusinessLogicException)
+            catch (Exception e)
             {
-                _logger.LogInformation(4, "Unhandled exception");
+                _logger.LogError(4, $"Unhandled exception | Method: {e.TargetSite.Name} | User: {User.Identity.Name} | Exception Path: {e.StackTrace}");
                 return Redirect("/");
             }
         }
@@ -112,25 +112,25 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
                     TempData["Error"] = "Unable remove role from user";
                 }
 
-                _logger.LogInformation(2, $"Role with id {roleId} was removed from user {_userLogic.GetUser(userId).Login}");
+                _logger.LogInformation(2, $"Presentation layer | User: {User.Identity.Name} | Role with id {roleId} was removed from user {_userLogic.GetUser(userId).Login}");
                 return RedirectToAction(nameof(Index));
             }
 
             catch (DataAccessException e)
             {
-                _logger.LogInformation(4, "Error on data acces layer");
+                _logger.LogError(4, $"Error on data acces layer |Method: {e.TargetSite.Name} | User: {User.Identity.Name} | Exception Path: {e.StackTrace}");
                 return Redirect("/");
             }
 
-            catch (BusinessLogicException)
+            catch (BusinessLogicException e)
             {
-                _logger.LogInformation(4, "Error on business layer");
+                _logger.LogError(4, $"Error on business layer |Method: {e.TargetSite.Name} | User: {User.Identity.Name} | Exception Path: {e.StackTrace}");
                 return Redirect("/");
             }
 
-            catch (Exception e) when (e is not DataAccessException && e is not BusinessLogicException)
+            catch (Exception e)
             {
-                _logger.LogInformation(4, "Unhandled exception");
+                _logger.LogError(4, $"Unhandled exception | Method: {e.TargetSite.Name} | User: {User.Identity.Name} | Exception Path: {e.StackTrace}");
                 return Redirect("/");
             }
         }

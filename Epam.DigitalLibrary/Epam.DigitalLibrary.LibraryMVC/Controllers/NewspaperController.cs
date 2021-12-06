@@ -35,6 +35,11 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
         {
             try
             {
+                if (!IsNewspaperExist(id, out Newspaper newspaper))
+                {
+                    return NotFound();
+                }
+
                 IEnumerable<Newspaper> newspaperReleases = _logic.GetNewspaperReleases(id);
 
                 List<NewspaperReleaseLinkViewModel> newspaperLinks = newspaperReleases
@@ -56,19 +61,19 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
 
             catch (DataAccessException e)
             {
-                _logger.LogInformation(4, "Error on data acces layer");
+                _logger.LogError(4, $"Error on data acces layer |Method: {e.TargetSite.Name} | User: {User.Identity.Name} | Exception Path: {e.StackTrace}");
                 return Redirect("/");
             }
 
-            catch (BusinessLogicException)
+            catch (BusinessLogicException e)
             {
-                _logger.LogInformation(4, "Error on business layer");
+                _logger.LogError(4, $"Error on business layer |Method: {e.TargetSite.Name} | User: {User.Identity.Name} | Exception Path: {e.StackTrace}");
                 return Redirect("/");
             }
 
-            catch (Exception e) when (e is not DataAccessException && e is not BusinessLogicException)
+            catch (Exception e)
             {
-                _logger.LogInformation(4, "Unhandled exception");
+                _logger.LogError(4, $"Unhandled exception | Method: {e.TargetSite.Name} | User: {User.Identity.Name} | Exception Path: {e.StackTrace}");
                 return Redirect("/");
             }
         }
@@ -97,19 +102,19 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
 
             catch (DataAccessException e)
             {
-                _logger.LogInformation(4, "Error on data acces layer");
+                _logger.LogError(4, $"Error on data acces layer |Method: {e.TargetSite.Name} | User: {User.Identity.Name} | Exception Path: {e.StackTrace}");
                 return Redirect("/");
             }
 
-            catch (BusinessLogicException)
+            catch (BusinessLogicException e)
             {
-                _logger.LogInformation(4, "Error on business layer");
+                _logger.LogError(4, $"Error on business layer |Method: {e.TargetSite.Name} | User: {User.Identity.Name} | Exception Path: {e.StackTrace}");
                 return Redirect("/");
             }
 
-            catch (Exception e) when (e is not DataAccessException && e is not BusinessLogicException)
+            catch (Exception e)
             {
-                _logger.LogInformation(4, "Unhandled exception");
+                _logger.LogError(4, $"Unhandled exception | Method: {e.TargetSite.Name} | User: {User.Identity.Name} | Exception Path: {e.StackTrace}");
                 return Redirect("/");
             }
         }
@@ -120,9 +125,7 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
         {
             try
             {
-                Newspaper newspaper = _logic.GetNewspaperById(id);
-
-                if (newspaper is null)
+                if (!IsNewspaperExist(id, out Newspaper newspaper))
                 {
                     return NotFound();
                 }
@@ -157,19 +160,19 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
 
             catch (DataAccessException e)
             {
-                _logger.LogInformation(4, "Error on data acces layer");
+                _logger.LogError(4, $"Error on data acces layer |Method: {e.TargetSite.Name} | User: {User.Identity.Name} | Exception Path: {e.StackTrace}");
                 return Redirect("/");
             }
 
-            catch (BusinessLogicException)
+            catch (BusinessLogicException e)
             {
-                _logger.LogInformation(4, "Error on business layer");
+                _logger.LogError(4, $"Error on business layer |Method: {e.TargetSite.Name} | User: {User.Identity.Name} | Exception Path: {e.StackTrace}");
                 return Redirect("/");
             }
 
-            catch (Exception e) when (e is not DataAccessException && e is not BusinessLogicException)
+            catch (Exception e)
             {
-                _logger.LogInformation(4, "Unhandled exception");
+                _logger.LogError(4, $"Unhandled exception | Method: {e.TargetSite.Name} | User: {User.Identity.Name} | Exception Path: {e.StackTrace}");
                 return Redirect("/");
             }
         }
@@ -223,25 +226,25 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
                     return View(nameof(Create));
                 }
 
-                _logger.LogInformation(2, "Note was added");
+                _logger.LogInformation(2, $"Presentation layer | User: {User.Identity.Name} | Note was added");
                 return RedirectToAction(nameof(GetAllReleases));
             }
 
             catch (DataAccessException e)
             {
-                _logger.LogInformation(4, "Error on data acces layer");
+                _logger.LogError(4, $"Error on data acces layer |Method: {e.TargetSite.Name} | User: {User.Identity.Name} | Exception Path: {e.StackTrace}");
                 return Redirect("/");
             }
 
-            catch (BusinessLogicException)
+            catch (BusinessLogicException e)
             {
-                _logger.LogInformation(4, "Error on business layer");
+                _logger.LogError(4, $"Error on business layer |Method: {e.TargetSite.Name} | User: {User.Identity.Name} | Exception Path: {e.StackTrace}");
                 return Redirect("/");
             }
 
-            catch (Exception e) when (e is not DataAccessException && e is not BusinessLogicException)
+            catch (Exception e)
             {
-                _logger.LogInformation(4, "Unhandled exception");
+                _logger.LogError(4, $"Unhandled exception | Method: {e.TargetSite.Name} | User: {User.Identity.Name} | Exception Path: {e.StackTrace}");
                 return Redirect("/");
             }
         }
@@ -252,9 +255,7 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
         {
             try
             {
-                Newspaper newspaper = _logic.GetNewspaperById(id);
-
-                if (newspaper is null)
+                if (!IsNewspaperExist(id, out Newspaper newspaper))
                 {
                     return NotFound();
                 }
@@ -271,19 +272,19 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
 
             catch (DataAccessException e)
             {
-                _logger.LogInformation(4, "Error on data acces layer");
+                _logger.LogError(4, $"Error on data acces layer |Method: {e.TargetSite.Name} | User: {User.Identity.Name} | Exception Path: {e.StackTrace}");
                 return Redirect("/");
             }
 
-            catch (BusinessLogicException)
+            catch (BusinessLogicException e)
             {
-                _logger.LogInformation(4, "Error on business layer");
+                _logger.LogError(4, $"Error on business layer |Method: {e.TargetSite.Name} | User: {User.Identity.Name} | Exception Path: {e.StackTrace}");
                 return Redirect("/");
             }
 
-            catch (Exception e) when (e is not DataAccessException && e is not BusinessLogicException)
+            catch (Exception e)
             {
-                _logger.LogInformation(4, "Unhandled exception");
+                _logger.LogError(4, $"Unhandled exception | Method: {e.TargetSite.Name} | User: {User.Identity.Name} | Exception Path: {e.StackTrace}");
                 return Redirect("/");
             }
         }
@@ -296,9 +297,7 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
         {
             try
             {
-                Newspaper newspaper = _logic.GetNewspaperById(id);
-
-                if (newspaper is null)
+                if (!IsNewspaperExist(id, out Newspaper newspaper))
                 {
                     return NotFound();
                 }
@@ -318,7 +317,7 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
                 int updateResult = _logic.UpdateNote(id, updatedNewspaper);
 
                 if(updateResult == ResultCodes.NoteExist)
-                {
+                {  
                     TempData["Error"] = "Same note already exist";
                     return View(nameof(Edit));
                 }
@@ -329,25 +328,25 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
                     return View(nameof(Edit));
                 }
 
-                _logger.LogInformation(2, "Note was edited");
+                _logger.LogInformation(2, $"Presentation layer | User: {User.Identity.Name} | Note was edited");
                 return RedirectToAction(nameof(GetAllReleases));
             }
 
             catch (DataAccessException e)
             {
-                _logger.LogInformation(4, "Error on data acces layer");
+                _logger.LogError(4, $"Error on data acces layer |Method: {e.TargetSite.Name} | User: {User.Identity.Name} | Exception Path: {e.StackTrace}");
                 return Redirect("/");
             }
 
-            catch (BusinessLogicException)
+            catch (BusinessLogicException e)
             {
-                _logger.LogInformation(4, "Error on business layer");
+                _logger.LogError(4, $"Error on business layer |Method: {e.TargetSite.Name} | User: {User.Identity.Name} | Exception Path: {e.StackTrace}");
                 return Redirect("/");
             }
 
-            catch (Exception e) when (e is not DataAccessException && e is not BusinessLogicException)
+            catch (Exception e)
             {
-                _logger.LogInformation(4, "Unhandled exception");
+                _logger.LogError(4, $"Unhandled exception | Method: {e.TargetSite.Name} | User: {User.Identity.Name} | Exception Path: {e.StackTrace}");
                 return Redirect("/");
             }
         }
@@ -358,9 +357,7 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
         {
             try
             {
-                Newspaper newspaper = _logic.GetNewspaperById(id);
-
-                if (newspaper is null)
+                if (!IsNewspaperExist(id, out Newspaper newspaper))
                 {
                     return NotFound();
                 }
@@ -395,19 +392,19 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
 
             catch (DataAccessException e)
             {
-                _logger.LogInformation(4, "Error on data acces layer");
+                _logger.LogError(4, $"Error on data acces layer |Method: {e.TargetSite.Name} | User: {User.Identity.Name} | Exception Path: {e.StackTrace}");
                 return Redirect("/");
             }
 
-            catch (BusinessLogicException)
+            catch (BusinessLogicException e)
             {
-                _logger.LogInformation(4, "Error on business layer");
+                _logger.LogError(4, $"Error on business layer |Method: {e.TargetSite.Name} | User: {User.Identity.Name} | Exception Path: {e.StackTrace}");
                 return Redirect("/");
             }
 
-            catch (Exception e) when (e is not DataAccessException && e is not BusinessLogicException)
+            catch (Exception e)
             {
-                _logger.LogInformation(4, "Unhandled exception");
+                _logger.LogError(4, $"Unhandled exception | Method: {e.TargetSite.Name} | User: {User.Identity.Name} | Exception Path: {e.StackTrace}");
                 return Redirect("/");
             }
         }
@@ -420,9 +417,7 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
         {
             try
             {
-                Newspaper newspaper = _logic.GetNewspaperById(id);
-
-                if (newspaper is null)
+                if (!IsNewspaperExist(id, out Newspaper newspaper))
                 {
                     return NotFound();
                 }
@@ -435,27 +430,33 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
                     return View(nameof(Delete));
                 }
 
-                _logger.LogInformation(2, "Note was deleted");
+                _logger.LogInformation(2, $"Presentation layer | User: {User.Identity.Name} | Note was deleted");
                 return RedirectToAction(nameof(GetAllReleases));
             }
 
             catch (DataAccessException e)
             {
-                _logger.LogInformation(4, "Error on data acces layer");
+                _logger.LogError(4, $"Error on data acces layer |Method: {e.TargetSite.Name} | User: {User.Identity.Name} | Exception Path: {e.StackTrace}");
                 return Redirect("/");
             }
 
-            catch (BusinessLogicException)
+            catch (BusinessLogicException e)
             {
-                _logger.LogInformation(4, "Error on business layer");
+                _logger.LogError(4, $"Error on business layer |Method: {e.TargetSite.Name} | User: {User.Identity.Name} | Exception Path: {e.StackTrace}");
                 return Redirect("/");
             }
 
-            catch (Exception e) when (e is not DataAccessException && e is not BusinessLogicException)
+            catch (Exception e)
             {
-                _logger.LogInformation(4, "Unhandled exception");
+                _logger.LogError(4, $"Unhandled exception | Method: {e.TargetSite.Name} | User: {User.Identity.Name} | Exception Path: {e.StackTrace}");
                 return Redirect("/");
             }
+        }
+
+        private bool IsNewspaperExist(Guid noteId, out Newspaper foundNewspaper)
+        {
+            foundNewspaper = _logic.GetNewspaperById(noteId);
+            return foundNewspaper is not null;
         }
     }
 }

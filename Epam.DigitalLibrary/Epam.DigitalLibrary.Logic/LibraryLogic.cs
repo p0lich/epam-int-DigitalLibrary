@@ -36,7 +36,6 @@ namespace Epam.DigitalLibrary.Logic
 
         public int AddNote(Note note)
         {
-
             return _dataLayer.AddNote(note);
         }
 
