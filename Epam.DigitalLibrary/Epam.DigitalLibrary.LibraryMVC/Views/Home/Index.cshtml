@@ -5,18 +5,6 @@
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
     <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-    @if (!User.Identity.IsAuthenticated)
-    {
-        <a asp-controller="Home"
-           asp-action="Login">
-            Login
-        </a>
-    }
-    <a asp-controller="Home"
-       asp-action="GetLibrary"
-       asp-route-id="1">
-        Show library
-    </a>
     <a asp-controller="Book"
        asp-action="GetAllBooks"
        asp-route-id="1">
@@ -32,26 +20,12 @@
        asp-route-id="1">
         Show all patents
     </a>
-    @if (User.Identity.IsAuthenticated)
+
+    @if (true)
     {
-        <a asp-controller="Home"
-           asp-action="Logout">
-            LogOut
+        <a asp-controller="Admin"
+           asp-action="Index">
+            Admin page
         </a>
-    }
-
-    <a asp-controller="Admin"
-       asp-action="Index">
-        Admin page
-    </a>
-
-    <br />
-
-    @if (User.Identity.IsAuthenticated)
-    {
-        foreach (var claim in User.Claims)
-        {
-            <h4>@claim.Type: @claim.Value</h4>
-        }
     }
 </div>

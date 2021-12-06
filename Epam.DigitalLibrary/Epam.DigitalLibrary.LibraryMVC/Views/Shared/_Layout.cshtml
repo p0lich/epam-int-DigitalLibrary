@@ -25,6 +25,28 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
                     </ul>
+                    @{
+                        if (User.Identity.IsAuthenticated)
+                        {
+                            <a asp-controller="Authenticate"
+                               asp-action="LogOut">
+                                Log Out
+                            </a>
+                        }              
+
+                        else
+                        {
+                            <a style="margin-right: 20px" asp-controller="Authenticate"
+                               asp-action="Login">
+                                Login
+                            </a>
+                            <p style="word-spacing: 20px"></p>
+                            <a asp-controller="Authenticate"
+                               asp-action="Register">
+                                Register
+                            </a>
+                        }
+                    }
                 </div>
             </div>
         </nav>

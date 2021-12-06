@@ -34,17 +34,25 @@ namespace Epam.DigitalLibrary.Logic
 
         public bool IsInRole(Guid userId, string targetRole)
         {
-            List<string> roles = _userDAO.GetUserRoles(userId);
-
-            foreach (string role in roles)
+            try
             {
-                if (role == targetRole)
+                List<string> roles = _userDAO.GetUserRoles(userId);
+
+                foreach (string role in roles)
                 {
-                    return true;
+                    if (role == targetRole)
+                    {
+                        return true;
+                    }
                 }
+
+                return false;
             }
 
-            return false;
+            catch (Exception e) when (e is not DataAccessException)
+            {
+                throw new BusinessLogicException(e.Message, e.InnerException);
+            }
         }
 
         public bool IsCredentialRight()
@@ -59,100 +67,37 @@ namespace Epam.DigitalLibrary.Logic
 
         public User GetUser(Guid id)
         {
-            try
-            {
-                return _userDAO.GetUser(id);
-            }
-
-            catch (Exception e) when (e is not DataAccessException)
-            {
-
-                throw;
-            }
+            return _userDAO.GetUser(id);
         }
 
         public User GetUser(string login)
         {
-            try
-            {
-                return _userDAO.GetUser(login);
-            }
-
-            catch (Exception e) when (e is not DataAccessException)
-            {
-
-                throw;
-            }
+            return _userDAO.GetUser(login);
         }
 
         public bool RegisterUser(User user)
         {
-            try
-            {
-                return _userDAO.RegisterUser(user);
-            }
-
-            catch (Exception e) when (e is not DataAccessException)
-            {
-
-                throw;
-            }
+            return _userDAO.RegisterUser(user);
         }
 
         public List<User> GetUsers()
         {
-            try
-            {
-                return _userDAO.GetUsers();
-            }
-
-            catch (Exception e) when (e is not DataAccessException)
-            {
-
-                throw;
-            }
+            return _userDAO.GetUsers();
         }
 
         public bool SetUserToRole(Guid userId, Guid roleId)
         {
-            try
-            {
-                return _userDAO.SetUserToRole(userId, roleId);
-            }
-
-            catch (Exception e) when (e is not DataAccessException)
-            {
-
-                throw;
-            }
+            return _userDAO.SetUserToRole(userId, roleId);
         }
 
         public bool SetUserToRole(Guid userId, string roleName)
         {
-            try
-            {
-                return _userDAO.SetUserToRole(userId, roleName);
-            }
-
-            catch (Exception e) when (e is not DataAccessException)
-            {
-
-                throw;
-            }
+            return _userDAO.SetUserToRole(userId, roleName);
         }
 
         public bool RemoveRoleFromUser(Guid userId, Guid roleId)
         {
-            try
-            {
-                return _userDAO.RemoveRoleFromUser(userId, roleId);
-            }
-
-            catch (Exception e) when (e is not DataAccessException)
-            {
-
-                throw;
-            }
+            return _userDAO.RemoveRoleFromUser(userId, roleId);
         }
     }
 }

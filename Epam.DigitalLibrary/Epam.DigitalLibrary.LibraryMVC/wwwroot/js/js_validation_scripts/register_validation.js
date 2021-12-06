@@ -9,7 +9,7 @@
         return this.optional(element) || !login_reg.test(value)
     }, "login cannot be part of password");
 
-    $("form[name='loginForm']").validate({
+    $("form[name='registerForm']").validate({
         rules: {
             Login: {
                 required: true,
@@ -24,6 +24,13 @@
                 maxlength: 20,
                 isPasswordCorrect: true
             },
+
+            PasswordConfirm: {
+                required: true,
+                minlength: 3,
+                maxlength: 20,
+                equalTo: '#PasswordConfirm'
+            }
         },
 
         messages: {
@@ -33,6 +40,10 @@
             Password: {
                 required: "Password is required",
             },
+            PasswordConfirm: {
+                required: "Repeat password",
+                equalTo: "Password mismatch"
+            }
         },
     });
 });

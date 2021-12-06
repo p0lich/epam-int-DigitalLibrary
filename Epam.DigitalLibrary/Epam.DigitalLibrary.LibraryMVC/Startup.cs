@@ -14,6 +14,8 @@ using Epam.DigitalLibrary.Logic;
 using System.Security;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Security.Claims;
+using System.Data.SqlClient;
+using Epam.DigitalLibrary.LibraryMVC.CustomIdentity;
 
 namespace Epam.DigitalLibrary.LibraryMVC
 {
@@ -29,11 +31,6 @@ namespace Epam.DigitalLibrary.LibraryMVC
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllersWithViews();
-            services.AddMvc();
-
-            //services.AddSingleton<INoteLogic, LibraryLogic>();
-
             SecureString password = new SecureString();
 
             password.AppendChar('1');
@@ -42,13 +39,18 @@ namespace Epam.DigitalLibrary.LibraryMVC
 
             password.MakeReadOnly();
 
-            services.AddSingleton<INoteLogic>(new LibraryLogic("lib_admin", password));
-            services.AddSingleton<IUserRightsProvider>(new UserLogic("lib_admin", password));
+            SqlCredential credential = new SqlCredential("lib_admin", password);
+
+            services.AddSingleton<INoteLogic>(new LibraryLogic(Configuration.GetConnectionString("SSPIConnString"), credential));
+            services.AddSingleton<IUserRightsProvider>(new UserLogic(Configuration.GetConnectionString("SSPIConnString"), credential));
+
+            services.AddTransient<IUserRoleProvider, CustomUserRoleProvider>();
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options => {
                     options.LoginPath = "/Login";
                     options.AccessDeniedPath = "/Denied";
+
                     //options.Events = new CookieAuthenticationEvents()
                     //{
                     //    OnSigningIn = async context =>
@@ -65,8 +67,8 @@ namespace Epam.DigitalLibrary.LibraryMVC
                     //};
                 });
 
-            //services.AddSingleton<INoteLogic>();
-            //services.AddIdentity<IdentityUser, IdentityRole>();
+            services.AddControllersWithViews();
+            services.AddMvc();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -97,7 +99,7 @@ namespace Epam.DigitalLibrary.LibraryMVC
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller=Home}/{action=Index}/{id?}/{secondId?}");
             });
         }
     }

@@ -65,7 +65,7 @@ namespace Epam.DigitalLibrary.SqlDal
             catch (Exception e)
             {
                 _connection.Close();
-                throw;
+                throw new DataAccessException(e.Message, e.InnerException);
             }
         }
 
@@ -102,7 +102,7 @@ namespace Epam.DigitalLibrary.SqlDal
             catch (Exception e)
             {
                 _connection.Close();
-                throw;
+                throw new DataAccessException(e.Message, e.InnerException);
             }
         }
 
@@ -137,7 +137,7 @@ namespace Epam.DigitalLibrary.SqlDal
             catch (Exception e)
             {
                 _connection.Close();
-                throw new Exception("Cannot get user roles\n" + e.Message);
+                throw new DataAccessException(e.Message, e.InnerException);
             }
         }
 
@@ -174,7 +174,7 @@ namespace Epam.DigitalLibrary.SqlDal
             catch (Exception e)
             {
                 _connection.Close();
-                throw;
+                throw new DataAccessException(e.Message, e.InnerException);
             }
         }
 
@@ -204,15 +204,29 @@ namespace Epam.DigitalLibrary.SqlDal
                 using (_connection = new SqlConnection(connectionString, _userCredential))
                 {
                     string stProc = "dbo.Add_User";
+                    Guid userId;
+
                     using (SqlCommand command = new SqlCommand(stProc, _connection))
                     {
                         command.CommandType = CommandType.StoredProcedure;
 
+                        SqlParameter outId = new SqlParameter("@id", SqlDbType.UniqueIdentifier)
+                        {
+                            Direction = ParameterDirection.Output
+                        };
+
+                        command.Parameters.Add(outId);
                         command.Parameters.AddWithValue("@login", user.Login);
                         command.Parameters.AddWithValue("@password", user.Password);
 
                         _connection.Open();
                         var result = command.ExecuteScalar();
+                        _connection.Close();
+
+                        if (!Guid.TryParse(outId.Value.ToString(), out userId))
+                        {
+                            throw new InvalidCastException();
+                        }
 
                         return true;
                     }
@@ -222,7 +236,7 @@ namespace Epam.DigitalLibrary.SqlDal
             catch (Exception e)
             {
                 _connection.Close();
-                throw;
+                throw new DataAccessException(e.Message, e.InnerException);
             }
         }
 
@@ -251,7 +265,7 @@ namespace Epam.DigitalLibrary.SqlDal
             catch (Exception e)
             {
                 _connection.Close();
-                throw;
+                throw new DataAccessException(e.Message, e.InnerException);
             }
         }
 
@@ -280,7 +294,7 @@ namespace Epam.DigitalLibrary.SqlDal
             catch (Exception e)
             {
                 _connection.Close();
-                throw;
+                throw new DataAccessException(e.Message, e.InnerException);
             }
         }
 
