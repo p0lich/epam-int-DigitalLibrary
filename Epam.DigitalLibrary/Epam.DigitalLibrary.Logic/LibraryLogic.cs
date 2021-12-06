@@ -34,22 +34,10 @@ namespace Epam.DigitalLibrary.Logic
             _dataLayer = new DataLayer();
         }
 
-        //public LibraryLogic(IDataLayer dataLayer)
-        //{
-        //    _dataLayer = dataLayer;
-        //}
-
         public int AddNote(Note note)
         {
-            try
-            {
-                return _dataLayer.AddNote(note);
-            }
 
-            catch (Exception e) when (e is not DataAccessException)
-            {
-                throw new BusinessLogicException();
-            }
+            return _dataLayer.AddNote(note);
         }
 
         public IEnumerable<IGrouping<int, Note>> GroupByYear()
@@ -67,15 +55,7 @@ namespace Epam.DigitalLibrary.Logic
 
         public bool RemoveNote()
         {
-            try
-            {
-                return _dataLayer.RemoveNote();
-            }
-            
-            catch (Exception e) when (e is not DataAccessException)
-            {
-                throw new BusinessLogicException();
-            }
+            return _dataLayer.RemoveNote();
         }
 
         public List<Note> SearchBooksAndPatensByAuthor(Author author)
@@ -93,7 +73,7 @@ namespace Epam.DigitalLibrary.Logic
    
             catch (Exception e) when (e is not DataAccessException)
             {
-                throw new BusinessLogicException();
+                throw new BusinessLogicException(e.Message, e.InnerException);
             }
         }
 
@@ -107,7 +87,7 @@ namespace Epam.DigitalLibrary.Logic
 
             catch (Exception e) when (e is not DataAccessException)
             {
-                throw new BusinessLogicException();
+                throw new BusinessLogicException(e.Message, e.InnerException);
             }
         }
 
@@ -123,7 +103,7 @@ namespace Epam.DigitalLibrary.Logic
 
             catch (Exception e) when (e is not DataAccessException)
             {
-                throw new BusinessLogicException();
+                throw new BusinessLogicException(e.Message, e.InnerException);
             }
         }
 
@@ -136,7 +116,7 @@ namespace Epam.DigitalLibrary.Logic
 
             catch (Exception e) when (e is not DataAccessException)
             {
-                throw new BusinessLogicException();
+                throw new BusinessLogicException(e.Message, e.InnerException);
             }
         }
 
@@ -150,21 +130,13 @@ namespace Epam.DigitalLibrary.Logic
 
             catch (Exception e) when (e is not DataAccessException)
             {
-                throw new BusinessLogicException();
+                throw new BusinessLogicException(e.Message, e.InnerException);
             }
         }
 
         public List<Note> GetCatalog()
         {
-            try
-            {
-                return _dataLayer.GetAllNotes();
-            }
-
-            catch (Exception e) when (e is not DataAccessException)
-            {
-                throw new BusinessLogicException();
-            }
+            return _dataLayer.GetAllNotes();
         }
 
         public List<Note> SortInOrder()
@@ -176,7 +148,7 @@ namespace Epam.DigitalLibrary.Logic
 
             catch (Exception e) when (e is not DataAccessException)
             {
-                throw new BusinessLogicException();
+                throw new BusinessLogicException(e.Message, e.InnerException);
             }
         }
 
@@ -189,126 +161,53 @@ namespace Epam.DigitalLibrary.Logic
 
             catch (Exception e) when (e is not DataAccessException)
             {
-                throw new BusinessLogicException();
+                throw new BusinessLogicException(e.Message, e.InnerException);
             }
         }
 
         public int UpdateNote(Guid noteId, Note updatedNote)
         {
-            try
-            {
-                return _dataLayer.UpdateNote(noteId, updatedNote);
-            }
-
-            catch (Exception e) when (e is not DataAccessException)
-            {
-                throw new BusinessLogicException();
-            } 
+            return _dataLayer.UpdateNote(noteId, updatedNote);
         }
 
         public bool RemoveNote(Note note)
         {
-            try
-            {
-                return _dataLayer.RemoveNote(note);
-            }
-
-            catch (Exception e) when (e is not DataAccessException)
-            {
-                throw new BusinessLogicException();
-            }
+            return _dataLayer.RemoveNote(note);
         }
 
         public List<Note> GetUnmarkedNotes()
         {
-            try
-            {
-                return _dataLayer.GetAllUnmarkedNotes();
-            }
-
-            catch (Exception e) when (e is not DataAccessException)
-            {
-                throw new BusinessLogicException();
-            }
+            return _dataLayer.GetAllUnmarkedNotes();
         }
 
         public bool MarkForDelete(Note note)
         {
-            try
-            {
-                return _dataLayer.MarkNote(note);
-            }
-
-            catch (Exception e) when (e is not DataAccessException)
-            {
-                throw new BusinessLogicException();
-            }
+            return _dataLayer.MarkNote(note);
         }
 
         public Note GetById(Guid id)
         {
-            try
-            {
-                return _dataLayer.GetById(id);
-            }
-
-            catch (Exception e) when (e is not DataAccessException)
-            {
-                throw new BusinessLogicException();
-            }
+            return _dataLayer.GetById(id);
         }
 
         public Book GetBookById(Guid id)
         {
-            try
-            {
-                return _dataLayer.GetBookById(id);
-            }
-
-            catch (Exception e) when (e is not DataAccessException)
-            {
-                throw new BusinessLogicException();
-            }
+            return _dataLayer.GetBookById(id);
         }
 
         public Newspaper GetNewspaperById(Guid id)
         {
-            try
-            {
-                return _dataLayer.GetNewspaperById(id);
-            }
-
-            catch (Exception e) when (e is not DataAccessException)
-            {
-                throw new BusinessLogicException();
-            }
+            return _dataLayer.GetNewspaperById(id);
         }
 
         public Patent GetPatentById(Guid id)
         {
-            try
-            {
-                return _dataLayer.GetPatentById(id);
-
-            }
-
-            catch (Exception e) when (e is not DataAccessException)
-            {
-                throw new BusinessLogicException();
-            }
+            return _dataLayer.GetPatentById(id);
         }
 
         public List<Author> GetAvailableAuthors()
         {
-            try
-            {
-                return _dataLayer.GetAvailableAuthors();
-            }
-
-            catch (Exception e) when (e is not DataAccessException)
-            {
-                throw new BusinessLogicException();
-            }
+            return _dataLayer.GetAvailableAuthors();
         }
 
         public IEnumerable<IGrouping<string, Newspaper>> GroupNewspapersByName()
@@ -320,7 +219,7 @@ namespace Epam.DigitalLibrary.Logic
 
             catch (Exception e) when (e is not DataAccessException)
             {
-                throw new BusinessLogicException();
+                throw new BusinessLogicException(e.Message, e.InnerException);
             }
         }
 
@@ -339,7 +238,7 @@ namespace Epam.DigitalLibrary.Logic
 
             catch (Exception e) when (e is not DataAccessException)
             {
-                throw new BusinessLogicException();
+                throw new BusinessLogicException(e.Message, e.InnerException);
             }
         }
     }

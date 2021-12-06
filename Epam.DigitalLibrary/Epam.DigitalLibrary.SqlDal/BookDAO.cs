@@ -1,4 +1,5 @@
-﻿using Epam.DigitalLibrary.DalContracts;
+﻿using Epam.DigitalLibrary.CustomExeptions;
+using Epam.DigitalLibrary.DalContracts;
 using Epam.DigitalLibrary.Entities;
 using System;
 using System.Collections.Generic;
@@ -126,7 +127,7 @@ namespace Epam.DigitalLibrary.SqlDal
             catch (Exception e)
             {
                 _connection.Close();
-                throw new Exception("Unable to get books from server\n" + e.Message);
+                throw new DataAccessException(e.Message, e.InnerException);
             }
         }
 
@@ -163,7 +164,7 @@ namespace Epam.DigitalLibrary.SqlDal
 
                         if (!Guid.TryParse(outId.Value.ToString(), out bookId))
                         {
-                            throw new InvalidCastException();
+                            throw new DataAccessException();
                         }
                     }
                 }
@@ -284,7 +285,7 @@ namespace Epam.DigitalLibrary.SqlDal
             catch (Exception e)
             {
                 _connection.Close();
-                throw new Exception("Error has occurred during author set to Note\n" + e.Message);
+                throw new DataAccessException(e.Message, e.InnerException);
             }
         }
 
@@ -327,7 +328,7 @@ namespace Epam.DigitalLibrary.SqlDal
             catch (Exception e)
             {
                 _connection.Close();
-                throw new Exception("Can't find note with such id\n" + e.Message);
+                throw new DataAccessException(e.Message, e.InnerException);
             }
         }
 
@@ -371,7 +372,7 @@ namespace Epam.DigitalLibrary.SqlDal
             catch (Exception e)
             {
                 _connection.Close();
-                throw new Exception("Error. Unable to get books from server\n" + e.Message);
+                throw new DataAccessException(e.Message, e.InnerException);
             }
         }
 
@@ -414,7 +415,7 @@ namespace Epam.DigitalLibrary.SqlDal
 
             catch (Exception e)
             {
-                throw;
+                throw new DataAccessException(e.Message, e.InnerException);
             }
         }
     }

@@ -9,6 +9,7 @@ using Epam.DigitalLibrary.DalContracts;
 using Epam.DigitalLibrary.Entities;
 using System.Configuration;
 using Epam.DigitalLibrary.DalConfig;
+using Epam.DigitalLibrary.CustomExeptions;
 
 namespace Epam.DigitalLibrary.SqlDal
 {
@@ -25,8 +26,6 @@ namespace Epam.DigitalLibrary.SqlDal
 
         public SqlDataAccessObject(SqlCredential userCredential)
         {
-            var a = connStr;
-
             _credential = userCredential;
 
             _bookDAO = new BookDAO(userCredential);
@@ -201,7 +200,7 @@ namespace Epam.DigitalLibrary.SqlDal
 
             catch (Exception e)
             {
-                throw;
+                throw new DataAccessException(e.Message, e.InnerException);
             }
         }
 
@@ -286,7 +285,7 @@ namespace Epam.DigitalLibrary.SqlDal
             catch (Exception e)
             {
                 _connection.Close();
-                throw new Exception("Error has occurred during note insert\n" + e.Message);
+                throw new DataAccessException(e.Message, e.InnerException);
             }
         }
 
@@ -318,7 +317,7 @@ namespace Epam.DigitalLibrary.SqlDal
             catch (Exception e)
             {
                 _connection.Close();
-                throw new Exception("Error has occurred during note update\n" + e.Message);
+                throw new DataAccessException(e.Message, e.InnerException);
             }
         }
 
@@ -346,7 +345,7 @@ namespace Epam.DigitalLibrary.SqlDal
             catch (Exception e)
             {
                 _connection.Close();
-                throw new Exception("Cannot delete this note\n" + e.Message);
+                throw new DataAccessException(e.Message, e.InnerException);
             }
         }
     }
