@@ -10,6 +10,15 @@
 
 <h1>Edit</h1>
 
+@{
+    var error = TempData["Error"] as string;
+}
+
+@if (!string.IsNullOrEmpty(error))
+{
+    <h2 class="alert-danger" style="padding:20px;">@error</h2>
+}
+
 <h4>BookInputViewModel</h4>
 <hr />
 <div class="row">

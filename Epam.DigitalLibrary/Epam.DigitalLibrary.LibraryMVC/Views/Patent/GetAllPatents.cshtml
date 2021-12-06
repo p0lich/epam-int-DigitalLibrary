@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Epam.DigitalLibrary.LibraryMVC.Models.PatentModels.PatentLinkViewModel>
+﻿@model PagingList<Epam.DigitalLibrary.LibraryMVC.Models.PatentModels.PatentLinkViewModel>
 
 @{
     ViewData["Title"] = "GetAllPatents";
@@ -10,42 +10,49 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
-<table class="table">
-    @*<thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.ID)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PublicationDate)
-            </th>
-            <th></th>
-        </tr>
-    </thead>*@
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            @*<td>
-                @Html.DisplayFor(modelItem => item.ID)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PublicationDate)
-            </td>*@
-            <td>
-                @item.ToString()
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { id=item.ID }) |
-                @Html.ActionLink("Details", "Details", new { id = item.ID }) |
-                @Html.ActionLink("Delete", "Delete", new { id = item.ID })
-            </td>
-        </tr>
+
+@if (User.Identity.IsAuthenticated)
+{
+    <form asp-action="GetAllPatents" method="get">
+        <div class="form-actions no-color">
+            <p>
+                Find by name: <input type="text" name="SearchString" value="@ViewData["CurrentFilter"]" />
+                <input type="submit" value="Search" class="btn btn-default" /> |
+                <a asp-action="GetAllPatents">Back to Full List</a>
+            </p>
+        </div>
+    </form>
 }
+
+<table class="table">
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @item.ToString()
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { id = item.ID }) |
+                    @Html.ActionLink("Details", "Details", new { id = item.ID }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = item.ID })
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+
+@{
+    var navigationIndexes = Model.GetNavigationIndexes(Model.PageIndex);
+}
+
+@foreach (var index in navigationIndexes)
+{
+    if (index == Model.PageIndex)
+    {
+        <a class="disabled">@index</a>
+        continue;
+    }
+
+    @Html.ActionLink(string.Format($" {index} "), "GetAllPatents", new { pageId = index })
+}

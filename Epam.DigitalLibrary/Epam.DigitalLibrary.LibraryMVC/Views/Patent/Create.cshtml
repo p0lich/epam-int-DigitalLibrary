@@ -2,6 +2,7 @@
 
 @section Scripts {
     <script src="@Url.Content("~/js/js_validation_scripts/patent_validation.js")"></script>
+    <script src="@Url.Content("~/js/author_sripts/author_select.js")"></script>
 }
 
 @{
@@ -10,6 +11,15 @@
 }
 
 <h1>Create</h1>
+
+@{
+    var error = TempData["Error"] as string;
+}
+
+@if (!string.IsNullOrEmpty(error))
+{
+    <h2 class="alert-danger" style="padding:20px;">@error</h2>
+}
 
 <h4>PatentInputViewModel</h4>
 <hr />
@@ -22,6 +32,26 @@
                 <input asp-for="Name" class="form-control" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
+
+            <div class="form-group" id="authorFormGroup">
+                <label asp-for="Authors" class="control-label"></label>
+                @Html.DropDownList("AuthorList",
+                    ViewBag.AvailableAuthors as SelectList,
+                    "Select author",
+                    new { @onchange = "authorSelect(this.value, 0)" })
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Authors[0].FirstName" class="control-label"></label>
+                <input asp-for="Authors[0].FirstName" />
+                <span asp-validation-for="Authors[0].FirstName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Authors[0].LastName" class="control-label"></label>
+                <input asp-for="Authors[0].LastName" />
+                <span asp-validation-for="Authors[0].LastName" class="text-danger"></span>
+            </div>
+
             <div class="form-group">
                 <label asp-for="Country" class="control-label"></label>
                 <input asp-for="Country" class="form-control" />

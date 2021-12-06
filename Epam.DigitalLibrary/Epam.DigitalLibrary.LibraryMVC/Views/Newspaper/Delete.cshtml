@@ -7,6 +7,15 @@
 
 <h1>Delete</h1>
 
+@{
+    var error = TempData["Error"] as string;
+}
+
+@if (!string.IsNullOrEmpty(error))
+{
+    <h2 class="alert-danger" style="padding:20px;">@error</h2>
+}
+
 <h3>Are you sure you want to delete this?</h3>
 <div>
     <h4>NewspaperFullDetails</h4>
