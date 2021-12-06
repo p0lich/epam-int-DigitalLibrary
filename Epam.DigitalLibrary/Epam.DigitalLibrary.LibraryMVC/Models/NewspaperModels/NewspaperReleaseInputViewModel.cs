@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Epam.DigitalLibrary.LibraryMVC.Models.NewspaperModels
 {
-    public class NewspaperReleaseInputViewModel
+    public class NewspaperReleaseInputViewModel : IValidatableObject
     {
         [Required]
         [Range(0, short.MaxValue)]
@@ -17,5 +17,16 @@ namespace Epam.DigitalLibrary.LibraryMVC.Models.NewspaperModels
         [Required]
         [DataType(DataType.Date)]
         public DateTime ReleaseDate { get; set; }
+
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+        {
+            if (ReleaseDate.Year < 1400 || ReleaseDate.Year > DateTime.Now.Year)
+            {
+                yield return new ValidationResult(
+                    "Release Date have wrong range",
+                    new[] { nameof(ReleaseDate) }
+                    );
+            }
+        }
     }
 }

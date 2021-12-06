@@ -1,4 +1,10 @@
 ﻿$(function () {
+    $.validator.addMethod("isReleaseDateCorrect", function (value, element) {
+        let date_parse = Date.parse(value);
+        let publication_date = Date.parse(document.getElementById('PublicationDate').value);
+        let max_date = Date.now();
+        return this.optional(element) || (date_parse > publication_date && date_parse < max_date)
+    }, "Date must be between 1400 year and now");
     
     $("form[name='releaseInputForm']").validate({
         rules: {
@@ -12,6 +18,7 @@
             },
             ReleaseDate: {
                 required: true,
+                isReleaseDateCorrect: true
             },
         },
 
