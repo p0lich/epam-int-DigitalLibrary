@@ -50,28 +50,12 @@ namespace Epam.DigitalLibrary.LibraryMVC
                 .AddCookie(options => {
                     options.LoginPath = "/Login";
                     options.AccessDeniedPath = "/Denied";
-
-                    //options.Events = new CookieAuthenticationEvents()
-                    //{
-                    //    OnSigningIn = async context =>
-                    //    {
-                    //        var principal = context.Principal;
-                    //        if (principal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value == "lib_admin")
-                    //        {
-                    //            var claimsIdentity = principal.Identity as ClaimsIdentity;
-                    //            claimsIdentity.AddClaim(new Claim(ClaimTypes.Role, "library_admin"));
-                    //        }
-
-                    //        await Task.CompletedTask;
-                    //    }
-                    //};
                 });
 
             services.AddControllersWithViews();
             services.AddMvc();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             var a = Configuration.GetConnectionString("SSPIConnString");
@@ -83,7 +67,6 @@ namespace Epam.DigitalLibrary.LibraryMVC
             else
             {
                 app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
 
