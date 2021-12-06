@@ -214,16 +214,9 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
 
                 int addResult = _logic.AddNote(newspaper);
 
-                if (addResult == ResultCodes.NoteExist)
+                if (FillCreateError(addResult) is not null)
                 {
-                    TempData["Error"] = "Same note already exist";
-                    return View(nameof(Create));
-                }
-
-                if (addResult == ResultCodes.Error)
-                {
-                    TempData["Error"] = "Unable add note";
-                    return View(nameof(Create));
+                    return RedirectToAction(nameof(Create));
                 }
 
                 _logger.LogInformation(2, $"Presentation layer | User: {User.Identity.Name} | Note was added");
@@ -316,16 +309,9 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
 
                 int updateResult = _logic.UpdateNote(id, updatedNewspaper);
 
-                if(updateResult == ResultCodes.NoteExist)
-                {  
-                    TempData["Error"] = "Same note already exist";
-                    return View(nameof(Edit));
-                }
-
-                if (updateResult == ResultCodes.Error)
+                if (FillUpdateError(updateResult) is not null)
                 {
-                    TempData["Error"] = "Unable update note";
-                    return View(nameof(Edit));
+                    return RedirectToAction(nameof(Edit));
                 }
 
                 _logger.LogInformation(2, $"Presentation layer | User: {User.Identity.Name} | Note was edited");
@@ -424,10 +410,9 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
 
                 bool deleteResult = _logic.RemoveNote(newspaper);
 
-                if (!deleteResult)
+                if (FillDeleteError(deleteResult) is not null)
                 {
-                    TempData["Error"] = "Unable to delete note";
-                    return View(nameof(Delete));
+                    return RedirectToAction(nameof(Delete));
                 }
 
                 _logger.LogInformation(2, $"Presentation layer | User: {User.Identity.Name} | Note was deleted");
@@ -457,6 +442,46 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
         {
             foundNewspaper = _logic.GetNewspaperById(noteId);
             return foundNewspaper is not null;
+        }
+
+        private object FillCreateError(int addResult)
+        {
+            if (addResult == ResultCodes.NoteExist)
+            {
+                TempData["Error"] = "Cannot add. Same note already exist";
+            }
+
+            if (addResult == ResultCodes.Error)
+            {
+                TempData["Error"] = "Cannot add. Unexpected error";
+            }
+
+            return TempData["Error"];
+        }
+
+        private object FillUpdateError(int updateResult)
+        {
+            if (updateResult == ResultCodes.NoteExist)
+            {
+                TempData["Error"] = "Cannot update. Same note already exist";
+            }
+
+            if (updateResult == ResultCodes.Error)
+            {
+                TempData["Error"] = "Cannot update. Unexpected error";
+            }
+
+            return TempData["Error"];
+        }
+
+        private object FillDeleteError(bool deleteResult)
+        {
+            if (deleteResult == ResultCodes.ErrorDelete)
+            {
+                TempData["Error"] = "Cannot delete. Undexpected error";
+            }
+
+            return TempData["Error"];
         }
     }
 }

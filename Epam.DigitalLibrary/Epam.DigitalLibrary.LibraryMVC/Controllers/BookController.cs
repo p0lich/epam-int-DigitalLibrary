@@ -273,16 +273,9 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
 
                 int updateResult = _logic.UpdateNote(id, updateBook);
 
-                if (updateResult == ResultCodes.NoteExist)
+                if (FillUpdateError(updateResult) is not null)
                 {
-                    TempData["Error"] = "Same note already exist";
-                    return View(nameof(Edit));
-                }
-
-                if (updateResult == ResultCodes.Error)
-                {
-                    TempData["Error"] = "Unable update note";
-                    return View(nameof(Edit));
+                    return RedirectToAction(nameof(Edit));
                 }
 
                 _logger.LogInformation(2, $"Presentation layer | User: {User.Identity.Name} | Note was edited");
@@ -370,10 +363,9 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
 
                 bool deleteResult = _logic.RemoveNote(book);
 
-                if (!deleteResult)
+                if (FillDeleteError(deleteResult) is not null)
                 {
-                    TempData["Error"] = "Unable to delete note";
-                    return View(nameof(Delete));
+                    return RedirectToAction(nameof(Delete));
                 }
 
                 _logger.LogInformation(2, $"Presentation layer | User: {User.Identity.Name} | Note was deleted");
