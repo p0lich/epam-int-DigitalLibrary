@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Security.Claims;
 using System.Data.SqlClient;
 using Epam.DigitalLibrary.LibraryMVC.CustomIdentity;
+using Epam.DigitalLibrary.LibraryMVC.CustomEncryption;
 
 namespace Epam.DigitalLibrary.LibraryMVC
 {
@@ -45,11 +46,12 @@ namespace Epam.DigitalLibrary.LibraryMVC
             services.AddSingleton<IUserRightsProvider>(new UserLogic(Configuration.GetConnectionString("SSPIConnString"), credential));
 
             services.AddTransient<IUserRoleProvider, CustomUserRoleProvider>();
+            services.AddTransient<ISHA512HashCompute, SHA512Compute>();
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options => {
-                    options.LoginPath = "/Login";
-                    options.AccessDeniedPath = "/Denied";
+                    options.LoginPath = "/Authenticate/LoginRedirect";
+                    options.AccessDeniedPath = "/Authenticate/Denied";
                 });
 
             services.AddControllersWithViews();

@@ -12,16 +12,19 @@ using Microsoft.AspNetCore.Mvc;
 using Epam.DigitalLibrary.LibraryMVC.Models;
 using System.Security.Cryptography;
 using System.Text;
+using Epam.DigitalLibrary.LibraryMVC.CustomEncryption;
 
 namespace Epam.DigitalLibrary.LibraryMVC.CustomIdentity
 {
     public class CustomUserRoleProvider : IUserRoleProvider
     {
         private readonly IUserRightsProvider _userLogic;
+        private readonly ISHA512HashCompute _hashCompute;
 
-        public CustomUserRoleProvider(IUserRightsProvider userLogic)
+        public CustomUserRoleProvider(IUserRightsProvider userLogic, ISHA512HashCompute hashCompute)
         {
             _userLogic = userLogic;
+            _hashCompute = hashCompute;
         }
 
         public int AuthenticateUser(string login, string password)
@@ -32,15 +35,10 @@ namespace Epam.DigitalLibrary.LibraryMVC.CustomIdentity
             {
                 return AuthenticationCodes.NotExist;
             }
-  
-            byte[] storedHash = Encoding.ASCII.GetBytes(realUser.Password);
-            string realPassword = Encoding.ASCII.GetString(storedHash);
 
-            SHA512 sha512 = new SHA512Managed();
-            byte[] inputHash = sha512.ComputeHash(Encoding.ASCII.GetBytes(password));
-            string inputPassword = @$"{Encoding.ASCII.GetString(inputHash)}";
+            string inputPassword = _hashCompute.EncryptString(password);
 
-            if (realPassword == inputPassword)
+            if (realUser.Password == inputPassword)
             {
                 return AuthenticationCodes.PasswordMismatch;
             }
@@ -76,14 +74,12 @@ namespace Epam.DigitalLibrary.LibraryMVC.CustomIdentity
         {
             User existedUser = _userLogic.GetUser(login);
 
-            SHA512 sha512 = new SHA512Managed();
-            byte[] encBytePass = sha512.ComputeHash(Encoding.ASCII.GetBytes(password));
-            string encPass = @$"{Encoding.ASCII.GetString(encBytePass)}";
-
             if (existedUser is not null)
             {
                 return AuthenticationCodes.UserAlreadyExist;
             }
+
+            string encPass = _hashCompute.EncryptString(password);
 
             User user = new User(login, encPass);
 
