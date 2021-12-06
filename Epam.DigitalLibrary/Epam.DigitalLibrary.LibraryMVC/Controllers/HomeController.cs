@@ -27,22 +27,6 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
             _logger = logger;
             _logic = logic;
             _userLogic = userLogic;
-
-            //_logger.LogDebug(1, "NLog was injected");
-
-            //for (int i = 0; i < 10; i++)
-            //{
-            //    _logic.AddNote(new Book(
-            //    name: ("book" + (i + 1).ToString()),
-            //    authors: new List<Author> { new Author("Ivan", "Karasev"), new Author("Aleksei", "Ivanov") },
-            //    publicationPlace: "Saratov",
-            //    publisher: "booker",
-            //    publicationDate: new DateTime(1900, 01, 01),
-            //    pagesCount: 50,
-            //    objectNotes: "aoaoaoaoa",
-            //    iSBN: null
-            //    ));
-            //}
         }
 
         public IActionResult Index()
@@ -69,73 +53,6 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
             var model = PagingList<BookLinkViewModel>.GetPageItems(booksLink, pageId, 20);
 
             return View(model);
-        }
-
-        [HttpGet("Login")]
-        public IActionResult Login()
-        {
-            //ViewData["ReturnUrl"] = returnUrl;
-            return View();
-        }
-
-        [HttpPost("Login")]
-        public async Task<IActionResult> Validate(UserView userView)
-        {
-            //ViewData["ReturnUrl"] = returnUrl;
-
-            if (!ModelState.IsValid)
-            {
-                return View("Login");
-            }
-
-            User user = _userLogic.GetUser(userView.Login);
-
-            if (user is null)
-            {
-                TempData["Error"] = "Error. User with such login isn't exist";
-                return View(nameof(Login));
-            }
-
-            if (user.Password != userView.Password)
-            {
-                TempData["Error"] = "Error. Password is invalid";
-                return View(nameof(Login));
-            }
-
-            var claims = new List<Claim>();
-
-            claims.Add(new Claim("login", user.Login));
-            claims.Add(new Claim(ClaimTypes.NameIdentifier, user.Login));
-            claims.Add(new Claim(ClaimTypes.Name, user.Login));
-
-            List<string> roles = _userLogic.GetRoles(user.ID);
-
-            foreach (var role in roles)
-            {
-                claims.Add(new Claim(ClaimTypes.Role, role));
-            }
-
-            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-            var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
-
-            _logger.LogInformation(0, $"User {user.Login} has log in");
-
-            await HttpContext.SignInAsync(claimsPrincipal);
-            return RedirectToAction(nameof(Index));
-        }
-
-        [Authorize]
-        public async Task<IActionResult> Logout()
-        {
-            await HttpContext.SignOutAsync();
-            return Redirect(nameof(Index));
-        }
-
-        [HttpGet("Denied")]
-        public IActionResult DeniedPage()
-        {
-            _logger.LogWarning(1, "Unauthorized access attempt");
-            return View();
         }
     }
 }

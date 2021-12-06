@@ -1,4 +1,5 @@
-﻿using Epam.DigitalLibrary.Entities;
+﻿using Epam.DigitalLibrary.CustomExeptions;
+using Epam.DigitalLibrary.Entities;
 using Epam.DigitalLibrary.LibraryMVC.Models;
 using Epam.DigitalLibrary.LibraryMVC.Models.NewspaperModels;
 using Epam.DigitalLibrary.LogicContracts;
@@ -24,90 +25,164 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
             _logic = logic;
         }
 
-        // GET: NewspaperController
         public ActionResult Index()
         {
             return View();
         }
 
         [Route("Newspaper/GetNewspaperReleases/{id:Guid}/{pageId:int?}")]
-        public ActionResult GetNewspaperReleases(Guid id, int pageId = 1)
+        public ActionResult GetNewspaperReleases(Guid id, string searchString, int pageId = 1)
         {
-            IEnumerable<Newspaper> newspaperReleases = _logic.GetNewspaperReleases(id);
+            try
+            {
+                IEnumerable<Newspaper> newspaperReleases = _logic.GetNewspaperReleases(id);
 
-            List<NewspaperReleaseLinkViewModel> newspaperLinks = newspaperReleases
-                .OfType<Newspaper>()
-                .Select(n => new NewspaperReleaseLinkViewModel(n))
-                .ToList();
+                List<NewspaperReleaseLinkViewModel> newspaperLinks = newspaperReleases
+                    .OfType<Newspaper>()
+                    .Select(n => new NewspaperReleaseLinkViewModel(n))
+                    .ToList();
 
-            var model = PagingList<NewspaperReleaseLinkViewModel>.GetPageItems(newspaperLinks, pageId, 20);
+                ViewData["SearchFilter"] = searchString;
 
-            return View(model);
+                if (!string.IsNullOrEmpty(searchString))
+                {
+                    newspaperLinks = newspaperLinks.Where(b => b.Name.Contains(searchString)).ToList();
+                }
+
+                var model = PagingList<NewspaperReleaseLinkViewModel>.GetPageItems(newspaperLinks, pageId, 20);
+
+                return View(model);
+            }
+
+            catch (DataAccessException e)
+            {
+                _logger.LogInformation(4, "Error on data acces layer");
+                return Redirect("/");
+            }
+
+            catch (BusinessLogicException)
+            {
+                _logger.LogInformation(4, "Error on business layer");
+                return Redirect("/");
+            }
+
+            catch (Exception e) when (e is not DataAccessException && e is not BusinessLogicException)
+            {
+                _logger.LogInformation(4, "Unhandled exception");
+                return Redirect("/");
+            }
         }
 
         [Route("Newspaper/GetAllReleases/{id:int?}")]
-        public ActionResult GetAllReleases(int pageId = 1)
+        public ActionResult GetAllReleases(string searchString, int pageId = 1)
         {
-            List<NewspaperReleaseLinkViewModel> newspaperLinks = _logic.GetCatalog()
+            try
+            {
+                List<NewspaperReleaseLinkViewModel> newspaperLinks = _logic.GetCatalog()
                 .OfType<Newspaper>()
                 .Select(n => new NewspaperReleaseLinkViewModel(n))
                 .ToList();
 
-            var model = PagingList<NewspaperReleaseLinkViewModel>.GetPageItems(newspaperLinks, pageId, 20);
+                ViewData["SearchFilter"] = searchString;
 
-            return View(model);
+                if (!string.IsNullOrEmpty(searchString))
+                {
+                    newspaperLinks = newspaperLinks.Where(b => b.Name.Contains(searchString)).ToList();
+                }
+
+                var model = PagingList<NewspaperReleaseLinkViewModel>.GetPageItems(newspaperLinks, pageId, 20);
+
+                return View(model);
+            }
+
+            catch (DataAccessException e)
+            {
+                _logger.LogInformation(4, "Error on data acces layer");
+                return Redirect("/");
+            }
+
+            catch (BusinessLogicException)
+            {
+                _logger.LogInformation(4, "Error on business layer");
+                return Redirect("/");
+            }
+
+            catch (Exception e) when (e is not DataAccessException && e is not BusinessLogicException)
+            {
+                _logger.LogInformation(4, "Unhandled exception");
+                return Redirect("/");
+            }
         }
 
-        // GET: NewspaperController/Details/5
+        [Authorize(Roles = UserRights.Reader +"," + UserRights.Librarian + "," + UserRights.Admin)]
         [Route("Newspaper/Details/{id:Guid}")]
         public ActionResult Details(Guid id)
         {
-            Newspaper newspaper = _logic.GetNewspaperById(id);
-
-            if (newspaper is null)
+            try
             {
-                return NotFound();
+                Newspaper newspaper = _logic.GetNewspaperById(id);
+
+                if (newspaper is null)
+                {
+                    return NotFound();
+                }
+
+                NewspaperDetailsViewModel newspaperDetails = new NewspaperDetailsViewModel()
+                {
+                    Name = newspaper.Name,
+                    PublicationPlace = newspaper.PublicationPlace,
+                    Publisher = newspaper.Publisher,
+                    PublicationDate = newspaper.PublicationDate,
+                    ObjectNotes = newspaper.ObjectNotes,
+                    ISSN = newspaper.ISSN
+                };
+
+                NewspaperReleaseDetailsViewModel releaseDetails = new NewspaperReleaseDetailsViewModel()
+                {
+                    ID = newspaper.ID,
+                    PagesCount = newspaper.PagesCount,
+                    Number = newspaper.Number,
+                    ReleaseDate = newspaper.ReleaseDate,
+                    IsDeleted = newspaper.IsDeleted
+                };
+
+                NewspaperFullDetails newspaperFullDetails = new NewspaperFullDetails()
+                {
+                    NewspaperDetails = newspaperDetails,
+                    ReleaseDetails = releaseDetails
+                };
+
+                return View(newspaperFullDetails);
             }
 
-            NewspaperDetailsViewModel newspaperDetails = new NewspaperDetailsViewModel()
+            catch (DataAccessException e)
             {
-                Name = newspaper.Name,
-                PublicationPlace = newspaper.PublicationPlace,
-                Publisher = newspaper.Publisher,
-                PublicationDate = newspaper.PublicationDate,
-                ObjectNotes = newspaper.ObjectNotes,
-                ISSN = newspaper.ISSN
-            };
+                _logger.LogInformation(4, "Error on data acces layer");
+                return Redirect("/");
+            }
 
-            NewspaperReleaseDetailsViewModel releaseDetails = new NewspaperReleaseDetailsViewModel()
+            catch (BusinessLogicException)
             {
-                ID = newspaper.ID,
-                PagesCount = newspaper.PagesCount,
-                Number = newspaper.Number,
-                ReleaseDate = newspaper.ReleaseDate,
-                IsDeleted = newspaper.IsDeleted
-            };
+                _logger.LogInformation(4, "Error on business layer");
+                return Redirect("/");
+            }
 
-            NewspaperFullDetails newspaperFullDetails = new NewspaperFullDetails()
+            catch (Exception e) when (e is not DataAccessException && e is not BusinessLogicException)
             {
-                NewspaperDetails = newspaperDetails,
-                ReleaseDetails = releaseDetails
-            };
-
-            return View(newspaperFullDetails);
+                _logger.LogInformation(4, "Unhandled exception");
+                return Redirect("/");
+            }
         }
 
-        // GET: NewspaperController/Create
-        [Authorize(Roles = UserRights.Librarian)]
+        [Authorize(Roles = UserRights.Librarian + "," + UserRights.Admin)]
         [Route("Newspaper/Create")]
         public ActionResult Create()
         {
             return View();
         }
 
-        // POST: NewspaperController/Create
         [HttpPost]
-        [Authorize(Roles = UserRights.Librarian)]
+        [Authorize(Roles = UserRights.Librarian + "," + UserRights.Admin)]
         [Route("Newspaper/Create")]
         [ValidateAntiForgeryToken]
         public ActionResult Create(NewspaperFullInput newspaperFullInput)
@@ -134,48 +209,87 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
                     iSSN: newspaperInput.ISSN
                     );
 
-                int inputResult = _logic.AddNote(newspaper);
+                int addResult = _logic.AddNote(newspaper);
 
-                if (inputResult == ResultCodes.NoteExist)
+                if (addResult == ResultCodes.NoteExist)
                 {
-                    TempData["SameNewspaper"] = "Same newspaper release already exist";
-                    return View();
+                    TempData["Error"] = "Same note already exist";
+                    return View(nameof(Create));
                 }
 
+                if (addResult == ResultCodes.Error)
+                {
+                    TempData["Error"] = "Unable add note";
+                    return View(nameof(Create));
+                }
+
+                _logger.LogInformation(2, "Note was added");
                 return RedirectToAction(nameof(GetAllReleases));
             }
 
-            catch
+            catch (DataAccessException e)
             {
-                return View();
+                _logger.LogInformation(4, "Error on data acces layer");
+                return Redirect("/");
+            }
+
+            catch (BusinessLogicException)
+            {
+                _logger.LogInformation(4, "Error on business layer");
+                return Redirect("/");
+            }
+
+            catch (Exception e) when (e is not DataAccessException && e is not BusinessLogicException)
+            {
+                _logger.LogInformation(4, "Unhandled exception");
+                return Redirect("/");
             }
         }
 
-        // GET: NewspaperController/Edit/5
-        [Authorize(Roles = UserRights.Librarian)]
+        [Authorize(Roles = UserRights.Librarian + "," + UserRights.Admin)]
         [Route("Newspaper/Edit/{id:Guid}")]
         public ActionResult Edit(Guid id)
         {
-            Newspaper newspaper = _logic.GetNewspaperById(id);
-
-            if (newspaper is null)
+            try
             {
-                return NotFound();
+                Newspaper newspaper = _logic.GetNewspaperById(id);
+
+                if (newspaper is null)
+                {
+                    return NotFound();
+                }
+
+                NewspaperReleaseInputViewModel releaseDetails = new NewspaperReleaseInputViewModel()
+                {
+                    PagesCount = newspaper.PagesCount,
+                    Number = newspaper.Number,
+                    ReleaseDate = newspaper.ReleaseDate
+                };
+
+                return View(releaseDetails);
             }
 
-            NewspaperReleaseInputViewModel releaseDetails = new NewspaperReleaseInputViewModel()
+            catch (DataAccessException e)
             {
-                PagesCount = newspaper.PagesCount,
-                Number = newspaper.Number,
-                ReleaseDate = newspaper.ReleaseDate
-            };
+                _logger.LogInformation(4, "Error on data acces layer");
+                return Redirect("/");
+            }
 
-            return View(releaseDetails);
+            catch (BusinessLogicException)
+            {
+                _logger.LogInformation(4, "Error on business layer");
+                return Redirect("/");
+            }
+
+            catch (Exception e) when (e is not DataAccessException && e is not BusinessLogicException)
+            {
+                _logger.LogInformation(4, "Unhandled exception");
+                return Redirect("/");
+            }
         }
 
-        // POST: NewspaperController/Edit/5
         [HttpPost]
-        [Authorize(Roles = UserRights.Librarian)]
+        [Authorize(Roles = UserRights.Librarian + "," + UserRights.Admin)]
         [Route("Newspaper/Edit/{id:Guid}")]
         [ValidateAntiForgeryToken]
         public ActionResult Edit(Guid id, NewspaperReleaseInputViewModel releaseInput)
@@ -203,64 +317,103 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
 
                 int updateResult = _logic.UpdateNote(id, updatedNewspaper);
 
-                if (updateResult == ResultCodes.NoteExist)
+                if(updateResult == ResultCodes.NoteExist)
                 {
-                    TempData["SameNewspaper"] = "Same newspaper release already exist";
-                    return View();
+                    TempData["Error"] = "Same note already exist";
+                    return View(nameof(Edit));
                 }
 
+                if (updateResult == ResultCodes.Error)
+                {
+                    TempData["Error"] = "Unable update note";
+                    return View(nameof(Edit));
+                }
+
+                _logger.LogInformation(2, "Note was edited");
                 return RedirectToAction(nameof(GetAllReleases));
             }
 
-            catch
+            catch (DataAccessException e)
             {
-                return View();
+                _logger.LogInformation(4, "Error on data acces layer");
+                return Redirect("/");
+            }
+
+            catch (BusinessLogicException)
+            {
+                _logger.LogInformation(4, "Error on business layer");
+                return Redirect("/");
+            }
+
+            catch (Exception e) when (e is not DataAccessException && e is not BusinessLogicException)
+            {
+                _logger.LogInformation(4, "Unhandled exception");
+                return Redirect("/");
             }
         }
 
-        // GET: NewspaperController/Delete/5
-        [Authorize(Roles = UserRights.Librarian)]
+        [Authorize(Roles = UserRights.Librarian + "," + UserRights.Admin)]
         [Route("Newspaper/Delete/{id:Guid}")]
         public ActionResult Delete(Guid id)
         {
-            Newspaper newspaper = _logic.GetNewspaperById(id);
-
-            if (newspaper is null)
+            try
             {
-                return NotFound();
+                Newspaper newspaper = _logic.GetNewspaperById(id);
+
+                if (newspaper is null)
+                {
+                    return NotFound();
+                }
+
+                NewspaperDetailsViewModel newspaperDetails = new NewspaperDetailsViewModel()
+                {
+                    Name = newspaper.Name,
+                    PublicationPlace = newspaper.PublicationPlace,
+                    Publisher = newspaper.Publisher,
+                    PublicationDate = newspaper.PublicationDate,
+                    ObjectNotes = newspaper.ObjectNotes,
+                    ISSN = newspaper.ISSN
+                };
+
+                NewspaperReleaseDetailsViewModel releaseDetails = new NewspaperReleaseDetailsViewModel()
+                {
+                    ID = newspaper.ID,
+                    PagesCount = newspaper.PagesCount,
+                    Number = newspaper.Number,
+                    ReleaseDate = newspaper.ReleaseDate,
+                    IsDeleted = newspaper.IsDeleted
+                };
+
+                NewspaperFullDetails newspaperFullDetails = new NewspaperFullDetails()
+                {
+                    NewspaperDetails = newspaperDetails,
+                    ReleaseDetails = releaseDetails
+                };
+
+                return View(newspaperFullDetails);
             }
 
-            NewspaperDetailsViewModel newspaperDetails = new NewspaperDetailsViewModel()
+            catch (DataAccessException e)
             {
-                Name = newspaper.Name,
-                PublicationPlace = newspaper.PublicationPlace,
-                Publisher = newspaper.Publisher,
-                PublicationDate = newspaper.PublicationDate,
-                ObjectNotes = newspaper.ObjectNotes,
-                ISSN = newspaper.ISSN
-            };
+                _logger.LogInformation(4, "Error on data acces layer");
+                return Redirect("/");
+            }
 
-            NewspaperReleaseDetailsViewModel releaseDetails = new NewspaperReleaseDetailsViewModel()
+            catch (BusinessLogicException)
             {
-                ID = newspaper.ID,
-                PagesCount = newspaper.PagesCount,
-                Number = newspaper.Number,
-                ReleaseDate = newspaper.ReleaseDate,
-                IsDeleted = newspaper.IsDeleted
-            };
+                _logger.LogInformation(4, "Error on business layer");
+                return Redirect("/");
+            }
 
-            NewspaperFullDetails newspaperFullDetails = new NewspaperFullDetails()
+            catch (Exception e) when (e is not DataAccessException && e is not BusinessLogicException)
             {
-                NewspaperDetails = newspaperDetails,
-                ReleaseDetails = releaseDetails
-            };
-
-            return View(newspaperFullDetails);
+                _logger.LogInformation(4, "Unhandled exception");
+                return Redirect("/");
+            }
         }
 
-        // POST: NewspaperController/Delete/5
         [HttpPost]
-        [Authorize(Roles = UserRights.Librarian)]
+        [Authorize(Roles = UserRights.Librarian + "," + UserRights.Admin)]
         [Route("Newspaper/Delete/{id:Guid}")]
         [ValidateAntiForgeryToken]
         public ActionResult CompleteDelete(Guid id)
@@ -274,14 +427,34 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
                     return NotFound();
                 }
 
-                _logic.RemoveNote(newspaper);
+                bool deleteResult = _logic.RemoveNote(newspaper);
 
+                if (!deleteResult)
+                {
+                    TempData["Error"] = "Unable to delete note";
+                    return View(nameof(Delete));
+                }
+
+                _logger.LogInformation(2, "Note was deleted");
                 return RedirectToAction(nameof(GetAllReleases));
             }
 
-            catch
+            catch (DataAccessException e)
             {
-                return View();
+                _logger.LogInformation(4, "Error on data acces layer");
+                return Redirect("/");
+            }
+
+            catch (BusinessLogicException)
+            {
+                _logger.LogInformation(4, "Error on business layer");
+                return Redirect("/");
+            }
+
+            catch (Exception e) when (e is not DataAccessException && e is not BusinessLogicException)
+            {
+                _logger.LogInformation(4, "Unhandled exception");
+                return Redirect("/");
             }
         }
     }

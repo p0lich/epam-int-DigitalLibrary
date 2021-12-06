@@ -1,4 +1,5 @@
-﻿using Epam.DigitalLibrary.Entities;
+﻿using Epam.DigitalLibrary.CustomExeptions;
+using Epam.DigitalLibrary.Entities;
 using Epam.DigitalLibrary.LibraryMVC.Models;
 using Epam.DigitalLibrary.LogicContracts;
 using Microsoft.AspNetCore.Authorization;
@@ -26,10 +27,11 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
             _userLogic = userLogic;
         }
 
-        // GET: AdminController
         public ActionResult Index()
         {
-            IEnumerable<UserLinkView> userLinks = _userLogic.GetUsers()
+            try
+            {
+                IEnumerable<UserLinkView> userLinks = _userLogic.GetUsers()
                 .Select(u => new UserLinkView()
                 {
                     Id = u.ID,
@@ -37,7 +39,26 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
                     Roles = _userLogic.GetRoles(u.ID)
                 });
 
-            return View(userLinks);
+                return View(userLinks);
+            }
+
+            catch (DataAccessException e)
+            {
+                _logger.LogInformation(4, "Error on data acces layer");
+                return Redirect("/");
+            }
+
+            catch (BusinessLogicException)
+            {
+                _logger.LogInformation(4, "Error on business layer");
+                return Redirect("/");
+            }
+
+            catch (Exception e) when (e is not DataAccessException && e is not BusinessLogicException)
+            {
+                _logger.LogInformation(4, "Unhandled exception");
+                return Redirect("/");
+            }
         }
        
         [HttpPost]
@@ -45,14 +66,36 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult GrantRole(Guid roleId, Guid userId)
         {
-            bool setResult = _userLogic.SetUserToRole(userId, roleId);
-
-            if (!setResult)
+            try
             {
-                TempData["Error"] = "Unable set user role";
+                bool setResult = _userLogic.SetUserToRole(userId, roleId);
+
+                if (!setResult)
+                {
+                    TempData["Error"] = "Unable set user role";
+                }
+
+                _logger.LogInformation(2, $"Role with id {roleId} was granted to user {_userLogic.GetUser(userId).Login}");
+                return RedirectToAction(nameof(Index));
             }
 
-            return RedirectToAction(nameof(Index));
+            catch (DataAccessException e)
+            {
+                _logger.LogInformation(4, "Error on data acces layer");
+                return Redirect("/");
+            }
+
+            catch (BusinessLogicException)
+            {
+                _logger.LogInformation(4, "Error on business layer");
+                return Redirect("/");
+            }
+
+            catch (Exception e) when (e is not DataAccessException && e is not BusinessLogicException)
+            {
+                _logger.LogInformation(4, "Unhandled exception");
+                return Redirect("/");
+            }
         }
 
         [HttpPost]
@@ -60,14 +103,36 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult RemoveRole(Guid roleId, Guid userId)
         {
-            bool removeRoleresult = _userLogic.RemoveRoleFromUser(userId, roleId);
-
-            if (!removeRoleresult)
+            try
             {
-                TempData["Error"] = "Unable remove role from user";
+                bool removeRoleresult = _userLogic.RemoveRoleFromUser(userId, roleId);
+
+                if (!removeRoleresult)
+                {
+                    TempData["Error"] = "Unable remove role from user";
+                }
+
+                _logger.LogInformation(2, $"Role with id {roleId} was removed from user {_userLogic.GetUser(userId).Login}");
+                return RedirectToAction(nameof(Index));
             }
 
-            return RedirectToAction(nameof(Index));
+            catch (DataAccessException e)
+            {
+                _logger.LogInformation(4, "Error on data acces layer");
+                return Redirect("/");
+            }
+
+            catch (BusinessLogicException)
+            {
+                _logger.LogInformation(4, "Error on business layer");
+                return Redirect("/");
+            }
+
+            catch (Exception e) when (e is not DataAccessException && e is not BusinessLogicException)
+            {
+                _logger.LogInformation(4, "Unhandled exception");
+                return Redirect("/");
+            }
         }
     }
 }

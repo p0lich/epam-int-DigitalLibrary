@@ -1,4 +1,5 @@
-﻿using Epam.DigitalLibrary.Entities;
+﻿using Epam.DigitalLibrary.CustomExeptions;
+using Epam.DigitalLibrary.Entities;
 using Epam.DigitalLibrary.LibraryMVC.Models;
 using Epam.DigitalLibrary.LibraryMVC.Models.PatentModels;
 using Epam.DigitalLibrary.LogicContracts;
@@ -24,65 +25,110 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
             _logic = logic;
         }
 
-        // GET: PatentController
         public ActionResult Index()
         {
             return View();
         }
 
         [Route("Patent/GetAllPatents/{id:int?}")]
-        public ActionResult GetAllPatents(int pageId = 1)
+        public ActionResult GetAllPatents(string searchString, int pageId = 1)
         {
-            List<PatentLinkViewModel> patentLinks = _logic.GetCatalog().OfType<Patent>().Select(p => new PatentLinkViewModel(p)).ToList();
+            try
+            {
+                List<PatentLinkViewModel> patentLinks = _logic.GetCatalog().OfType<Patent>().Select(p => new PatentLinkViewModel(p)).ToList();
 
-            var model = PagingList<PatentLinkViewModel>.GetPageItems(patentLinks, pageId, 20);
+                ViewData["SearchFilter"] = searchString;
 
-            return View(model);
+                if (!string.IsNullOrEmpty(searchString))
+                {
+                    patentLinks = patentLinks.Where(b => b.Name.Contains(searchString)).ToList();
+                }
+
+                var model = PagingList<PatentLinkViewModel>.GetPageItems(patentLinks, pageId, 20);
+
+                return View(model);
+            }
+
+            catch (DataAccessException e)
+            {
+                _logger.LogInformation(4, "Error on data acces layer");
+                return Redirect("/");
+            }
+
+            catch (BusinessLogicException)
+            {
+                _logger.LogInformation(4, "Error on business layer");
+                return Redirect("/");
+            }
+
+            catch (Exception e) when (e is not DataAccessException && e is not BusinessLogicException)
+            {
+                _logger.LogInformation(4, "Unhandled exception");
+                return Redirect("/");
+            }
         }
 
-        // GET: PatentController/Details/5
-        [Authorize(Roles = UserRights.Reader)]
+        [Authorize(Roles = UserRights.Reader + "," + UserRights.Librarian + "," + UserRights.Admin)]
         [Route("Patent/Details/{id:Guid}")]
         public ActionResult Details(Guid id)
         {
-            Patent patent = _logic.GetPatentById(id);
-
-            if (patent is null)
+            try
             {
-                return NotFound();
+                Patent patent = _logic.GetPatentById(id);
+
+                if (patent is null)
+                {
+                    return NotFound();
+                }
+
+                PatentDetailsViewModel patentDetails = new PatentDetailsViewModel
+                {
+                    ID = patent.ID,
+                    Name = patent.Name,
+                    Authors = patent.Authors,
+                    Country = patent.Country,
+                    RegistrationNumber = patent.RegistrationNumber,
+                    ApplicationDate = patent.ApplicationDate,
+                    PublicationDate = patent.PublicationDate,
+                    PagesCount = patent.PagesCount,
+                    ObjectNotes = patent.ObjectNotes,
+                    IsDeleted = patent.IsDeleted
+                };
+
+                return View(patentDetails);
             }
 
-            PatentDetailsViewModel patentDetails = new PatentDetailsViewModel
+            catch (DataAccessException e)
             {
-                ID = patent.ID,
-                Name = patent.Name,
-                Authors = patent.Authors,
-                Country = patent.Country,
-                RegistrationNumber = patent.RegistrationNumber,
-                ApplicationDate = patent.ApplicationDate,
-                PublicationDate = patent.PublicationDate,
-                PagesCount = patent.PagesCount,
-                ObjectNotes = patent.ObjectNotes,
-                IsDeleted = patent.IsDeleted
-            };
+                _logger.LogInformation(4, "Error on data acces layer");
+                return Redirect("/");
+            }
 
-            return View(patentDetails);
+            catch (BusinessLogicException)
+            {
+                _logger.LogInformation(4, "Error on business layer");
+                return Redirect("/");
+            }
+
+            catch (Exception e) when (e is not DataAccessException && e is not BusinessLogicException)
+            {
+                _logger.LogInformation(4, "Unhandled exception");
+                return Redirect("/");
+            }
         }
 
-        // GET: PatentController/Create
-        [Authorize(Roles = UserRights.Librarian)]
+        [Authorize(Roles = UserRights.Librarian + "," + UserRights.Admin)]
         [Route("Patent/Create")]
         public ActionResult Create()
         {
             return View();
         }
 
-        // POST: PatentController/Create
         [HttpPost]
-        [Authorize(Roles = UserRights.Librarian)]
+        [Authorize(Roles = UserRights.Librarian + "," + UserRights.Admin)]
         [Route("Patent/Create")]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(PatentInputViewModel patentInput)
+        public ActionResult Create(PatentInputViewModel patentInput, List<AuthorView> authors)
         {
             try
             {
@@ -91,9 +137,11 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
                     return View(patentInput);
                 }
 
+                List<Author> inputAuthors = authors.Select(a => new Author(a.FirstName, a.LastName)).ToList();
+
                 Patent patent = new Patent(
                     name: patentInput.Name,
-                    authors: new List<Author>() { new Author("Smart", "Boy"), new Author("Clever", "Girl") },
+                    authors: inputAuthors,
                     country: patentInput.Country,
                     registrationNumber: patentInput.RegistrationNumber,
                     applicationDate: patentInput.ApplicationDate,
@@ -106,48 +154,88 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
 
                 if (addResult == ResultCodes.NoteExist)
                 {
-                    TempData["SamePatent"] = "Same patent already exist";
-                    return View(patentInput);
+                    TempData["Error"] = "Same note already exist";
+                    return View(nameof(Create));
                 }
 
+                if (addResult == ResultCodes.Error)
+                {
+                    TempData["Error"] = "Unable add note";
+                    return View(nameof(Create));
+                }
+
+                _logger.LogInformation(2, "Note was added");
                 return RedirectToAction(nameof(GetAllPatents));
             }
-            catch
+
+            catch (DataAccessException e)
             {
-                return View();
+                _logger.LogInformation(4, "Error on data acces layer");
+                return Redirect("/");
+            }
+
+            catch (BusinessLogicException)
+            {
+                _logger.LogInformation(4, "Error on business layer");
+                return Redirect("/");
+            }
+
+            catch (Exception e) when (e is not DataAccessException && e is not BusinessLogicException)
+            {
+                _logger.LogInformation(4, "Unhandled exception");
+                return Redirect("/");
             }
         }
 
-        // GET: PatentController/Edit/5
-        [Authorize(Roles = UserRights.Librarian)]
+        [Authorize(Roles = UserRights.Librarian + "," + UserRights.Admin)]
         [Route("Patent/Edit/{id:Guid}")]
         public ActionResult Edit(Guid id)
         {
-            Patent patent = _logic.GetPatentById(id);
-
-            if (patent is null)
+            try
             {
-                return NotFound();
+                Patent patent = _logic.GetPatentById(id);
+
+                if (patent is null)
+                {
+                    return NotFound();
+                }
+
+                PatentInputViewModel patentModel = new PatentInputViewModel()
+                {
+                    Name = patent.Name,
+                    //Authors = patent.Authors,
+                    Country = patent.Country,
+                    RegistrationNumber = patent.RegistrationNumber,
+                    ApplicationDate = patent.ApplicationDate,
+                    PublicationDate = patent.PublicationDate,
+                    PagesCount = patent.PagesCount,
+                    ObjectNotes = patent.ObjectNotes,
+                };
+
+                return View(patentModel);
             }
 
-            PatentInputViewModel patentModel = new PatentInputViewModel()
+            catch (DataAccessException e)
             {
-                Name = patent.Name,
-                //Authors = patent.Authors,
-                Country = patent.Country,
-                RegistrationNumber = patent.RegistrationNumber,
-                ApplicationDate = patent.ApplicationDate,
-                PublicationDate = patent.PublicationDate,
-                PagesCount = patent.PagesCount,
-                ObjectNotes = patent.ObjectNotes,
-            };
+                _logger.LogInformation(4, "Error on data acces layer");
+                return Redirect("/");
+            }
 
-            return View(patentModel);
+            catch (BusinessLogicException)
+            {
+                _logger.LogInformation(4, "Error on business layer");
+                return Redirect("/");
+            }
+
+            catch (Exception e) when (e is not DataAccessException && e is not BusinessLogicException)
+            {
+                _logger.LogInformation(4, "Unhandled exception");
+                return Redirect("/");
+            }
         }
 
-        // POST: PatentController/Edit/5
         [HttpPost]
-        [Authorize(Roles = UserRights.Librarian)]
+        [Authorize(Roles = UserRights.Librarian + "," + UserRights.Admin)]
         [Route("Patent/Edit/{id:Guid}")]
         [ValidateAntiForgeryToken]
         public ActionResult Edit(Guid id, PatentInputViewModel patentInput)
@@ -161,7 +249,7 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
 
                 Patent patent = new Patent(
                     name: patentInput.Name,
-                    authors: new List<Author>() { new Author("Smart", "Boy"), new Author("Clever", "Girl") },
+                    authors: _logic.GetPatentById(id).Authors,
                     country: patentInput.Country,
                     registrationNumber: patentInput.RegistrationNumber,
                     applicationDate: patentInput.ApplicationDate,
@@ -174,50 +262,90 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
 
                 if (updateResult == ResultCodes.NoteExist)
                 {
-                    TempData["SamePatent"] = "Same patent already exist";
-                    return View(patentInput);
+                    TempData["Error"] = "Same note already exist";
+                    return View(nameof(Edit));
                 }
 
+                if (updateResult == ResultCodes.Error)
+                {
+                    TempData["Error"] = "Unable update note";
+                    return View(nameof(Edit));
+                }
+
+                _logger.LogInformation(2, "Note was edited");
                 return RedirectToAction(nameof(GetAllPatents));
             }
-            catch
+
+            catch (DataAccessException e)
             {
-                return View();
+                _logger.LogInformation(4, "Error on data acces layer");
+                return Redirect("/");
+            }
+
+            catch (BusinessLogicException)
+            {
+                _logger.LogInformation(4, "Error on business layer");
+                return Redirect("/");
+            }
+
+            catch (Exception e) when (e is not DataAccessException && e is not BusinessLogicException)
+            {
+                _logger.LogInformation(4, "Unhandled exception");
+                return Redirect("/");
             }
         }
 
-        // GET: PatentController/Delete/5
-        [Authorize(Roles = UserRights.Librarian)]
+        [Authorize(Roles = UserRights.Librarian + "," + UserRights.Admin)]
         [Route("Patent/Delete/{id:Guid}")]
         public ActionResult Delete(Guid id)
         {
-            Patent patent = _logic.GetPatentById(id);
-
-            if (patent is null)
+            try
             {
-                return NotFound();
+                Patent patent = _logic.GetPatentById(id);
+
+                if (patent is null)
+                {
+                    return NotFound();
+                }
+
+                PatentDetailsViewModel patentDetails = new PatentDetailsViewModel
+                {
+                    ID = patent.ID,
+                    Name = patent.Name,
+                    Authors = patent.Authors,
+                    Country = patent.Country,
+                    RegistrationNumber = patent.RegistrationNumber,
+                    ApplicationDate = patent.ApplicationDate,
+                    PublicationDate = patent.PublicationDate,
+                    PagesCount = patent.PagesCount,
+                    ObjectNotes = patent.ObjectNotes,
+                    IsDeleted = patent.IsDeleted
+                };
+      
+                return View(patentDetails);
             }
 
-            PatentDetailsViewModel patentDetails = new PatentDetailsViewModel
+            catch (DataAccessException e)
             {
-                ID = patent.ID,
-                Name = patent.Name,
-                Authors = patent.Authors,
-                Country = patent.Country,
-                RegistrationNumber = patent.RegistrationNumber,
-                ApplicationDate = patent.ApplicationDate,
-                PublicationDate = patent.PublicationDate,
-                PagesCount = patent.PagesCount,
-                ObjectNotes = patent.ObjectNotes,
-                IsDeleted = patent.IsDeleted
-            };
+                _logger.LogInformation(4, "Error on data acces layer");
+                return Redirect("/");
+            }
 
-            return View(patentDetails);
+            catch (BusinessLogicException)
+            {
+                _logger.LogInformation(4, "Error on business layer");
+                return Redirect("/");
+            }
+
+            catch (Exception e) when (e is not DataAccessException && e is not BusinessLogicException)
+            {
+                _logger.LogInformation(4, "Unhandled exception");
+                return Redirect("/");
+            }
         }
 
-        // POST: PatentController/Delete/5
         [HttpPost]
-        [Authorize(Roles = UserRights.Librarian)]
+        [Authorize(Roles = UserRights.Librarian + "," + UserRights.Admin)]
         [Route("Patent/Delete/{id:Guid}")]
         [ValidateAntiForgeryToken]
         public ActionResult CompleteDelete(Guid id)
@@ -231,13 +359,34 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
                     return NotFound();
                 }
 
-                _logic.RemoveNote(patent);
+                bool deleteResult = _logic.RemoveNote(patent);
 
+                if (!deleteResult)
+                {
+                    TempData["Error"] = "Unable to delete note";
+                    return View(nameof(Delete));
+                }
+
+                _logger.LogInformation(2, "Note was deleted");
                 return RedirectToAction(nameof(GetAllPatents));
             }
-            catch
+
+            catch (DataAccessException e)
             {
-                return View();
+                _logger.LogInformation(4, "Error on data acces layer");
+                return Redirect("/");
+            }
+
+            catch (BusinessLogicException)
+            {
+                _logger.LogInformation(4, "Error on business layer");
+                return Redirect("/");
+            }
+
+            catch (Exception e) when (e is not DataAccessException && e is not BusinessLogicException)
+            {
+                _logger.LogInformation(4, "Unhandled exception");
+                return Redirect("/");
             }
         }
     }
