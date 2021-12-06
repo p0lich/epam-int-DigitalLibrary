@@ -9,6 +9,13 @@
         return this.optional(element) || regCheck.test(value);
     }, "Wrong input. Patern mismatch");
 
+    $.validator.addMethod("isDateCorrect", function (value, element) {
+        let date_parse = Date.parse(value);
+        let min_date = new Date('1400-01-01');
+        let max_date = Date.now();
+        return this.optional(element) || (date_parse > min_date && date_parse < max_date)
+    }, "Date must be between 1400 year and now")
+
     $("form[name='bookInputForm']").validate({
         rules: {
             Name: {
@@ -26,6 +33,7 @@
             },
             PublicationDate: {
                 required: true,
+                isDateCorrect: true,
             },
             PagesCount: {
                 required: true,

@@ -9,6 +9,20 @@
         return this.optional(element) || regCheck.test(value);
     }, "Wrong input. Patern mismatch");
 
+    $.validator.addMethod("isApplicationDateCorrect", function (value, element) {
+        let date_parse = Date.parse(value);
+        let min_date = new Date('1474-01-01');
+        let max_date = Date.now();
+        return this.optional(element) || (date_parse > min_date && date_parse < max_date)
+    }, "Date must be between 1474 year and now");
+
+    $.validator.addMethod("isPublicationDateCorrect", function (value, element) {
+        let date_parse = Date.parse(value);
+        let app_date = Date.parse(document.getElementById('ApplicationDate').value);
+        let max_date = Date.now();
+        return this.optional(element) || ((date_parse > app_date || isNaN(app_date)) && date_parse < max_date)
+    }, "Date must be between 1474 or application year and now");
+
     $("form[name='patentInputForm']").validate({
         rules: {
             Name: {
@@ -27,10 +41,11 @@
             },
             ApplicationDate: {
                 required: false,
-
+                isApplicationDateCorrect: true,
             },
             PublicationDate: {
                 required: true,
+                isPublicationDateCorrect: true,
             },
             PagesCount: {
                 required: true,
@@ -51,9 +66,6 @@
             },
             RegistrationNumber: {
                 required: "Publisher field cannot be empty",
-            },
-            ApplicationDate: {
-                
             },
             PublicationDate: {
                 required: "Choose date of publication",

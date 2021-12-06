@@ -17,13 +17,12 @@
 
         messages: {
             PagesCount: {
-                required: "Pagec count field cannot be empty"
+                required: "Pages count field cannot be empty"
             },
             Number: {
-                required: false,
             },
             ReleaseDate: {
-                required: false,
+                required: "Must be filled"
             }
         },
     });
