@@ -14,28 +14,19 @@ namespace Epam.DigitalLibrary.SqlDal
 {
     public class PatentDAO : INoteDAO
     {
-        //private string connectionString = ConfigurationManager.ConnectionStrings["SSPIConnString"].ConnectionString;
-        //private string connectionString = @"Data Source=DESKTOP-83KP24G;Initial Catalog=LibraryDb;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
         private string connectionString;
-        private SqlCredential _credential;
         private SqlConnection _connection;
 
-        public PatentDAO(SqlCredential userCredential)
-        {
-            _credential = userCredential;
-        }
-
-        public PatentDAO(string connString, SqlCredential credential)
+        public PatentDAO(string connString)
         {
             connectionString = connString;
-            _credential = credential;
         }
 
         public bool DeleteNote(Guid noteId)
         {
             try
             {
-                using (_connection = new SqlConnection(connectionString, _credential))
+                using (_connection = new SqlConnection(connectionString))
                 {
                     string stProc = "dbo.CompleteDelete_Patent";
                     using (SqlCommand command = new SqlCommand(stProc, _connection))
@@ -65,7 +56,7 @@ namespace Epam.DigitalLibrary.SqlDal
 
             try
             {
-                using (_connection = new SqlConnection(connectionString, _credential))
+                using (_connection = new SqlConnection(connectionString))
                 {
                     string stProc = "dbo.Get_AllPatents";
                     using (SqlCommand command = new SqlCommand(stProc, _connection))
@@ -110,7 +101,7 @@ namespace Epam.DigitalLibrary.SqlDal
                 Guid patentId;
                 Dictionary<string, object> patentData = note.ToObjectDict();
 
-                using (_connection = new SqlConnection(connectionString, _credential))
+                using (_connection = new SqlConnection(connectionString))
                 {
                     string stProc = "dbo.Add_Patent";
 
@@ -157,7 +148,7 @@ namespace Epam.DigitalLibrary.SqlDal
         {
             try
             {
-                using (_connection = new SqlConnection(connectionString, _credential))
+                using (_connection = new SqlConnection(connectionString))
                 {
                     string stProc = "dbo.MarkForDelete_Patent";
                     using (SqlCommand command = new SqlCommand(stProc, _connection))
@@ -187,7 +178,7 @@ namespace Epam.DigitalLibrary.SqlDal
             {
                 Dictionary<string, object> patentData = updatedNote.ToObjectDict();
 
-                using (_connection = new SqlConnection(connectionString, _credential))
+                using (_connection = new SqlConnection(connectionString))
                 {
                     string stProc = "dbo.Update_Patent";
                     using (SqlCommand command = new SqlCommand(stProc, _connection))
@@ -242,7 +233,7 @@ namespace Epam.DigitalLibrary.SqlDal
 
             try
             {
-                using (_connection = new SqlConnection(connectionString, _credential))
+                using (_connection = new SqlConnection(connectionString))
                 {
                     _connection.Open();
 
@@ -297,7 +288,7 @@ namespace Epam.DigitalLibrary.SqlDal
 
             try
             {
-                using (_connection = new SqlConnection(connectionString, _credential))
+                using (_connection = new SqlConnection(connectionString))
                 {
                     using (SqlCommand command = new SqlCommand(stProc, _connection))
                     {
@@ -338,7 +329,7 @@ namespace Epam.DigitalLibrary.SqlDal
 
             try
             {
-                using (_connection = new SqlConnection(connectionString, _credential))
+                using (_connection = new SqlConnection(connectionString))
                 {
                     string stProc = "dbo.Get_AllNotMarked_Patents";
                     using (SqlCommand command = new SqlCommand(stProc, _connection))
@@ -380,7 +371,7 @@ namespace Epam.DigitalLibrary.SqlDal
         {
             try
             {
-                using (_connection = new SqlConnection(connectionString, _credential))
+                using (_connection = new SqlConnection(connectionString))
                 {
                     string stProc = "dbo.GetById_PatentInfo";
                     using (SqlCommand command = new SqlCommand(stProc, _connection))

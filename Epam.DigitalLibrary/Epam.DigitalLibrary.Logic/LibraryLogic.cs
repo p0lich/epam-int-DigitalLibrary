@@ -19,14 +19,9 @@ namespace Epam.DigitalLibrary.Logic
     {
         private IDataLayer _dataLayer;
 
-        public LibraryLogic(string login, SecureString password)
+        public LibraryLogic(string connString)
         {
-            _dataLayer = new SqlDataAccessObject(new SqlCredential(login, password));
-        }
-
-        public LibraryLogic(string connectionString, SqlCredential credential)
-        {
-            _dataLayer = new SqlDataAccessObject(connectionString, credential);
+            _dataLayer = new SqlDataAccessObject(connString);
         }
 
         public LibraryLogic()

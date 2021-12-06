@@ -14,28 +14,19 @@ namespace Epam.DigitalLibrary.SqlDal
 {
     public class NewspaperDAO : INoteDAO
     {
-        //private string connectionString = ConfigurationManager.ConnectionStrings["SSPIConnString"].ConnectionString;
-        //private string connectionString = @"Data Source=DESKTOP-83KP24G;Initial Catalog=LibraryDb;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
         private string connectionString;
-        private SqlCredential _credential;
         private SqlConnection _connection;
 
-        public NewspaperDAO(SqlCredential userCredential)
-        {
-            _credential = userCredential;
-        }
-
-        public NewspaperDAO(string connString, SqlCredential credential)
+        public NewspaperDAO(string connString)
         {
             connectionString = connString;
-            _credential = credential;
         }
 
         public bool DeleteNote(Guid noteId)
         {
             try
             {
-                using (_connection = new SqlConnection(connectionString, _credential))
+                using (_connection = new SqlConnection(connectionString))
                 {
                     string stProc = "dbo.CompleteDelete_Newspaper";
                     using (SqlCommand command = new SqlCommand(stProc, _connection))
@@ -65,7 +56,7 @@ namespace Epam.DigitalLibrary.SqlDal
 
             try
             {
-                using (_connection = new SqlConnection(connectionString, _credential))
+                using (_connection = new SqlConnection(connectionString))
                 {
                     string stProc = "dbo.Get_AllNewspapers";
                     using (SqlCommand command = new SqlCommand(stProc, _connection))
@@ -110,7 +101,7 @@ namespace Epam.DigitalLibrary.SqlDal
             {
                 Dictionary<string, object> newspaperData = note.ToObjectDict();
 
-                using (_connection = new SqlConnection(connectionString, _credential))
+                using (_connection = new SqlConnection(connectionString))
                 {
                     string stProc = "dbo.Add_Newspaper";
 
@@ -154,7 +145,7 @@ namespace Epam.DigitalLibrary.SqlDal
         {
             try
             {
-                using (_connection = new SqlConnection(connectionString, _credential))
+                using (_connection = new SqlConnection(connectionString))
                 {
                     string stProc = "dbo.MarkForDelete_Newspaper";
                     using (SqlCommand command = new SqlCommand(stProc, _connection))
@@ -184,7 +175,7 @@ namespace Epam.DigitalLibrary.SqlDal
             {
                 Dictionary<string, object> newspaperData = updatedNote.ToObjectDict();
 
-                using (_connection = new SqlConnection(connectionString, _credential))
+                using (_connection = new SqlConnection(connectionString))
                 {
                     string stProc = "dbo.Update_Newspaper";
                     using (SqlCommand command = new SqlCommand(stProc, _connection))
@@ -221,7 +212,7 @@ namespace Epam.DigitalLibrary.SqlDal
 
             try
             {
-                using (_connection = new SqlConnection(connectionString, _credential))
+                using (_connection = new SqlConnection(connectionString))
                 {
                     using (SqlCommand command = new SqlCommand(stProc, _connection))
                     {
@@ -262,7 +253,7 @@ namespace Epam.DigitalLibrary.SqlDal
 
             try
             {
-                using (_connection = new SqlConnection(connectionString, _credential))
+                using (_connection = new SqlConnection(connectionString))
                 {
                     string stProc = "dbo.Get_AllNotMarked_Newspapers";
                     using (SqlCommand command = new SqlCommand(stProc, _connection))
@@ -305,7 +296,7 @@ namespace Epam.DigitalLibrary.SqlDal
         {
             try
             {
-                using (_connection = new SqlConnection(connectionString, _credential))
+                using (_connection = new SqlConnection(connectionString))
                 {
                     string stProc = "dbo.GetById_NewspaperInfo";
                     using (SqlCommand command = new SqlCommand(stProc, _connection))

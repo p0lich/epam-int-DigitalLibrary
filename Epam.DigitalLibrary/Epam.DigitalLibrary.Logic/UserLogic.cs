@@ -17,19 +17,10 @@ namespace Epam.DigitalLibrary.Logic
     public class UserLogic : IUserRightsProvider
     {
         private IUserDAO _userDAO;
-        private SqlCredential _userCredential;
-        private string _login;
 
-        public UserLogic(string login, SecureString password)
+        public UserLogic(string connString)
         {
-            _login = login;
-            _userCredential = new SqlCredential(login, password);
-            _userDAO = new UserDAO(_userCredential);
-        }
-
-        public UserLogic(string connString, SqlCredential credential)
-        {
-            _userDAO = new UserDAO(connString, credential);
+            _userDAO = new UserDAO(connString);
         }
 
         public bool IsInRole(Guid userId, string targetRole)

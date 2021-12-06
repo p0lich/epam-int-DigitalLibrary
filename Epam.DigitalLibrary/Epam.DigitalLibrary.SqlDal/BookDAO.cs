@@ -14,28 +14,19 @@ namespace Epam.DigitalLibrary.SqlDal
 {
     public class BookDAO : INoteDAO
     {
-        // private string connectionString = ConfigurationManager.ConnectionStrings["SSPIConnString"].ConnectionString;
-        //private string connectionString = @"Data Source=DESKTOP-83KP24G;Initial Catalog=LibraryDb;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
         private string connectionString;
-        private SqlCredential _credential;
         private SqlConnection _connection;
 
-        public BookDAO(SqlCredential userCredential)
-        {
-            _credential = userCredential;
-        }
-
-        public BookDAO(string connString, SqlCredential credential)
+        public BookDAO(string connString)
         {
             connectionString = connString;
-            _credential = credential;
         }
 
         public bool DeleteNote(Guid noteId)
         {
             try
             {
-                using (_connection = new SqlConnection(connectionString, _credential))
+                using (_connection = new SqlConnection(connectionString))
                 {
                     string stProc = "dbo.CompleteDelete_Book";
                     using (SqlCommand command = new SqlCommand(stProc, _connection))
@@ -63,7 +54,7 @@ namespace Epam.DigitalLibrary.SqlDal
         {
             try
             {
-                using (_connection = new SqlConnection(connectionString, _credential))
+                using (_connection = new SqlConnection(connectionString))
                 {
                     string stProc = "dbo.MarkForDelete_Book";
                     using (SqlCommand command = new SqlCommand(stProc, _connection))
@@ -93,7 +84,7 @@ namespace Epam.DigitalLibrary.SqlDal
 
             try
             {
-                using (_connection = new SqlConnection(connectionString, _credential))
+                using (_connection = new SqlConnection(connectionString))
                 {
                     string stProc = "dbo.Get_AllBooks";
                     using (SqlCommand command = new SqlCommand(stProc, _connection))
@@ -138,7 +129,7 @@ namespace Epam.DigitalLibrary.SqlDal
                 Guid bookId;
                 Dictionary<string, object> bookData = note.ToObjectDict();
 
-                using (_connection = new SqlConnection(connectionString, _credential))
+                using (_connection = new SqlConnection(connectionString))
                 {
                     string stProc = "dbo.Add_Book";
 
@@ -187,7 +178,7 @@ namespace Epam.DigitalLibrary.SqlDal
             {
                 Dictionary<string, object> bookData = updatedNote.ToObjectDict();
 
-                using (_connection = new SqlConnection(connectionString, _credential))
+                using (_connection = new SqlConnection(connectionString))
                 {
                     string stProc = "dbo.Update_Book";
                     using (SqlCommand command = new SqlCommand(stProc, _connection))
@@ -242,7 +233,7 @@ namespace Epam.DigitalLibrary.SqlDal
 
             try
             {
-                using (_connection = new SqlConnection(connectionString, _credential))
+                using (_connection = new SqlConnection(connectionString))
                 {
                     _connection.Open();
 
@@ -297,7 +288,7 @@ namespace Epam.DigitalLibrary.SqlDal
 
             try
             {
-                using (_connection = new SqlConnection(connectionString, _credential))
+                using (_connection = new SqlConnection(connectionString))
                 {
                     using (SqlCommand command = new SqlCommand(stProc, _connection))
                     {
@@ -338,7 +329,7 @@ namespace Epam.DigitalLibrary.SqlDal
 
             try
             {
-                using (_connection = new SqlConnection(connectionString, _credential))
+                using (_connection = new SqlConnection(connectionString))
                 {
                     string stProc = "dbo.Get_AllNotMarked_Books";
                     using (SqlCommand command = new SqlCommand(stProc, _connection))
@@ -380,7 +371,7 @@ namespace Epam.DigitalLibrary.SqlDal
         {
             try
             {
-                using (_connection = new SqlConnection(connectionString, _credential))
+                using (_connection = new SqlConnection(connectionString))
                 {
                     string stProc = "dbo.GetById_BookInfo";
                     using (SqlCommand command = new SqlCommand(stProc, _connection))

@@ -19,7 +19,7 @@ namespace Epam.DigitalLibrary.ConsolePL
         {
             Authorize(out string login, out SecureString password);
 
-            logic = new LibraryLogic(login, password);
+            logic = new LibraryLogic();
 
             while (true)
             {
@@ -664,12 +664,14 @@ namespace Epam.DigitalLibrary.ConsolePL
 
         private static bool Authorize(out string userLogin, out SecureString password)
         {
+            throw new NotImplementedException();
+
             while (true)
             {
                 userLogin = InputLogin();
                 password = InputPassword();
 
-                IUserRightsProvider rightsProvider = new UserLogic(userLogin, password);
+                IUserRightsProvider rightsProvider = new UserLogic("");
 
                 if (rightsProvider.IsCredentialRight())
                 {

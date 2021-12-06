@@ -15,28 +15,19 @@ namespace Epam.DigitalLibrary.SqlDal
 {
     public class UserDAO : IUserDAO
     {
-        //private string connectionString = ConfigurationManager.ConnectionStrings["SSPIConnString"].ConnectionString;
-        //private string connectionString = @"Data Source=DESKTOP-83KP24G;Initial Catalog=LibraryDb;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
         private string connectionString;
-        private SqlCredential _userCredential;
         private SqlConnection _connection;
 
-        public UserDAO(SqlCredential userCredential)
-        {
-            _userCredential = userCredential;
-        }
-
-        public UserDAO(string connString, SqlCredential credential)
+        public UserDAO(string connString)
         {
             connectionString = connString;
-            _userCredential = credential;
         }
 
         public User GetUser(Guid id)
         {
             try
             {
-                using (_connection = new SqlConnection(connectionString, _userCredential))
+                using (_connection = new SqlConnection(connectionString))
                 {
                     string stProc = "dbo.User_GetById";
                     using (SqlCommand command = new SqlCommand(stProc, _connection))
@@ -73,7 +64,7 @@ namespace Epam.DigitalLibrary.SqlDal
         {
             try
             {
-                using (_connection = new SqlConnection(connectionString, _userCredential))
+                using (_connection = new SqlConnection(connectionString))
                 {
                     string stProc = "dbo.User_GetByLogin";
                     using (SqlCommand command = new SqlCommand(stProc, _connection))
@@ -112,7 +103,7 @@ namespace Epam.DigitalLibrary.SqlDal
             {
                 List<string> roles = new List<string>();
 
-                using (_connection = new SqlConnection(connectionString, _userCredential))
+                using (_connection = new SqlConnection(connectionString))
                 {
                     string stProc = "dbo.Get_UserRoles";
                     using (SqlCommand command = new SqlCommand(stProc, _connection))
@@ -147,7 +138,7 @@ namespace Epam.DigitalLibrary.SqlDal
             {
                 List<User> users = new List<User>();
 
-                using (_connection = new SqlConnection(connectionString, _userCredential))
+                using (_connection = new SqlConnection(connectionString))
                 {
                     string stProc = "dbo.User_GetAll";
                     using (SqlCommand command = new SqlCommand(stProc, _connection))
@@ -182,7 +173,7 @@ namespace Epam.DigitalLibrary.SqlDal
         {
             try
             {
-                _connection = new SqlConnection(connectionString, _userCredential);
+                _connection = new SqlConnection(connectionString);
 
                 _connection.Open();
                 _connection.Close();
@@ -201,7 +192,7 @@ namespace Epam.DigitalLibrary.SqlDal
         {
             try
             {
-                using (_connection = new SqlConnection(connectionString, _userCredential))
+                using (_connection = new SqlConnection(connectionString))
                 {
                     string stProc = "dbo.Add_User";
                     Guid userId;
@@ -244,7 +235,7 @@ namespace Epam.DigitalLibrary.SqlDal
         {
             try
             {
-                using (_connection = new SqlConnection(connectionString, _userCredential))
+                using (_connection = new SqlConnection(connectionString))
                 {
                     string stProc = "dbo.User_RemoveRole";
                     using (SqlCommand command = new SqlCommand(stProc, _connection))
@@ -273,7 +264,7 @@ namespace Epam.DigitalLibrary.SqlDal
         {
             try
             {
-                using (_connection = new SqlConnection(connectionString, _userCredential))
+                using (_connection = new SqlConnection(connectionString))
                 {
                     string stProc = "dbo.Set_UserRoles";
                     using (SqlCommand command = new SqlCommand(stProc, _connection))
@@ -302,7 +293,7 @@ namespace Epam.DigitalLibrary.SqlDal
         {
             try
             {
-                using (_connection = new SqlConnection(connectionString, _userCredential))
+                using (_connection = new SqlConnection(connectionString))
                 {
                     string stProc = "dbo.Set_UserRoles_ByRoleName";
                     using (SqlCommand command = new SqlCommand(stProc, _connection))

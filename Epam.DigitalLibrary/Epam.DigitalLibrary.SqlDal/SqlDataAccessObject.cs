@@ -15,32 +15,18 @@ namespace Epam.DigitalLibrary.SqlDal
 {
     public class SqlDataAccessObject : IDataLayer
     {
-        //private string connectionString = ConfigurationManager.ConnectionStrings[0].ConnectionString;
-        //private string connectionString = @"Data Source=DESKTOP-83KP24G;Initial Catalog=LibraryDb;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
         private string connectionString;
-        private string connStr = SqlConfig.connString;
-        private SqlCredential _credential;
         private SqlConnection _connection;
 
         private INoteDAO _bookDAO, _newspaperDAO, _patentDAO;
 
-        public SqlDataAccessObject(SqlCredential userCredential)
-        {
-            _credential = userCredential;
-
-            _bookDAO = new BookDAO(userCredential);
-            _newspaperDAO = new NewspaperDAO(userCredential);
-            _patentDAO = new PatentDAO(userCredential);
-        }
-
-        public SqlDataAccessObject(string connString, SqlCredential userCredential)
+        public SqlDataAccessObject(string connString)
         {
             connectionString = connString;
-            _credential = userCredential;
 
-            _bookDAO = new BookDAO(connString, userCredential);
-            _newspaperDAO = new NewspaperDAO(connString, userCredential);
-            _patentDAO = new PatentDAO(connString, userCredential);
+            _bookDAO = new BookDAO(connString);
+            _newspaperDAO = new NewspaperDAO(connString);
+            _patentDAO = new PatentDAO(connString);
         }
 
         public int AddNote(Note note)
@@ -173,7 +159,7 @@ namespace Epam.DigitalLibrary.SqlDal
         {
             try
             {
-                using (_connection = new SqlConnection(connectionString, _credential))
+                using (_connection = new SqlConnection(connectionString))
                 {
                     string stProc = "dbo.Get_AvailableAuthors";
                     using (SqlCommand command = new SqlCommand(stProc, _connection))
@@ -250,7 +236,7 @@ namespace Epam.DigitalLibrary.SqlDal
         {
             try
             {
-                using (_connection = new SqlConnection(connectionString, _credential))
+                using (_connection = new SqlConnection(connectionString))
                 {
                     string stProc = "dbo.Add_Note";
                     using (SqlCommand command = new SqlCommand(stProc, _connection))
@@ -293,7 +279,7 @@ namespace Epam.DigitalLibrary.SqlDal
         {
             try
             {
-                using (_connection = new SqlConnection(connectionString, _credential))
+                using (_connection = new SqlConnection(connectionString))
                 {
                     string stProc = "dbo.Update_Note";
                     using (SqlCommand command = new SqlCommand(stProc, _connection))
@@ -325,7 +311,7 @@ namespace Epam.DigitalLibrary.SqlDal
         {
             try
             {
-                using (_connection = new SqlConnection(connectionString, _credential))
+                using (_connection = new SqlConnection(connectionString))
                 {
                     string stProc = "dbo.Delete_Note";
                     using (SqlCommand command = new SqlCommand(stProc, _connection))

@@ -42,8 +42,8 @@ namespace Epam.DigitalLibrary.LibraryMVC
 
             SqlCredential credential = new SqlCredential("lib_admin", password);
 
-            services.AddSingleton<INoteLogic>(new LibraryLogic(Configuration.GetConnectionString("SSPIConnString"), credential));
-            services.AddSingleton<IUserRightsProvider>(new UserLogic(Configuration.GetConnectionString("SSPIConnString"), credential));
+            services.AddSingleton<INoteLogic>(new LibraryLogic(Configuration.GetConnectionString("SSPIConnString")));
+            services.AddSingleton<IUserRightsProvider>(new UserLogic(Configuration.GetConnectionString("SSPIConnString")));
 
             services.AddTransient<IUserRoleProvider, CustomUserRoleProvider>();
             services.AddTransient<ISHA512HashCompute, SHA512Compute>();
