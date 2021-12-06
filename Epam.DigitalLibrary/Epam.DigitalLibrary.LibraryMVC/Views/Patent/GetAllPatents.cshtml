@@ -30,7 +30,10 @@
         {
             <tr>
                 <td>
-                    @item.ToString()
+                    <a asp-action="Details"
+                       asp-route-id="@item.ID">
+                        @item.ToString()
+                    </a>
                 </td>
                 <td>
                     @Html.ActionLink("Edit", "Edit", new { id = item.ID }) |
