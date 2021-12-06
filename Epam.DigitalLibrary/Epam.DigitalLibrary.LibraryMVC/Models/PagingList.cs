@@ -17,22 +17,6 @@ namespace Epam.DigitalLibrary.LibraryMVC.Models
             this.AddRange(items);
         }
 
-        public bool PreviousPage
-        {
-            get
-            {
-                return PageIndex > 1;
-            }
-        }
-
-        public bool NextPage
-        {
-            get
-            {
-                return PageIndex > PagesCount;
-            }
-        }
-
         public static PagingList<T> GetPageItems(List<T> items, int pageIndex, int pageSize)
         {
             return new PagingList<T>(
@@ -41,6 +25,42 @@ namespace Epam.DigitalLibrary.LibraryMVC.Models
                 pageIndex,
                 pageSize
                 );
+        }
+
+        public List<int> GetNavigationIndexes(int currentIndex)
+        {
+            List<int> navIndexes = new List<int>();
+
+            navIndexes.Add(1);
+
+            if (PagesCount == 1)
+            {
+                return navIndexes;
+            }
+
+            for (int i = (currentIndex - 3 > 1) ?
+                currentIndex - 3 : 2;
+                i < currentIndex;
+                i++)
+            {
+                navIndexes.Add(i);
+            }
+
+            if (currentIndex > 1 && currentIndex < PagesCount)
+            {
+                navIndexes.Add(currentIndex);
+            }
+
+            for (int i = currentIndex + 1;
+                i < currentIndex + 4 && i < PagesCount;
+                i++)
+            {
+                navIndexes.Add(i);
+            }
+
+            navIndexes.Add(PagesCount);
+
+            return navIndexes;
         }
     }
 }

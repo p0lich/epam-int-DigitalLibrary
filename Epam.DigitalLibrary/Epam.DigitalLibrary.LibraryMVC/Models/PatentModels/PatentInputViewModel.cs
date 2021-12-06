@@ -13,7 +13,7 @@ namespace Epam.DigitalLibrary.LibraryMVC.Models.PatentModels
         [StringLength(300)]
         public string Name { get; set; }
 
-        //public List<Author> Authors { get; set; }
+        public List<Author> Authors { get; set; }
 
         [Required]
         [StringLength(200)]
