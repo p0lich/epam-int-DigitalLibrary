@@ -21,6 +21,7 @@ namespace Epam.DigitalLibrary.LibraryMVC.Models.NewspaperModels
             ID = newspaper.ID;
             Name = newspaper.Name;
             Number = newspaper.Number;
+            ReleaseDate = newspaper.ReleaseDate;
         }
 
         public override string ToString()
