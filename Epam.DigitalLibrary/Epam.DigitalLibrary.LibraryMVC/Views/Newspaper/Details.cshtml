@@ -85,6 +85,7 @@
     </dl>
 </div>
 <div>
+    @Html.ActionLink("Get Releases", "GetNewspaperReleases", new { id = Model.ReleaseDetails.ID, pageId = 1 }) |
     @Html.ActionLink("Edit", "Edit", new { id = Model.ReleaseDetails.ID }) |
     @Html.ActionLink("Delete", "Delete", new { id = Model.ReleaseDetails.ID }) |
     <a asp-action="GetAllReleases">Back to List</a>

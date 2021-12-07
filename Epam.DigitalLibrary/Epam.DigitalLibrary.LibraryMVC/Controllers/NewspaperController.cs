@@ -45,6 +45,7 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
                 List<NewspaperReleaseLinkViewModel> newspaperLinks = newspaperReleases
                     .OfType<Newspaper>()
                     .Select(n => new NewspaperReleaseLinkViewModel(n))
+                    .OrderByDescending(n => n.ReleaseDate)
                     .ToList();
 
                 ViewData["SearchFilter"] = searchString;

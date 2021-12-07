@@ -121,9 +121,7 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
         {
             try
             {
-                ViewBag.AvailableAuthors = new SelectList(
-                    _logic.GetAvailableAuthors().Select(a => string.Format($"{a.FirstName}; {a.LastName}")),
-                    "Select author");
+                DownloadAvailableAuthors();
                 return View();
             }
 
@@ -156,6 +154,7 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
             {
                 if (!ModelState.IsValid)
                 {
+                    DownloadAvailableAuthors();
                     return View();
                 }
 
@@ -435,6 +434,15 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
             }
 
             return TempData["Error"];
+        }
+
+        private bool DownloadAvailableAuthors()
+        {
+            ViewBag.AvailableAuthors = new SelectList(
+                    _logic.GetAvailableAuthors().Select(a => string.Format($"{a.FirstName}; {a.LastName}")),
+                    "Select author");
+
+            return true;
         }
     }
 }

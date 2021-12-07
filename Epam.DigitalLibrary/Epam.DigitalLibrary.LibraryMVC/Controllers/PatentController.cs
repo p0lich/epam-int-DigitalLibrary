@@ -6,6 +6,7 @@ using Epam.DigitalLibrary.LogicContracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -119,6 +120,7 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
         [Route("Patent/Create")]
         public ActionResult Create()
         {
+            DownloadAvailableAuthors();
             return View();
         }
 
@@ -132,7 +134,8 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    return View(patentInput);
+                    DownloadAvailableAuthors();
+                    return View();
                 }
 
                 List<Author> inputAuthors = authors.Select(a => new Author(a.FirstName, a.LastName)).ToList();
@@ -415,6 +418,15 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
             }
 
             return TempData["Error"];
+        }
+
+        private bool DownloadAvailableAuthors()
+        {
+            ViewBag.AvailableAuthors = new SelectList(
+                    _logic.GetAvailableAuthors().Select(a => string.Format($"{a.FirstName}; {a.LastName}")),
+                    "Select author");
+
+            return true;
         }
     }
 }
