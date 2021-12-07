@@ -32,16 +32,6 @@ namespace Epam.DigitalLibrary.LibraryMVC
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            SecureString password = new SecureString();
-
-            password.AppendChar('1');
-            password.AppendChar('2');
-            password.AppendChar('3');
-
-            password.MakeReadOnly();
-
-            SqlCredential credential = new SqlCredential("lib_admin", password);
-
             services.AddSingleton<INoteLogic>(new LibraryLogic(Configuration.GetConnectionString("SSPIConnString")));
             services.AddSingleton<IUserRightsProvider>(new UserLogic(Configuration.GetConnectionString("SSPIConnString")));
 
