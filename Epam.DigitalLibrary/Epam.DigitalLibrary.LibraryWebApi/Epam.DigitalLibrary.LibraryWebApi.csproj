@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\SearchPage.html" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.12" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.15.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Epam.DigitalLibrary.AppCodes\Epam.DigitalLibrary.AppCodes.csproj" />
+    <ProjectReference Include="..\Epam.DigitalLibrary.CustomExeptions\Epam.DigitalLibrary.CustomExeptions.csproj" />
+    <ProjectReference Include="..\Epam.DigitalLibrary.Encryption\Epam.DigitalLibrary.Encryption.csproj" />
+    <ProjectReference Include="..\Epam.DigitalLibrary.Entities\Epam.DigitalLibrary.Entities.csproj" />
+    <ProjectReference Include="..\Epam.DigitalLibrary.LogicContracts\Epam.DigitalLibrary.LogicContracts.csproj" />
+    <ProjectReference Include="..\Epam.DigitalLibrary.Logic\Epam.DigitalLibrary.Logic.csproj" />
+  </ItemGroup>
+
+</Project>

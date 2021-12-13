@@ -1,24 +1,24 @@
+using Epam.DigitalLibrary.Encryption;
+using Epam.DigitalLibrary.LibraryWebApi.Controllers;
+using Epam.DigitalLibrary.LibraryWebApi.Helpers;
+using Epam.DigitalLibrary.LibraryWebApi.Services;
+using Epam.DigitalLibrary.Logic;
+using Epam.DigitalLibrary.LogicContracts;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Epam.DigitalLibrary.LogicContracts;
-using Epam.DigitalLibrary.Logic;
-using System.Security;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using System.Security.Claims;
-using System.Data.SqlClient;
-using Epam.DigitalLibrary.LibraryMVC.CustomIdentity;
-using Epam.DigitalLibrary.LibraryMVC.CustomEncryption;
 
-namespace Epam.DigitalLibrary.LibraryMVC
+namespace Epam.DigitalLibrary.LibraryWebApi
 {
     public class Startup
     {
@@ -29,23 +29,22 @@ namespace Epam.DigitalLibrary.LibraryMVC
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<INoteLogic>(new LibraryLogic(Configuration.GetConnectionString("SSPIConnString")));
             services.AddSingleton<IUserRightsProvider>(new UserLogic(Configuration.GetConnectionString("SSPIConnString")));
 
-            services.AddTransient<IUserRoleProvider, CustomUserRoleProvider>();
-            services.AddTransient<ISHA512HashCompute, SHA512Compute>();
+            services.AddControllers();
 
-            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                .AddCookie(options => {
-                    options.LoginPath = "/Authenticate/LoginRedirect";
-                    options.AccessDeniedPath = "/Authenticate/Denied";
-                });
+            services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
 
-            services.AddControllersWithViews();
-            services.AddMvc();
+            services.AddScoped<ISHA512HashCompute, SHA512Compute>();
+            services.AddScoped<IUserService, UserService>();
+
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Epam.DigitalLibrary.LibraryWebApi", Version = "v1" });
+            });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -53,14 +52,13 @@ namespace Epam.DigitalLibrary.LibraryMVC
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-            }
-            else
-            {
-                app.UseExceptionHandler("/Home/Error");
-                app.UseHsts();
+                app.UseSwagger();
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Epam.DigitalLibrary.LibraryWebApi v1"));
             }
 
             app.UseHttpsRedirection();
+
+            app.UseDefaultFiles();
             app.UseStaticFiles();
 
             app.UseRouting();
@@ -68,11 +66,17 @@ namespace Epam.DigitalLibrary.LibraryMVC
             app.UseAuthentication();
             app.UseAuthorization();
 
+            app.UseCors(x => x
+                .AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+            );
+
+            app.UseMiddleware<JwtMiddleware>();
+
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}/{secondId?}");
+                endpoints.MapControllers();
             });
         }
     }
