@@ -33,7 +33,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Epam.DigitalLibrary.Library
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Epam.DigitalLibrary.CustomExeptions", "Epam.DigitalLibrary.CustomExeptions\Epam.DigitalLibrary.CustomExeptions.csproj", "{A860A052-BBF0-4E55-8902-0ECE54DBD672}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Epam.DigitalLibrary.DalConfig", "Epam.DigitalLibrary.DalConfig\Epam.DigitalLibrary.DalConfig.csproj", "{30B0EC71-DB9D-4334-90DB-D44C4777DE12}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Epam.DigitalLibrary.DalConfig", "Epam.DigitalLibrary.DalConfig\Epam.DigitalLibrary.DalConfig.csproj", "{30B0EC71-DB9D-4334-90DB-D44C4777DE12}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Epam.DigitalLibrary.LibraryWebApi", "Epam.DigitalLibrary.LibraryWebApi\Epam.DigitalLibrary.LibraryWebApi.csproj", "{32C67B97-EC2C-4609-9382-E252CA74F1BE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Epam.DigitalLibrary.Encryption", "Epam.DigitalLibrary.Encryption\Epam.DigitalLibrary.Encryption.csproj", "{3C39790B-F35C-4147-B911-4AB17B1D4EC8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Epam.DigitalLibrary.AppCodes", "Epam.DigitalLibrary.AppCodes\Epam.DigitalLibrary.AppCodes.csproj", "{A387DA2C-F926-4DBD-81BE-0309D9395BA2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -89,6 +95,18 @@ Global
 		{30B0EC71-DB9D-4334-90DB-D44C4777DE12}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{30B0EC71-DB9D-4334-90DB-D44C4777DE12}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{30B0EC71-DB9D-4334-90DB-D44C4777DE12}.Release|Any CPU.Build.0 = Release|Any CPU
+		{32C67B97-EC2C-4609-9382-E252CA74F1BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{32C67B97-EC2C-4609-9382-E252CA74F1BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{32C67B97-EC2C-4609-9382-E252CA74F1BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{32C67B97-EC2C-4609-9382-E252CA74F1BE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3C39790B-F35C-4147-B911-4AB17B1D4EC8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3C39790B-F35C-4147-B911-4AB17B1D4EC8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3C39790B-F35C-4147-B911-4AB17B1D4EC8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3C39790B-F35C-4147-B911-4AB17B1D4EC8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A387DA2C-F926-4DBD-81BE-0309D9395BA2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A387DA2C-F926-4DBD-81BE-0309D9395BA2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A387DA2C-F926-4DBD-81BE-0309D9395BA2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A387DA2C-F926-4DBD-81BE-0309D9395BA2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -104,6 +122,9 @@ Global
 		{E86DFECA-DBD3-49FD-AA35-42D021F5CEC3} = {B65C602D-2DC6-4AF6-A42B-5ED83F361035}
 		{A860A052-BBF0-4E55-8902-0ECE54DBD672} = {0E65C27A-83E5-402F-9070-CEC027C0F952}
 		{30B0EC71-DB9D-4334-90DB-D44C4777DE12} = {0E65C27A-83E5-402F-9070-CEC027C0F952}
+		{32C67B97-EC2C-4609-9382-E252CA74F1BE} = {B65C602D-2DC6-4AF6-A42B-5ED83F361035}
+		{3C39790B-F35C-4147-B911-4AB17B1D4EC8} = {0E65C27A-83E5-402F-9070-CEC027C0F952}
+		{A387DA2C-F926-4DBD-81BE-0309D9395BA2} = {0E65C27A-83E5-402F-9070-CEC027C0F952}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F3CE9764-65F8-4B6F-B512-97751BEA1C88}
