@@ -46,5 +46,13 @@ namespace Epam.DigitalLibrary.LibraryWebApi.Controllers
 
             return Ok(response);
         }
+
+        [HttpPost("Logout")]
+        public IActionResult Logout()
+        {
+            var login = User.Identity.Name;
+            _userService.LogOut(login);
+            return Ok();
+        }
     }
 }

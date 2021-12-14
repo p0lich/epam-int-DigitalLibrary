@@ -8,6 +8,7 @@ using Epam.DigitalLibrary.LogicContracts;
 using Epam.DigitalLibrary.Logic;
 using Epam.DigitalLibrary.Entities;
 using Microsoft.AspNetCore.Authorization;
+using Epam.DigitalLibrary.AppCodes;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -26,7 +27,7 @@ namespace Epam.DigitalLibrary.LibraryWebApi.Controllers
             _logic = logic;
         }
 
-        [Authorize]
+        [Authorize(Roles = UserRights.Librarian)]
         [HttpGet("{id}")]
         public Book Get(Guid id)
         {

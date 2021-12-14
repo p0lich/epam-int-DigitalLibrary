@@ -67,6 +67,11 @@ namespace Epam.DigitalLibrary.LibraryWebApi.Services
             return _userLogic.GetUsers().Select(u => new UserEntity(u));
         }
 
+        public bool LogOut(string userName)
+        {
+            throw new NotImplementedException();
+        }
+
         public AuthenticateResponse Register(AuthenticateRequest model)
         {
             User existedUser = _userLogic.GetUser(model.Login);
@@ -102,7 +107,7 @@ namespace Epam.DigitalLibrary.LibraryWebApi.Services
             var token = new JwtSecurityToken(
                 _config["Jwt:Issuer"],
                 _config["Jwt:Issuer"],
-                null,
+                GetUserClaims(user),
                 expires: DateTime.Now.AddMinutes(120),
                 signingCredentials: credentials
                 );

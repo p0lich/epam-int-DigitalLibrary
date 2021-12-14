@@ -15,5 +15,7 @@ namespace Epam.DigitalLibrary.LibraryWebApi.Services
         IEnumerable<UserEntity> GetUsers();
 
         UserEntity GetUser(Guid id);
+
+        bool LogOut(string userName);
     }
 }
