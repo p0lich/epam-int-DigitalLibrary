@@ -1,6 +1,5 @@
 using Epam.DigitalLibrary.Encryption;
 using Epam.DigitalLibrary.LibraryWebApi.Controllers;
-using Epam.DigitalLibrary.LibraryWebApi.Helpers;
 using Epam.DigitalLibrary.LibraryWebApi.Services;
 using Epam.DigitalLibrary.Logic;
 using Epam.DigitalLibrary.LogicContracts;
@@ -40,8 +39,6 @@ namespace Epam.DigitalLibrary.LibraryWebApi
             services.AddSingleton<IUserRightsProvider>(new UserLogic(Configuration.GetConnectionString("SSPIConnString")));
 
             services.AddControllers();
-
-            services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
 
             services.AddScoped<ISHA512HashCompute, SHA512Compute>();
             services.AddScoped<IUserService, UserService>();
@@ -85,14 +82,6 @@ namespace Epam.DigitalLibrary.LibraryWebApi
 
             app.UseAuthentication();
             app.UseAuthorization();
-
-            app.UseCors(x => x
-                .AllowAnyOrigin()
-                .AllowAnyMethod()
-                .AllowAnyHeader()
-            );
-
-            app.UseMiddleware<JwtMiddleware>();
 
             app.UseEndpoints(endpoints =>
             {
