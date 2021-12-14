@@ -1,4 +1,5 @@
-﻿using Epam.DigitalLibrary.Entities;
+﻿using Epam.DigitalLibrary.Encryption;
+using Epam.DigitalLibrary.Entities;
 using Epam.DigitalLibrary.Logic;
 using Epam.DigitalLibrary.LogicContracts;
 using System;

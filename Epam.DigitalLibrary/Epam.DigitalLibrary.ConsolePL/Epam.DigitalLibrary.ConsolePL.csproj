@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Epam.DigitalLibrary.Encryption\Epam.DigitalLibrary.Encryption.csproj" />
     <ProjectReference Include="..\Epam.DigitalLibrary.Entities\Epam.DigitalLibrary.Entities.csproj" />
     <ProjectReference Include="..\Epam.DigitalLibrary.LogicContracts\Epam.DigitalLibrary.LogicContracts.csproj" />
     <ProjectReference Include="..\Epam.DigitalLibrary.Logic\Epam.DigitalLibrary.Logic.csproj" />

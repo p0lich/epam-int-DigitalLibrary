@@ -4,6 +4,7 @@ using Epam.DigitalLibrary.Entities;
 using Epam.DigitalLibrary.LibraryWebApi.Helpers;
 using Epam.DigitalLibrary.LibraryWebApi.Models;
 using Epam.DigitalLibrary.LogicContracts;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -21,12 +22,14 @@ namespace Epam.DigitalLibrary.LibraryWebApi.Services
         private readonly IUserRightsProvider _userLogic;
         private readonly AppSettings _appSettings;
         private readonly ISHA512HashCompute _hashCompute;
+        private readonly IConfiguration _config;
 
-        public UserService(IUserRightsProvider userLogic, IOptions<AppSettings> appSettings, ISHA512HashCompute hashCompute)
+        public UserService(IUserRightsProvider userLogic, IOptions<AppSettings> appSettings, ISHA512HashCompute hashCompute, IConfiguration configuration)
         {
             _userLogic = userLogic;
             _appSettings = appSettings.Value;
             _hashCompute = hashCompute;
+            _config = configuration;
         }
 
         public AuthenticateResponse Authenticate(AuthenticateRequest model)
@@ -96,18 +99,29 @@ namespace Epam.DigitalLibrary.LibraryWebApi.Services
 
         private string GenerateJwtToken(UserEntity user)
         {
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
+            //var tokenHandler = new JwtSecurityTokenHandler();
+            //var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
 
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(GetUserClaims(user)),
-                Expires = DateTime.UtcNow.AddDays(7),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-            };
+            //var tokenDescriptor = new SecurityTokenDescriptor
+            //{
+            //    Subject = new ClaimsIdentity(GetUserClaims(user)),
+            //    Expires = DateTime.UtcNow.AddDays(7),
+            //    SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            //};
 
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            return tokenHandler.WriteToken(token);
+            //var token = tokenHandler.CreateToken(tokenDescriptor);
+            //return tokenHandler.WriteToken(token);
+
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
+            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+
+            var token = new JwtSecurityToken(_config["Jwt:Issuer"],
+              _config["Jwt:Issuer"],
+              null,
+              expires: DateTime.Now.AddMinutes(120),
+              signingCredentials: credentials);
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
         private IEnumerable<Claim> GetUserClaims(UserEntity userEntity)
