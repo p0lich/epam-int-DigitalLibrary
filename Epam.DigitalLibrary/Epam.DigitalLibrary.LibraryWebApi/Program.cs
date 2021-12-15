@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using NLog;
+using NLog.Web;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +15,23 @@ namespace Epam.DigitalLibrary.LibraryWebApi
     {
         public static void Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+            var logger = LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
+
+            try
+            {
+                CreateHostBuilder(args).Build().Run();
+            }
+
+            catch (Exception e)
+            {
+                logger.Fatal(e, "Setup error");
+                throw;
+            }
+            
+            finally
+            {
+                LogManager.Shutdown();
+            }
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
@@ -21,6 +39,10 @@ namespace Epam.DigitalLibrary.LibraryWebApi
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
-                });
+                }).ConfigureLogging(logging =>
+                {
+                    logging.ClearProviders();
+                    logging.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Information);
+                }).UseNLog();
     }
 }

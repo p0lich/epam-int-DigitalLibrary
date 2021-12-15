@@ -1,5 +1,6 @@
 using Epam.DigitalLibrary.Encryption;
 using Epam.DigitalLibrary.LibraryWebApi.Controllers;
+using Epam.DigitalLibrary.LibraryWebApi.Middleware;
 using Epam.DigitalLibrary.LibraryWebApi.Services;
 using Epam.DigitalLibrary.Logic;
 using Epam.DigitalLibrary.LogicContracts;
@@ -33,8 +34,6 @@ namespace Epam.DigitalLibrary.LibraryWebApi
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddCors();
-
             services.AddSingleton<INoteLogic>(new LibraryLogic(Configuration.GetConnectionString("SSPIConnString")));
             services.AddSingleton<IUserRightsProvider>(new UserLogic(Configuration.GetConnectionString("SSPIConnString")));
 
@@ -72,6 +71,8 @@ namespace Epam.DigitalLibrary.LibraryWebApi
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Epam.DigitalLibrary.LibraryWebApi v1"));
             }
+
+            app.UseCustomExceptionHandler();
 
             app.UseHttpsRedirection();
 
