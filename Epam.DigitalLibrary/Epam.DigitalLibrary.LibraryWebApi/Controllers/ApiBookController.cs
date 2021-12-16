@@ -61,9 +61,9 @@ namespace Epam.DigitalLibrary.LibraryWebApi.Controllers
                 iSBN: bookModel.ISBN
                 );
 
-            _logic.AddNote(book, out Guid noteId);
+            int addResult = _logic.AddNote(book, out Guid noteId);
 
-            return Ok(noteId);
+            return Ok(FillCreateError(addResult));
         }
 
         [HttpPut("{id}")]
@@ -90,9 +90,9 @@ namespace Epam.DigitalLibrary.LibraryWebApi.Controllers
                 iSBN: bookModel.ISBN
                 );
 
-            _logic.UpdateNote(id, updateBook);
+            int updateResult = _logic.UpdateNote(id, updateBook);
 
-            return Ok();
+            return Ok(FillUpdateError(updateResult));
         }
 
         [HttpDelete("{id}")]
@@ -103,9 +103,9 @@ namespace Epam.DigitalLibrary.LibraryWebApi.Controllers
                 return NotFound();
             }
 
-            _logic.MarkForDelete(_logic.GetBookById(id));
+            bool deleteResult = _logic.MarkForDelete(_logic.GetBookById(id));
 
-            return Ok();
+            return Ok(FillDeleteError(deleteResult));
         }
 
         private bool IsBookExist(Guid noteId, out Book foundBook)
