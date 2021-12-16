@@ -64,14 +64,14 @@ namespace Epam.DigitalLibrary.LibraryWebApi.Controllers
         [HttpPut("{id}")]
         public IActionResult Put(Guid id, [FromBody] PatentInputViewModel patentModel)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest("model is not valid");
-            }
-
             if (!IsPatentExist(id, out Patent patent))
             {
                 return NotFound($"Cannot find note with id: {id}");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("model is not valid");
             }
 
             Patent updatePatent = new Patent(
