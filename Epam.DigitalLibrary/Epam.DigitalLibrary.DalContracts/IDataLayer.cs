@@ -31,6 +31,10 @@ namespace Epam.DigitalLibrary.DalContracts
 
         public Patent GetPatentById(Guid id);
 
+        public Author GetAuthor(Guid id);
+
         public List<Author> GetAvailableAuthors();
+
+        public bool UpdateAuthor(Guid id, Author updatedAuthor);
     }
 }

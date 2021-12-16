@@ -46,6 +46,11 @@ namespace Epam.DigitalLibrary.DalMemory
             throw new NotImplementedException();
         }
 
+        public Author GetAuthor(Guid id)
+        {
+            throw new NotImplementedException();
+        }
+
         public List<Author> GetAvailableAuthors()
         {
             throw new NotImplementedException();
@@ -88,6 +93,11 @@ namespace Epam.DigitalLibrary.DalMemory
         }
 
         public bool RemoveNote(Note note)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool UpdateAuthor(Guid id, Author updatedAuthor)
         {
             throw new NotImplementedException();
         }

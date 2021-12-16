@@ -199,9 +199,19 @@ namespace Epam.DigitalLibrary.Logic
             return _dataLayer.GetPatentById(id);
         }
 
+        public Author GetAuthor(Guid id)
+        {
+            return _dataLayer.GetAuthor(id);
+        }
+
         public List<Author> GetAvailableAuthors()
         {
             return _dataLayer.GetAvailableAuthors();
+        }
+
+        public bool UpdateAuthor(Guid id, Author updateAuthor)
+        {
+            return _dataLayer.UpdateAuthor(id, updateAuthor);
         }
 
         public IEnumerable<IGrouping<string, Newspaper>> GroupNewspapersByName()

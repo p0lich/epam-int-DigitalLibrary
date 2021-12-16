@@ -155,6 +155,43 @@ namespace Epam.DigitalLibrary.SqlDal
             return _patentDAO.GetById(id) as Patent;
         }
 
+        public Author GetAuthor(Guid id)
+        {
+            try
+            {
+                using (_connection = new SqlConnection(connectionString))
+                {
+                    string stProc = "dbo.Author_GetById";
+                    using (SqlCommand command = new SqlCommand(stProc, _connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+
+                        command.Parameters.AddWithValue("@id", id);
+
+                        _connection.Open();
+                        var reader = command.ExecuteReader();
+
+                        if (reader.Read())
+                        {
+                            return new Author(
+                                id: (Guid)reader["Id"],
+                                firstName: reader["FirstName"] as string,
+                                lastName: reader["LastName"] as string
+                                );
+                        }
+
+                        return null;
+                    }
+                }
+            }
+
+            catch (Exception e)
+            {
+                _connection.Close();
+                throw new DataAccessException(e.Message, e.InnerException);
+            }
+        }
+
         public List<Author> GetAvailableAuthors()
         {
             try
@@ -186,6 +223,36 @@ namespace Epam.DigitalLibrary.SqlDal
 
             catch (Exception e)
             {
+                throw new DataAccessException(e.Message, e.InnerException);
+            }
+        }
+
+        public bool UpdateAuthor(Guid id, Author updatedAuthor)
+        {
+            try
+            {
+                using (_connection = new SqlConnection(connectionString))
+                {
+                    string stProc = "dbo.Author_Update";
+                    using (SqlCommand command = new SqlCommand(stProc, _connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+
+                        command.Parameters.AddWithValue("@id", id);
+                        command.Parameters.AddWithValue("@firstName", updatedAuthor.FirstName);
+                        command.Parameters.AddWithValue("@lastName", updatedAuthor.LastName);
+
+                        _connection.Open();
+                        command.ExecuteScalar();
+
+                        return true;
+                    }
+                }
+            }
+
+            catch (Exception e)
+            {
+                _connection.Close();
                 throw new DataAccessException(e.Message, e.InnerException);
             }
         }

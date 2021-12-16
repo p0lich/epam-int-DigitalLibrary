@@ -47,7 +47,11 @@ namespace Epam.DigitalLibrary.LogicContracts
 
         public Patent GetPatentById(Guid id);
 
+        public Author GetAuthor(Guid id);
+
         public List<Author> GetAvailableAuthors();
+
+        public bool UpdateAuthor(Guid id, Author updateAuthor);
 
         public IEnumerable<IGrouping<string, Newspaper>> GroupNewspapersByName();
 
