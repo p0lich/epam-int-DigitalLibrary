@@ -8,7 +8,7 @@ namespace Epam.DigitalLibrary.LibraryWebApi.Models
 {
     public class NoteLink
     {
-        //public Type Type { get; set; }
+        public string Type { get; set; }
 
         public Guid Id { get; set; }
 
