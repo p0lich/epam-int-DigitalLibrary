@@ -229,7 +229,7 @@ namespace Epam.DigitalLibrary.SqlDal
             }
         }
 
-        public bool UpdateAuthor(Guid id, Author updatedAuthor)
+        public int UpdateAuthor(Guid id, Author updatedAuthor)
         {
             try
             {
@@ -247,7 +247,7 @@ namespace Epam.DigitalLibrary.SqlDal
                         _connection.Open();
                         command.ExecuteScalar();
 
-                        return true;
+                        return ResultCodes.Successfull;
                     }
                 }
             }
@@ -400,6 +400,49 @@ namespace Epam.DigitalLibrary.SqlDal
             catch (Exception e)
             {
                 _connection.Close();
+                throw new DataAccessException(e.Message, e.InnerException);
+            }
+        }
+
+        public int AddAuthor(Author author, out Guid id)
+        {
+            try
+            {
+                using (_connection = new SqlConnection(connectionString))
+                {
+                    string stProc = "dbo.Add_Author";
+                    using (SqlCommand command = new SqlCommand(stProc, _connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+
+                        command.Parameters.AddWithValue("@firstName", author.FirstName);
+                        command.Parameters.AddWithValue("@lastName", author.LastName);
+
+                        SqlParameter outId = new SqlParameter("@id", SqlDbType.UniqueIdentifier)
+                        {
+                            Direction = ParameterDirection.Output
+                        };
+
+                        command.Parameters.Add(outId);
+
+                        _connection.Open();
+                        command.ExecuteScalar();
+                        _connection.Close();
+
+                        if (!Guid.TryParse(outId.Value.ToString(), out id))
+                        {
+                            throw new ArgumentException();
+                        }
+
+                        return ResultCodes.Successfull;
+                    }
+                }
+            }
+
+            catch (Exception e)
+            {
+                _connection.Close();
+                id = new Guid();
                 throw new DataAccessException(e.Message, e.InnerException);
             }
         }

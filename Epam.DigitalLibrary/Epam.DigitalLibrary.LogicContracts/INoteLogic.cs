@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Epam.DigitalLibrary.Entities;
+using Epam.DigitalLibrary.Entities.Models.NewspaperModels;
 
 namespace Epam.DigitalLibrary.LogicContracts
 {
@@ -51,10 +52,24 @@ namespace Epam.DigitalLibrary.LogicContracts
 
         public List<Author> GetAvailableAuthors();
 
-        public bool UpdateAuthor(Guid id, Author updateAuthor);
+        public int AddAuthor(Author author, out Guid id);
 
-        public IEnumerable<IGrouping<string, Newspaper>> GroupNewspapersByName();
+        public int UpdateAuthor(Guid id, Author updateAuthor);
+
+        public IEnumerable<IGrouping<Guid?, Newspaper>> GroupNewspapersByReleaseId();
 
         public List<Newspaper> GetNewspaperReleases(Guid newspaperId);
+
+        public bool SetReleaseToNewspaper(Guid newspaperId, Guid releaseId);
+
+        public NewspaperDetailsViewModel GetNewspaperDetails(Guid id);
+
+        public int UpdateNewspaperInfo(Guid id, NewspaperInputViewModel newspaperModel);
+
+        public bool MarkForDeleteNewspaperRelease(Guid id);
+
+        public int AddNewspaperRelease(NewspaperInputViewModel newspaperModel, out Guid id);
+
+        public List<NewspaperDetailsViewModel> GetAllNewspaperReleases(); 
     }
 }

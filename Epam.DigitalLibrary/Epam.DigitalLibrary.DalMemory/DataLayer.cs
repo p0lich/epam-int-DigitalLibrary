@@ -17,6 +17,11 @@ namespace Epam.DigitalLibrary.DalMemory
             _data = new List<Note>();
         }
 
+        public int AddAuthor(Author author, out Guid id)
+        {
+            throw new NotImplementedException();
+        }
+
         public int AddNote(Note note, out Guid noteId)
         {
             try
@@ -106,6 +111,11 @@ namespace Epam.DigitalLibrary.DalMemory
         }
 
         public int UpdateNote(Guid noteId, Note updatedNote)
+        {
+            throw new NotImplementedException();
+        }
+
+        int IDataLayer.UpdateAuthor(Guid id, Author updatedAuthor)
         {
             throw new NotImplementedException();
         }

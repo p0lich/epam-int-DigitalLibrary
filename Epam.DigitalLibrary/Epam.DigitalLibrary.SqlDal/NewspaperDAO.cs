@@ -70,6 +70,7 @@ namespace Epam.DigitalLibrary.SqlDal
                         {
                             notes.Add(new Newspaper(
                             id: (Guid)reader["Id"],
+                            releaseId: (Guid)reader["Id_Release"],
                             name: reader["Name"] as string,
                             publicationPlace: reader["PublicationPlace"] as string,
                             publisher: reader["Publisher"] as string,
@@ -273,6 +274,7 @@ namespace Epam.DigitalLibrary.SqlDal
                         {
                             notes.Add(new Newspaper(
                             id: (Guid)reader["Id"],
+                            releaseId: (Guid)reader["Id_Release"],
                             name: reader["Name"] as string,
                             publicationPlace: reader["PublicationPlace"] as string,
                             publisher: reader["Publisher"] as string,
@@ -318,6 +320,7 @@ namespace Epam.DigitalLibrary.SqlDal
                         {
                             return new Newspaper(
                                 id: (Guid)reader["ID"],
+                                releaseId: (Guid)reader["Id_Release"],
                                 name: reader["Name"] as string,
                                 publicationPlace: reader["PublicationPlace"] as string,
                                 publisher: reader["Publisher"] as string,

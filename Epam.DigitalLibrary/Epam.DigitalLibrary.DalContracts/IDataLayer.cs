@@ -35,6 +35,8 @@ namespace Epam.DigitalLibrary.DalContracts
 
         public List<Author> GetAvailableAuthors();
 
-        public bool UpdateAuthor(Guid id, Author updatedAuthor);
+        public int UpdateAuthor(Guid id, Author updatedAuthor);
+
+        public int AddAuthor(Author author, out Guid id);
     }
 }

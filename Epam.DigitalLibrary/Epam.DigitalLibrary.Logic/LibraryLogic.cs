@@ -12,16 +12,19 @@ using System.Text.RegularExpressions;
 using System.Data.SqlClient;
 using System.Security;
 using Epam.DigitalLibrary.CustomExeptions;
+using Epam.DigitalLibrary.Entities.Models.NewspaperModels;
 
 namespace Epam.DigitalLibrary.Logic
 {
     public class LibraryLogic : INoteLogic
     {
         private IDataLayer _dataLayer;
+        private INewspaperReleaseDAO _newspaperReleaseDAO;
 
         public LibraryLogic(string connString)
         {
             _dataLayer = new SqlDataAccessObject(connString);
+            _newspaperReleaseDAO = new NewspaperReleaseDAO(connString);
         }
 
         public LibraryLogic()
@@ -199,51 +202,75 @@ namespace Epam.DigitalLibrary.Logic
             return _dataLayer.GetPatentById(id);
         }
 
-        public Author GetAuthor(Guid id)
-        {
-            return _dataLayer.GetAuthor(id);
-        }
-
+        #region AUTHOR_LOGIC
         public List<Author> GetAvailableAuthors()
         {
             return _dataLayer.GetAvailableAuthors();
         }
 
-        public bool UpdateAuthor(Guid id, Author updateAuthor)
+        public Author GetAuthor(Guid id)
+        {
+            return _dataLayer.GetAuthor(id);
+        }
+
+        public int AddAuthor(Author author, out Guid id)
+        {
+            return _dataLayer.AddAuthor(author, out id);
+        }
+        public int UpdateAuthor(Guid id, Author updateAuthor)
         {
             return _dataLayer.UpdateAuthor(id, updateAuthor);
         }
+        #endregion
 
-        public IEnumerable<IGrouping<string, Newspaper>> GroupNewspapersByName()
+        #region NEWSPAPER_UNIQUE_LOGIC
+        public IEnumerable<IGrouping<Guid?, Newspaper>> GroupNewspapersByReleaseId()
         {
             try
             {
-                return _dataLayer.GetAllNotes().OfType<Newspaper>().GroupBy(n => n.Name);
+                return _dataLayer.GetAllNotes().OfType<Newspaper>().GroupBy(n => n.ReleaseId);
             }
 
             catch (Exception e) when (e is not DataAccessException)
             {
                 throw new BusinessLogicException(e.Message, e.InnerException);
             }
+        }
+
+        public List<NewspaperDetailsViewModel> GetAllNewspaperReleases()
+        {
+            return _newspaperReleaseDAO.GetAllNewspapers();
         }
 
         public List<Newspaper> GetNewspaperReleases(Guid newspaperId)
         {
-            try
-            {
-                var newspaperGroups = GroupNewspapersByName();
-
-                Newspaper newspaper = _dataLayer.GetNewspaperById(newspaperId);
-
-                return newspaperGroups
-                    .FirstOrDefault(g => g.Key == newspaper.Name)
-                    .ToList();
-            }
-
-            catch (Exception e) when (e is not DataAccessException)
-            {
-                throw new BusinessLogicException(e.Message, e.InnerException);
-            }
+            return _newspaperReleaseDAO.GetAllNewspaperReleases(newspaperId);
         }
+
+        public bool SetReleaseToNewspaper(Guid newspaperId, Guid releaseId)
+        {
+            return _newspaperReleaseDAO.SetRelease(newspaperId, releaseId);
+        }
+
+        public NewspaperDetailsViewModel GetNewspaperDetails(Guid id)
+        {
+            return _newspaperReleaseDAO.GetNewspaperRelease(id);
+        }
+
+        public int UpdateNewspaperInfo(Guid id, NewspaperInputViewModel newspaperModel)
+        {
+            return _newspaperReleaseDAO.UpdateNewspaperRelease(id, newspaperModel);
+        }
+
+        public bool MarkForDeleteNewspaperRelease(Guid id)
+        {
+            return _newspaperReleaseDAO.MarkForDeleteNewspaperRelease(id);
+        }
+
+        public int AddNewspaperRelease(NewspaperInputViewModel newspaperModel, out Guid id)
+        {
+            return _newspaperReleaseDAO.AddNewspaperRelease(newspaperModel, out id);
+        }
+        #endregion
     }
 }
