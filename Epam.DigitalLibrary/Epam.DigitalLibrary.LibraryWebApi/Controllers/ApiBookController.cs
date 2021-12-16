@@ -10,6 +10,7 @@ using Epam.DigitalLibrary.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Epam.DigitalLibrary.AppCodes;
 using Microsoft.AspNetCore.Http;
+using Epam.DigitalLibrary.Entities.Models.BookModels;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -28,31 +29,68 @@ namespace Epam.DigitalLibrary.LibraryWebApi.Controllers
             _logic = logic;
         }
 
-        [Authorize(Roles = UserRights.Librarian)]
+        //[Authorize(Roles = UserRights.Librarian)]
         //[ProducesResponseType(StatusCodes.Status200OK)]
         [HttpGet("{id}")]
         public Book Get(Guid id)
         {
+            if (!IsBookExist(id, out Book book))
+            {
+                return null;
+            }
+
             return _logic.GetBookById(id);          
         }
 
         [HttpPost]
-        public IActionResult Post([FromForm] Book value)
+        public IActionResult Post([FromBody] BookInputViewModel bookModel)
         {
-            _logic.AddNote(value);
+            if (!ModelState.IsValid)
+            {
+                return null;
+            }
+
+            Book book = new Book(
+                name: bookModel.Name,
+                authors: bookModel.AuthorsId.Select(a => _logic.GetAuthor(a)).ToList(),
+                publicationPlace: bookModel.PublicationPlace,
+                publisher: bookModel.Publisher,
+                publicationDate: bookModel.PublicationDate,
+                pagesCount: bookModel.PagesCount,
+                objectNotes: bookModel.ObjectNotes,
+                iSBN: bookModel.ISBN
+                );
+
+            _logic.AddNote(book);
 
             return Ok();
         }
 
         [HttpPut("{id}")]
-        public IActionResult Put(Guid id, [FromForm] Book value)
+        public IActionResult Put(Guid id, [FromBody] BookInputViewModel bookModel)
         {
             if (!IsBookExist(id, out Book book))
             {
                 return NotFound();
             }
 
-            _logic.UpdateNote(id, value);
+            if (!ModelState.IsValid)
+            {
+                return null;
+            }
+
+            Book updateBook = new Book(
+                name: bookModel.Name,
+                authors: bookModel.AuthorsId.Select(a => _logic.GetAuthor(a)).ToList(),
+                publicationPlace: bookModel.PublicationPlace,
+                publisher: bookModel.Publisher,
+                publicationDate: bookModel.PublicationDate,
+                pagesCount: bookModel.PagesCount,
+                objectNotes: bookModel.ObjectNotes,
+                iSBN: bookModel.ISBN
+                );
+
+            _logic.UpdateNote(id, updateBook);
 
             return Ok();
         }
