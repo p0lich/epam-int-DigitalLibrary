@@ -1,4 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Epam.DigitalLibrary.Entities;
+using Epam.DigitalLibrary.Entities.Models.NewspaperModels;
+using Epam.DigitalLibrary.LogicContracts;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,36 +16,85 @@ namespace Epam.DigitalLibrary.LibraryWebApi.Controllers
     [ApiController]
     public class ApiNewspaperController : ControllerBase
     {
-        // GET: api/<ApiNewspaperController>
-        [HttpGet]
-        public IEnumerable<string> Get()
+        private readonly Logger<ApiNewspaperController> _logger;
+        private readonly INoteLogic _logic;
+
+        public ApiNewspaperController(Logger<ApiNewspaperController> logger, INoteLogic logic)
         {
-            return new string[] { "value1", "value2" };
+            _logger = logger;
+            _logic = logic;
         }
 
-        // GET api/<ApiNewspaperController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public IActionResult Get(Guid id)
         {
-            return "value";
         }
 
-        // POST api/<ApiNewspaperController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public IActionResult Post([FromBody] NewspaperInputViewModel newspaperModel)
         {
         }
 
-        // PUT api/<ApiNewspaperController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public IActionResult Put(Guid id, [FromBody] NewspaperInputViewModel value)
         {
         }
 
-        // DELETE api/<ApiNewspaperController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public IActionResult Delete(Guid id)
         {
+        }
+
+        private bool IsNewspaperExist(Guid noteId, out Newspaper foundNewspaper)
+        {
+            foundNewspaper = _logic.GetNewspaperById(noteId);
+            return foundNewspaper is not null;
+        }
+
+        private object FillCreateError(int addResult)
+        {
+            string errorMessage = null;
+
+            if (addResult == ResultCodes.NoteExist)
+            {
+                errorMessage = "Cannot add. Same newspaper already exist";
+            }
+
+            if (addResult == ResultCodes.Error)
+            {
+                errorMessage = "Cannot add. Unexpected error";
+            }
+
+            return errorMessage;
+        }
+
+        private object FillUpdateError(int updateResult)
+        {
+            string errorMessage = null;
+
+            if (updateResult == ResultCodes.NoteExist)
+            {
+                errorMessage = "Cannot update. Same newspaper already exist";
+            }
+
+            if (updateResult == ResultCodes.Error)
+            {
+                errorMessage = "Cannot update. Unexpected error";
+            }
+
+            return errorMessage;
+        }
+
+        private object FillDeleteError(bool deleteResult)
+        {
+            string errorMessage = null;
+
+            if (deleteResult == ResultCodes.ErrorDelete)
+            {
+                errorMessage = "Cannot delete. Undexpected error";
+            }
+
+            return errorMessage;
         }
     }
 }

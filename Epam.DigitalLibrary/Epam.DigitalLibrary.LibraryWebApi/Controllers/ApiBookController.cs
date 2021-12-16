@@ -113,5 +113,51 @@ namespace Epam.DigitalLibrary.LibraryWebApi.Controllers
             foundBook = _logic.GetBookById(noteId);
             return foundBook is not null;
         }
+
+        private object FillCreateError(int addResult)
+        {
+            string errorMessage = null;
+
+            if (addResult == ResultCodes.NoteExist)
+            {
+                errorMessage = "Cannot add. Same book already exist";
+            }
+
+            if (addResult == ResultCodes.Error)
+            {
+                errorMessage = "Cannot add. Unexpected error";
+            }
+
+            return errorMessage;
+        }
+
+        private object FillUpdateError(int updateResult)
+        {
+            string errorMessage = null;
+
+            if (updateResult == ResultCodes.NoteExist)
+            {
+                errorMessage = "Cannot update. Same book already exist";
+            }
+
+            if (updateResult == ResultCodes.Error)
+            {
+                errorMessage = "Cannot update. Unexpected error";
+            }
+
+            return errorMessage;
+        }
+
+        private object FillDeleteError(bool deleteResult)
+        {
+            string errorMessage = null;
+
+            if (deleteResult == ResultCodes.ErrorDelete)
+            {
+                errorMessage = "Cannot delete. Undexpected error";
+            }
+
+            return errorMessage;
+        }
     }
 }
