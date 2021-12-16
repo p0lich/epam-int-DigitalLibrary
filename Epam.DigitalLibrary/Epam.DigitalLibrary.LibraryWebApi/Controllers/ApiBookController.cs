@@ -61,9 +61,9 @@ namespace Epam.DigitalLibrary.LibraryWebApi.Controllers
                 iSBN: bookModel.ISBN
                 );
 
-            _logic.AddNote(book);
+            _logic.AddNote(book, out Guid noteId);
 
-            return Ok();
+            return Ok(noteId);
         }
 
         [HttpPut("{id}")]

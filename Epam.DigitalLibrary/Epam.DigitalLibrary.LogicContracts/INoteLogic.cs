@@ -9,7 +9,7 @@ namespace Epam.DigitalLibrary.LogicContracts
 {
     public interface INoteLogic
     {
-        public int AddNote(Note note);
+        public int AddNote(Note note, out Guid noteId);
 
         public bool RemoveNote();
 

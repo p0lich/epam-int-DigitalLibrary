@@ -122,11 +122,10 @@ namespace Epam.DigitalLibrary.SqlDal
             }
         }
 
-        public bool InsertNote(Guid noteId, Note note)
+        public bool InsertNote(Guid rootNoteId, Note note, out Guid noteId)
         {
             try
             {
-                Guid bookId;
                 Dictionary<string, object> bookData = note.ToObjectDict();
 
                 using (_connection = new SqlConnection(connectionString))
@@ -137,7 +136,7 @@ namespace Epam.DigitalLibrary.SqlDal
                     {
                         command.CommandType = CommandType.StoredProcedure;
 
-                        command.Parameters.AddWithValue("@id_Note", noteId);
+                        command.Parameters.AddWithValue("@id_Note", rootNoteId);
                         command.Parameters.AddWithValue("@publicationPlace", bookData["PublicationPlace"]);
                         command.Parameters.AddWithValue("@publisher", bookData["Publisher"]);
                         command.Parameters.AddWithValue("@iSBN", bookData["ISBN"] ?? DBNull.Value);
@@ -153,14 +152,14 @@ namespace Epam.DigitalLibrary.SqlDal
                         var res = command.ExecuteScalar();
                         _connection.Close();
 
-                        if (!Guid.TryParse(outId.Value.ToString(), out bookId))
+                        if (!Guid.TryParse(outId.Value.ToString(), out noteId))
                         {
                             throw new DataAccessException();
                         }
                     }
                 }
 
-                SetAuthorsToNote(bookId, bookData["Authors"] as List<Author>);
+                SetAuthorsToNote(noteId, bookData["Authors"] as List<Author>);
 
                 return ResultCodes.SuccessfullInsert;
             }
@@ -168,6 +167,7 @@ namespace Epam.DigitalLibrary.SqlDal
             catch (Exception e)
             {
                 _connection.Close();
+                noteId = new Guid();
                 return ResultCodes.ErrorInsert;
             }
         }

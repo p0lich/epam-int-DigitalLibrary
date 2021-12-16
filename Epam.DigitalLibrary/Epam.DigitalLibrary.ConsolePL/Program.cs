@@ -290,19 +290,21 @@ namespace Epam.DigitalLibrary.ConsolePL
 
                 try
                 {
+                    Guid noteId;
+
                     switch (option)
-                    {
+                    {                        
                         case 1:
                             Book book = InputBook();
-                            return logic.AddNote(book);
+                            return logic.AddNote(book, out noteId);
 
                         case 2:
                             Newspaper newspaper = InputNewspaper();
-                            return logic.AddNote(newspaper);
+                            return logic.AddNote(newspaper, out noteId);
 
                         case 3:
                             Patent patent = InputPatent();
-                            return logic.AddNote(patent);
+                            return logic.AddNote(patent, out noteId);
 
                         default:
                             Console.WriteLine("Wrong input. Try again.");

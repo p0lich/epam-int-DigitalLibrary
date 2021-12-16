@@ -31,7 +31,7 @@ namespace Epam.DigitalLibrary.IntegrationTests
             Book bookForAdd = TestData.uniqueBook1;
             Guid addedBookGuid = bookForAdd.ID;
 
-            logic.AddNote(bookForAdd);
+            logic.AddNote(bookForAdd, out Guid noteId);
             int countAfterAdd = logic.GetCatalog().Count;
 
             Note foundedNote = logic.SearchByName(bookForAdd.Name);
@@ -47,12 +47,12 @@ namespace Epam.DigitalLibrary.IntegrationTests
 
             Book uniqueBookForAdd = TestData.uniqueBook1;
 
-            int addResult = logic.AddNote(uniqueBookForAdd);
+            int addResult = logic.AddNote(uniqueBookForAdd, out Guid noteId);
             int noteCountAfterAdd = logic.GetCatalog().Count;
 
             Book sameBook = TestData.sameBookWithoutISBN;
 
-            int addSameresult = logic.AddNote(sameBook);
+            int addSameresult = logic.AddNote(sameBook, out Guid sameNoteId);
             int noteCountAfterAddSame = logic.GetCatalog().Count;
 
             Assert.AreEqual(noteCountAfterAdd, noteCountAfterAddSame);
@@ -65,7 +65,7 @@ namespace Epam.DigitalLibrary.IntegrationTests
 
             Note incorrectNote = null;
 
-            int addResult = logic.AddNote(incorrectNote);
+            int addResult = logic.AddNote(incorrectNote, out Guid noteId);
             int noteCountAfterAdd = logic.GetCatalog().Count;
 
             Assert.AreEqual(initialLibraryCount, noteCountAfterAdd);
@@ -74,8 +74,8 @@ namespace Epam.DigitalLibrary.IntegrationTests
         [TestMethod]
         public void RemoveNote_DecreasedCollectionCount_ReturnCollectionWithoutOneSpecificNoteAfterRemoveCorrectly()
         {
-            logic.AddNote(TestData.uniqueBook1);
-            logic.AddNote(TestData.uniqueBook2);
+            logic.AddNote(TestData.uniqueBook1, out Guid testNoteId1);
+            logic.AddNote(TestData.uniqueBook2, out Guid testNoteId2);
 
             int noteCountAfterAdd = logic.GetCatalog().Count;
 
@@ -107,13 +107,13 @@ namespace Epam.DigitalLibrary.IntegrationTests
         {
             int initialLibraryCount = logic.GetCatalog().Count;
 
-            int addResult = logic.AddNote(TestData.uniqueBook1);
+            int addResult = logic.AddNote(TestData.uniqueBook1, out Guid noteId);
             int libraryCountAfterAdd = logic.GetCatalog().Count;
 
             bool removeResult = logic.RemoveNote();
             int libraryCountAfterRemove = logic.GetCatalog().Count;
 
-            int reAddResult = logic.AddNote(TestData.uniqueBook1);
+            int reAddResult = logic.AddNote(TestData.uniqueBook1, out Guid reAddedNoteId);
             int libraryCountAfterReAdd = logic.GetCatalog().Count;
 
             Assert.AreEqual(libraryCountAfterAdd, libraryCountAfterReAdd);
@@ -122,9 +122,9 @@ namespace Epam.DigitalLibrary.IntegrationTests
         [TestMethod]
         public void SortInOrder_SameCollection_SortDoesNotAffectCatalogTest()
         {
-            logic.AddNote(TestData.uniqueBook1);
-            logic.AddNote(TestData.uniqueBook3);
-            logic.AddNote(TestData.uniqueBook2);
+            logic.AddNote(TestData.uniqueBook1, out Guid testNoteId1);
+            logic.AddNote(TestData.uniqueBook3, out Guid testNoteId2);
+            logic.AddNote(TestData.uniqueBook2, out Guid testNoteId3);
 
             int collectionCount = logic.GetCatalog().Count;
 
@@ -148,9 +148,9 @@ namespace Epam.DigitalLibrary.IntegrationTests
         [TestMethod]
         public void SortInReverseOrder_SameCollection_SortDoesNotAffectCatalogTest()
         {
-            logic.AddNote(TestData.uniqueBook1);
-            logic.AddNote(TestData.uniqueBook3);
-            logic.AddNote(TestData.uniqueBook2);
+            logic.AddNote(TestData.uniqueBook1, out Guid testNoteId1);
+            logic.AddNote(TestData.uniqueBook3, out Guid testNoteId2);
+            logic.AddNote(TestData.uniqueBook2, out Guid testNoteId3);
 
             int collectionCount = logic.GetCatalog().Count;
 
@@ -174,14 +174,14 @@ namespace Epam.DigitalLibrary.IntegrationTests
         [TestMethod]
         public void SortInOrder_SameSortedCollection_SortedCollectionDoesNotAffectByLibrary()
         {
-            logic.AddNote(TestData.uniqueBook1);
-            logic.AddNote(TestData.uniqueBook3);
-            logic.AddNote(TestData.uniqueBook2);
+            logic.AddNote(TestData.uniqueBook1, out Guid testNoteId1);
+            logic.AddNote(TestData.uniqueBook3, out Guid testNoteId2);
+            logic.AddNote(TestData.uniqueBook2, out Guid testNoteId3);
 
             List<Note> sortedLibrary = logic.SortInOrder();
             int sortedLibraryCount = sortedLibrary.Count;
 
-            logic.AddNote(TestData.uniqueNewspaper1);
+            logic.AddNote(TestData.uniqueNewspaper1, out Guid testNewspaperId);
 
             int catalogCount = logic.GetCatalog().Count;
 
@@ -193,14 +193,14 @@ namespace Epam.DigitalLibrary.IntegrationTests
         [TestMethod]
         public void SortInReverseOrder_SameSortedCollection_SortedCollectionDoesNotAffectByLibrary()
         {
-            logic.AddNote(TestData.uniqueBook1);
-            logic.AddNote(TestData.uniqueBook3);
-            logic.AddNote(TestData.uniqueBook2);
+            logic.AddNote(TestData.uniqueBook1, out Guid testNoteId1);
+            logic.AddNote(TestData.uniqueBook3, out Guid testNoteId2);
+            logic.AddNote(TestData.uniqueBook2, out Guid testNoteId3);
 
             List<Note> sortedLibrary = logic.SortInReverseOrder();
             int sortedLibraryCount = sortedLibrary.Count;
 
-            logic.AddNote(TestData.uniqueNewspaper1);
+            logic.AddNote(TestData.uniqueNewspaper1, out Guid testNewspaperId);
 
             int catalogCount = logic.GetCatalog().Count;
 
@@ -214,12 +214,12 @@ namespace Epam.DigitalLibrary.IntegrationTests
         {
             Book book = TestData.uniqueBook1;
             string searchName = book.Name;
-            logic.AddNote(book);
+            logic.AddNote(book, out Guid noteId);
 
             Note firstTimeFoundedNote = logic.SearchByName(searchName);
 
             Book uniqueBookWithSameName = TestData.uniqueBook11;
-            logic.AddNote(uniqueBookWithSameName);
+            logic.AddNote(uniqueBookWithSameName, out Guid sameNoteId);
 
             Note secondTimeFoundedNote = logic.SearchByName(searchName);
 
@@ -229,11 +229,11 @@ namespace Epam.DigitalLibrary.IntegrationTests
         [TestMethod]
         public void GroupByYear_CheckYear_CompareYearsInGroup()
         {
-            logic.AddNote(TestData.uniqueBook1);
-            logic.AddNote(TestData.uniqueBook2);
-            logic.AddNote(TestData.uniqueBook3);
-            logic.AddNote(TestData.uniqueNewspaper1);
-            logic.AddNote(TestData.uniqueNewspaper3);
+            logic.AddNote(TestData.uniqueBook1, out Guid testNoteId1);
+            logic.AddNote(TestData.uniqueBook2, out Guid testNoteId2);
+            logic.AddNote(TestData.uniqueBook3, out Guid testNoteId3);
+            logic.AddNote(TestData.uniqueNewspaper1, out Guid testNewspaperId1);
+            logic.AddNote(TestData.uniqueNewspaper3, out Guid testNewspaperId2);
 
             IEnumerable<IGrouping<int, Note>> groupedByYearNotes = logic.GroupByYear();
 
@@ -258,9 +258,9 @@ namespace Epam.DigitalLibrary.IntegrationTests
         {
             Author authorForSearch = TestData.existAuthor1;
 
-            logic.AddNote(TestData.uniqueBook1);
-            logic.AddNote(TestData.uniqueBook2);
-            logic.AddNote(TestData.uniqueBook3);
+            logic.AddNote(TestData.uniqueBook1, out Guid testNoteId1);
+            logic.AddNote(TestData.uniqueBook2, out Guid testNoteId2);
+            logic.AddNote(TestData.uniqueBook3, out Guid testNoteId3);
 
             List<Book> foundedBooks = logic.SearchBooksByAuthor(authorForSearch);
 
@@ -283,9 +283,9 @@ namespace Epam.DigitalLibrary.IntegrationTests
         {
             Author authorForSearch = TestData.existAuthor2;
 
-            logic.AddNote(TestData.uniquePatent1);
-            logic.AddNote(TestData.uniquePatent2);
-            logic.AddNote(TestData.uniquePatent3);
+            logic.AddNote(TestData.uniquePatent1, out Guid testNoteId1);
+            logic.AddNote(TestData.uniquePatent2, out Guid testNoteId2);
+            logic.AddNote(TestData.uniquePatent3, out Guid testNoteId3);
 
             List<Patent> foundedNotes = logic.SearchPatentByInventor(authorForSearch);
 
@@ -310,10 +310,10 @@ namespace Epam.DigitalLibrary.IntegrationTests
         {
             Author authorForSearch = TestData.existAuthor2;
 
-            logic.AddNote(TestData.uniqueBook1);
-            logic.AddNote(TestData.uniqueBook2);
-            logic.AddNote(TestData.uniquePatent1);
-            logic.AddNote(TestData.uniquePatent2);
+            logic.AddNote(TestData.uniqueBook1, out Guid testBookId1);
+            logic.AddNote(TestData.uniqueBook2, out Guid testBookId2);
+            logic.AddNote(TestData.uniquePatent1, out Guid testPatentId1);
+            logic.AddNote(TestData.uniquePatent2, out Guid testPatentId2);
 
             List<Note> foundedNotes = logic.SearchBooksAndPatensByAuthor(authorForSearch);
 
@@ -349,9 +349,9 @@ namespace Epam.DigitalLibrary.IntegrationTests
         [TestMethod]
         public void SearchBooksByCharset_CheckPublisher_CheckAllGroupsHaveSamePublisher()
         {
-            logic.AddNote(TestData.uniqueBook1);
-            logic.AddNote(TestData.uniqueBook2);
-            logic.AddNote(TestData.uniqueBook4);
+            logic.AddNote(TestData.uniqueBook1, out Guid testNoteId1);
+            logic.AddNote(TestData.uniqueBook2, out Guid testNoteId2);
+            logic.AddNote(TestData.uniqueBook4, out Guid testNoteId3);
 
             string testCharset = TestData.charSetOfExistBook;
 
@@ -376,9 +376,9 @@ namespace Epam.DigitalLibrary.IntegrationTests
         [TestMethod]
         public void SearchBooksByCharset_CheckBookName_CheckAllBooksNamesForMismatch()
         {
-            logic.AddNote(TestData.uniqueBook1);
-            logic.AddNote(TestData.uniqueBook2);
-            logic.AddNote(TestData.uniqueBook4);
+            logic.AddNote(TestData.uniqueBook1, out Guid testNoteId1);
+            logic.AddNote(TestData.uniqueBook2, out Guid testNoteId2);
+            logic.AddNote(TestData.uniqueBook4, out Guid testNoteId3);
 
             string testCharset = TestData.charSetOfExistBook;
             Regex charSetReg = new Regex($@"^{testCharset}");

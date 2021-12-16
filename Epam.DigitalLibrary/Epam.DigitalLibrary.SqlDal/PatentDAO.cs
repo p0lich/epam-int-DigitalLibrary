@@ -94,11 +94,10 @@ namespace Epam.DigitalLibrary.SqlDal
             }
         }
 
-        public bool InsertNote(Guid noteId, Note note)
+        public bool InsertNote(Guid noteRootId, Note note, out Guid noteId)
         {
             try
             {
-                Guid patentId;
                 Dictionary<string, object> patentData = note.ToObjectDict();
 
                 using (_connection = new SqlConnection(connectionString))
@@ -109,7 +108,7 @@ namespace Epam.DigitalLibrary.SqlDal
                     {
                         command.CommandType = CommandType.StoredProcedure;
 
-                        command.Parameters.AddWithValue("@id_Note", noteId);
+                        command.Parameters.AddWithValue("@id_Note", noteRootId);
                         command.Parameters.AddWithValue("@country", patentData["Country"]);
                         command.Parameters.AddWithValue("@registrationNumber", patentData["RegistrationNumber"]);
                         command.Parameters.AddWithValue("@applicationDate", patentData["ApplicationDate"] ?? DBNull.Value);
@@ -125,14 +124,14 @@ namespace Epam.DigitalLibrary.SqlDal
                         var res = command.ExecuteScalar();
                         _connection.Close();
 
-                        if (!Guid.TryParse(outId.Value.ToString(), out patentId))
+                        if (!Guid.TryParse(outId.Value.ToString(), out noteId))
                         {
                             throw new DataAccessException();
                         }
                     }
                 }
 
-                SetAuthorsToNote(patentId, patentData["Authors"] as List<Author>);
+                SetAuthorsToNote(noteId, patentData["Authors"] as List<Author>);
 
                 return ResultCodes.SuccessfullInsert;
             }
@@ -140,6 +139,7 @@ namespace Epam.DigitalLibrary.SqlDal
             catch (Exception)
             {
                 _connection.Close();
+                noteId = new Guid();
                 return ResultCodes.ErrorInsert;
             }
         }

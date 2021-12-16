@@ -9,7 +9,7 @@ namespace Epam.DigitalLibrary.DalContracts
 {
     public interface IDataLayer
     {
-        public int AddNote(Note note);
+        public int AddNote(Note note, out Guid noteId);
 
         public List<Note> GetAllNotes();
 

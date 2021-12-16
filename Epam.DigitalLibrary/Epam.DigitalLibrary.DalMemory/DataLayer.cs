@@ -17,21 +17,24 @@ namespace Epam.DigitalLibrary.DalMemory
             _data = new List<Note>();
         }
 
-        public int AddNote(Note note)
+        public int AddNote(Note note, out Guid noteId)
         {
             try
             {
                 if (note.IsUnique(GetAllNotes(), note.ID))
                 {
                     _data.Add(note);
+                    noteId = note.ID;
                     return 0;
                 }
 
+                noteId = new Guid();
                 return -1;
             }
 
             catch (Exception)
             {
+                noteId = new Guid();
                 return -2;
             }
         }

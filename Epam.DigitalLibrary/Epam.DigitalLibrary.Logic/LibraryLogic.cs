@@ -29,9 +29,9 @@ namespace Epam.DigitalLibrary.Logic
             _dataLayer = new DataLayer();
         }
 
-        public int AddNote(Note note)
+        public int AddNote(Note note, out Guid noteId)
         {
-            return _dataLayer.AddNote(note);
+            return _dataLayer.AddNote(note, out noteId);
         }
 
         public IEnumerable<IGrouping<int, Note>> GroupByYear()

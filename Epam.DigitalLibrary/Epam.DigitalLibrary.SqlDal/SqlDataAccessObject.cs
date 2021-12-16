@@ -29,35 +29,37 @@ namespace Epam.DigitalLibrary.SqlDal
             _patentDAO = new PatentDAO(connString);
         }
 
-        public int AddNote(Note note)
+        public int AddNote(Note note, out Guid noteId)
         {
             try
             {
                 if (!note.IsUnique(GetAllNotes(), note.ID))
                 {
+                    noteId = new Guid();
                     return ResultCodes.NoteExist;
                 }
 
-                InsertInitialNoteData(note, out Guid noteId);
+                InsertInitialNoteData(note, out Guid rootNoteId);
 
                 if (note is Book)
                 {
-                    return _bookDAO.InsertNote(noteId, note) ?
+                    return _bookDAO.InsertNote(rootNoteId, note, out noteId) ?
                         ResultCodes.Successfull : ResultCodes.Error;
                 }
 
                 if (note is Newspaper)
                 {
-                    return _newspaperDAO.InsertNote(noteId, note) ?
+                    return _newspaperDAO.InsertNote(rootNoteId, note, out noteId) ?
                         ResultCodes.Successfull : ResultCodes.Error;
                 }
 
-                return _patentDAO.InsertNote(noteId, note) ?
+                return _patentDAO.InsertNote(rootNoteId, note, out noteId) ?
                     ResultCodes.Successfull : ResultCodes.Error;
             }
 
             catch (Exception)
             {
+                noteId = new Guid();
                 return ResultCodes.Error;
             }
         }

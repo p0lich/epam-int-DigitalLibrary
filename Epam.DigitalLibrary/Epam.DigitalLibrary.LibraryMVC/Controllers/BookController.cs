@@ -171,7 +171,7 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
                     iSBN: bookModel.ISBN
                 );
 
-                int addResult = _logic.AddNote(book);
+                int addResult = _logic.AddNote(book, out Guid noteId);
 
                 if (FillCreateError(addResult) is not null)
                 {

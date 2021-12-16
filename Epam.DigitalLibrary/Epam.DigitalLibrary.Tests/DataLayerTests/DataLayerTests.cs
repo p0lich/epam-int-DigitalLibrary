@@ -26,7 +26,7 @@ namespace Epam.DigitalLibrary.Tests.DataLayerTests
         [TestMethod]
         public void AddNote_ErrorCode_ReturnsCodeOfErrorForIncorrectElementCorrectly()
         {
-            int codeOfAddNoteMethod = dao.AddNote(null);
+            int codeOfAddNoteMethod = dao.AddNote(null, out Guid noteId);
 
             Assert.AreEqual(-2, codeOfAddNoteMethod);
         }
@@ -34,7 +34,7 @@ namespace Epam.DigitalLibrary.Tests.DataLayerTests
         [TestMethod]
         public void AddNote_ZeroReturn_ReturnsZeroCodeAfterAddingBookCorrectly()
         {
-            int codeOfAddNoteMethod = dao.AddNote(TestData.uniqueBook1);
+            int codeOfAddNoteMethod = dao.AddNote(TestData.uniqueBook1, out Guid noteId);
 
             Assert.AreEqual(0, codeOfAddNoteMethod);
         }
@@ -42,7 +42,7 @@ namespace Epam.DigitalLibrary.Tests.DataLayerTests
         [TestMethod]
         public void AddNote_ZeroReturn_ReturnsZeroCodeAfterAddingNewspaperCorrectly()
         {
-            int codeOfAddNoteMethod = dao.AddNote(TestData.uniqueNewspaper1);
+            int codeOfAddNoteMethod = dao.AddNote(TestData.uniqueNewspaper1, out Guid noteId);
 
             Assert.AreEqual(0, codeOfAddNoteMethod);
         }
@@ -50,7 +50,7 @@ namespace Epam.DigitalLibrary.Tests.DataLayerTests
         [TestMethod]
         public void AddNote_ZeroReturn_ReturnsZeroCodeAfterAddingPatentCorrectly()
         {
-            int codeOfAddNoteMethod = dao.AddNote(TestData.uniquePatent1);
+            int codeOfAddNoteMethod = dao.AddNote(TestData.uniquePatent1, out Guid noteId);
 
             Assert.AreEqual(0, codeOfAddNoteMethod);
         }
@@ -58,9 +58,9 @@ namespace Epam.DigitalLibrary.Tests.DataLayerTests
         [TestMethod]
         public void AddNote_ErrorCode_ReturnsCodeForNonUniqueISBNBookCorrectly()
         {
-            dao.AddNote(TestData.uniqueBook1);
+            dao.AddNote(TestData.uniqueBook1, out Guid noteId);
 
-            int codeOfAddNoteMethod = dao.AddNote(TestData.bookWithSameISBN);
+            int codeOfAddNoteMethod = dao.AddNote(TestData.bookWithSameISBN, out Guid testNoteId);
 
             Assert.AreEqual(-1, codeOfAddNoteMethod);
         }
@@ -68,9 +68,9 @@ namespace Epam.DigitalLibrary.Tests.DataLayerTests
         [TestMethod]
         public void AddNote_ErrorCode_ReturnsCodeForNonUniquePropertiesBookCorrectly()
         {
-            dao.AddNote(TestData.uniqueBook1);
+            dao.AddNote(TestData.uniqueBook1, out Guid noteId);
 
-            int codeOfAddNoteMethod = dao.AddNote(TestData.sameBookWithoutISBN);
+            int codeOfAddNoteMethod = dao.AddNote(TestData.sameBookWithoutISBN, out Guid testNoteId);
 
             Assert.AreEqual(-1, codeOfAddNoteMethod);
         }
@@ -78,9 +78,9 @@ namespace Epam.DigitalLibrary.Tests.DataLayerTests
         [TestMethod]
         public void AddNote_ErrorCode_ReturnsCodeOfErrorForNonUniqueISSNNewspaperCorrectly()
         {
-            dao.AddNote(TestData.uniqueNewspaper1);
+            dao.AddNote(TestData.uniqueNewspaper1, out Guid noteId);
 
-            int codeOfAddNoteMethod = dao.AddNote(TestData.newspaperWithSameISSN);
+            int codeOfAddNoteMethod = dao.AddNote(TestData.newspaperWithSameISSN, out Guid testNoteId);
 
             Assert.AreEqual(-1, codeOfAddNoteMethod);
         }
@@ -88,9 +88,9 @@ namespace Epam.DigitalLibrary.Tests.DataLayerTests
         [TestMethod]
         public void AddNote_ErrorCode_ReturnsCodeOfErrorNonUniquePropertiesNewspaperCorrectly()
         {
-            dao.AddNote(TestData.uniqueNewspaper1);
+            dao.AddNote(TestData.uniqueNewspaper1, out Guid noteId);
 
-            int codeOfAddNoteMethod = dao.AddNote(TestData.sameNewspaperWithoutISSN);
+            int codeOfAddNoteMethod = dao.AddNote(TestData.sameNewspaperWithoutISSN, out Guid testNoteId);
 
             Assert.AreEqual(-1, codeOfAddNoteMethod);
         }
@@ -98,9 +98,9 @@ namespace Epam.DigitalLibrary.Tests.DataLayerTests
         [TestMethod]
         public void AddNote_ErrorCode_ReturnsCodeOfErrorForNonUniquePatentCorrectly()
         {
-            dao.AddNote(TestData.uniquePatent1);
+            dao.AddNote(TestData.uniquePatent1, out Guid noteId);
 
-            int codeOfAddNoteMethod = dao.AddNote(TestData.samePatent);
+            int codeOfAddNoteMethod = dao.AddNote(TestData.samePatent, out Guid testNoteId);
 
             Assert.AreEqual(-1, codeOfAddNoteMethod);
         }
@@ -117,8 +117,8 @@ namespace Epam.DigitalLibrary.Tests.DataLayerTests
         [TestMethod]
         public void GetAllNotes_ElemetsCount_ReturnsElementsCountInDAO()
         {
-            dao.AddNote(TestData.uniqueBook1);
-            dao.AddNote(TestData.uniqueBook2);
+            dao.AddNote(TestData.uniqueBook1, out Guid testNoteId1);
+            dao.AddNote(TestData.uniqueBook2, out Guid testNoteId2);
 
             int elementsCount = dao.GetAllNotes().Count;
 
@@ -130,7 +130,7 @@ namespace Epam.DigitalLibrary.Tests.DataLayerTests
         [TestMethod]
         public void RemoveNote_TrueDeleteResult_ReturnsTrueAfterElementRemove()
         {
-            dao.AddNote(TestData.uniqueBook1);
+            dao.AddNote(TestData.uniqueBook1, out Guid noteId);
 
             bool isNoteWasRemoved = dao.RemoveNote();
 
