@@ -12,6 +12,8 @@ namespace Epam.DigitalLibrary.Entities
         private string _publicationPlace, _publisher, _issn;
         private DateTime _publicationDate, _releaseDate;
 
+        public Guid? ReleaseId { get; set; }
+
         public string PublicationPlace
         {
             get => _publicationPlace;
@@ -125,6 +127,31 @@ namespace Epam.DigitalLibrary.Entities
             string publicationPlace, string publisher, string number, DateTime releaseDate, string iSSN) :
             base(id, name, objectNotes, pagesCount, publicationDate, isDeleted)
         {
+            PublicationPlace = publicationPlace;
+            Publisher = publisher;
+            Number = number;
+            ReleaseDate = releaseDate;
+            ISSN = iSSN;
+        }
+
+        public Newspaper(Guid? releaseId, string name, string objectNotes, int pagesCount, DateTime publicationDate,
+            string publicationPlace, string publisher, string number, DateTime releaseDate, string iSSN) :
+            base(name, objectNotes, pagesCount, publicationDate)
+        {
+            ReleaseId = releaseId;
+            PublicationPlace = publicationPlace;
+            Publisher = publisher;
+            PublicationDate = publicationDate;
+            Number = number;
+            ReleaseDate = releaseDate;
+            ISSN = iSSN;
+        }
+
+        public Newspaper(Guid id, Guid? releaseId, string name, string objectNotes, int pagesCount, DateTime publicationDate, bool isDeleted,
+            string publicationPlace, string publisher, string number, DateTime releaseDate, string iSSN) :
+            base(id, name, objectNotes, pagesCount, publicationDate, isDeleted)
+        {
+            ReleaseId = releaseId;
             PublicationPlace = publicationPlace;
             Publisher = publisher;
             Number = number;
