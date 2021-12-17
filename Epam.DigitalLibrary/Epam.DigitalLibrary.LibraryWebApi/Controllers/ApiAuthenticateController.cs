@@ -1,12 +1,11 @@
 ﻿using Epam.DigitalLibrary.LibraryWebApi.Models;
 using Epam.DigitalLibrary.LibraryWebApi.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace Epam.DigitalLibrary.LibraryWebApi.Controllers
 {
@@ -14,10 +13,12 @@ namespace Epam.DigitalLibrary.LibraryWebApi.Controllers
     [ApiController]
     public class ApiAuthenticateController : ControllerBase
     {
+        private readonly ILogger<ApiAuthenticateController> _logger;
         private readonly IUserService _userService;
 
-        public ApiAuthenticateController(IUserService userService)
+        public ApiAuthenticateController(ILogger<ApiAuthenticateController> logger, IUserService userService)
         {
+            _logger = logger;
             _userService = userService;
         }
 
@@ -30,6 +31,8 @@ namespace Epam.DigitalLibrary.LibraryWebApi.Controllers
             {
                 return BadRequest(new { message = "Wrong login/password" });
             }
+
+            _logger.LogInformation(2, $"User {response.Login} has login");
 
             return Ok(response);
         }
@@ -44,17 +47,9 @@ namespace Epam.DigitalLibrary.LibraryWebApi.Controllers
                 return BadRequest(new { message = "Wrong data" });
             }
 
+            _logger.LogInformation(2, $"New user {response.Login} has registered");
+
             return Ok(response);
-        }
-
-        [HttpPost("Logout")]
-        public IActionResult Logout()
-        {
-            throw new NotImplementedException();
-
-            var login = User.Identity.Name;
-            _userService.LogOut(login);
-            return Ok();
         }
     }
 }
