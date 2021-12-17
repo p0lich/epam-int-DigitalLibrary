@@ -12,8 +12,6 @@ using Epam.DigitalLibrary.AppCodes;
 using Microsoft.AspNetCore.Http;
 using Epam.DigitalLibrary.Entities.Models.BookModels;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
 namespace Epam.DigitalLibrary.LibraryWebApi.Controllers
 {
     [Route("api/[controller]")]
@@ -29,19 +27,18 @@ namespace Epam.DigitalLibrary.LibraryWebApi.Controllers
             _logic = logic;
         }
 
-        //[Authorize(Roles = UserRights.Librarian)]
-        //[ProducesResponseType(StatusCodes.Status200OK)]
         [HttpGet("{id}")]
-        public Book Get(Guid id)
+        public IActionResult Get(Guid id)
         {
             if (!IsBookExist(id, out Book book))
             {
-                return null;
+                return NotFound();
             }
 
-            return _logic.GetBookById(id);          
+            return Ok(_logic.GetBookById(id));          
         }
 
+        [Authorize(Roles = UserRights.Librarian + "," + UserRights.Admin + "," + UserRights.ExternalClient)]
         [HttpPost]
         public IActionResult Post([FromBody] BookInputViewModel bookModel)
         {
@@ -63,9 +60,16 @@ namespace Epam.DigitalLibrary.LibraryWebApi.Controllers
 
             int addResult = _logic.AddNote(book, out Guid noteId);
 
-            return Ok(FillCreateError(addResult));
+            if (addResult == ResultCodes.Successfull)
+            {
+                _logger.LogInformation(2, $"New book was added | User : {User.Identity.Name}");
+                return Ok(noteId);
+            }
+
+            return BadRequest(FillCreateError(addResult));
         }
 
+        [Authorize(Roles = UserRights.Librarian + "," + UserRights.Admin + "," + UserRights.ExternalClient)]
         [HttpPut("{id}")]
         public IActionResult Put(Guid id, [FromBody] BookInputViewModel bookModel)
         {
@@ -92,9 +96,16 @@ namespace Epam.DigitalLibrary.LibraryWebApi.Controllers
 
             int updateResult = _logic.UpdateNote(id, updateBook);
 
-            return Ok(FillUpdateError(updateResult));
+            if (updateResult == ResultCodes.Successfull)
+            {
+                _logger.LogInformation(2, $"Book {id} was updated | User : {User.Identity.Name}");
+                return Ok("Book was updated");
+            }
+
+            return BadRequest(FillUpdateError(updateResult));
         }
 
+        [Authorize(Roles = UserRights.Librarian + "," + UserRights.Admin + "," + UserRights.ExternalClient)]
         [HttpDelete("{id}")]
         public IActionResult Delete(Guid id)
         {
@@ -104,6 +115,12 @@ namespace Epam.DigitalLibrary.LibraryWebApi.Controllers
             }
 
             bool deleteResult = _logic.MarkForDelete(_logic.GetBookById(id));
+
+            if (deleteResult)
+            {
+                _logger.LogInformation(2, $"Book {id} was marked for delet | User : {User.Identity.Name}");
+                return Ok("Book was deleted");
+            }
 
             return Ok(FillDeleteError(deleteResult));
         }

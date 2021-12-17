@@ -1,6 +1,8 @@
-﻿using Epam.DigitalLibrary.Entities;
+﻿using Epam.DigitalLibrary.AppCodes;
+using Epam.DigitalLibrary.Entities;
 using Epam.DigitalLibrary.Entities.Models.PatentModels;
 using Epam.DigitalLibrary.LogicContracts;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -8,8 +10,6 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace Epam.DigitalLibrary.LibraryWebApi.Controllers
 {
@@ -37,6 +37,7 @@ namespace Epam.DigitalLibrary.LibraryWebApi.Controllers
             return Ok(_logic.GetPatentById(id));
         }
 
+        [Authorize(Roles = UserRights.Librarian + "," + UserRights.Admin + "," + UserRights.ExternalClient)]
         [HttpPost]
         public IActionResult Post([FromBody] PatentInputViewModel patentModel)
         {
@@ -58,9 +59,16 @@ namespace Epam.DigitalLibrary.LibraryWebApi.Controllers
 
             int addResult = _logic.AddNote(patent, out Guid noteId);
 
-            return Ok(FillCreateError(addResult));
+            if (addResult == ResultCodes.Successfull)
+            {
+                _logger.LogInformation(2, $"Patent {noteId} was added | User: {User.Identity.Name}");
+                return Ok(noteId);
+            }
+
+            return BadRequest(FillCreateError(addResult));
         }
 
+        [Authorize(Roles = UserRights.Librarian + "," + UserRights.Admin + "," + UserRights.ExternalClient)]
         [HttpPut("{id}")]
         public IActionResult Put(Guid id, [FromBody] PatentInputViewModel patentModel)
         {
@@ -87,9 +95,16 @@ namespace Epam.DigitalLibrary.LibraryWebApi.Controllers
 
             int updateResult = _logic.UpdateNote(id, updatePatent);
 
-            return Ok(FillUpdateError(updateResult));
+            if (updateResult == ResultCodes.Successfull)
+            {
+                _logger.LogInformation(2, $"Patent {id} was updated | User: {User.Identity.Name}");
+                return Ok("Patent was updated");
+            }
+
+            return BadRequest(FillUpdateError(updateResult));
         }
 
+        [Authorize(Roles = UserRights.Librarian + "," + UserRights.Admin + "," + UserRights.ExternalClient)]
         [HttpDelete("{id}")]
         public IActionResult Delete(Guid id)
         {
@@ -100,7 +115,13 @@ namespace Epam.DigitalLibrary.LibraryWebApi.Controllers
 
             bool deleteResult = _logic.MarkForDelete(patent);
 
-            return Ok(FillDeleteError(deleteResult));
+            if (deleteResult)
+            {
+                _logger.LogInformation(2, $"Patent {id} was deleted | User: {User.Identity.Name}");
+                return Ok("Patent was deleted");
+            }
+
+            return BadRequest(FillDeleteError(deleteResult));
         }
 
         private bool IsPatentExist(Guid noteId, out Patent foundPatent)
