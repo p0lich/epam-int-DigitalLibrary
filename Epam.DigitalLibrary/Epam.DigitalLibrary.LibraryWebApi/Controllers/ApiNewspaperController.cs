@@ -1,6 +1,8 @@
-﻿using Epam.DigitalLibrary.Entities;
+﻿using Epam.DigitalLibrary.AppCodes;
+using Epam.DigitalLibrary.Entities;
 using Epam.DigitalLibrary.Entities.Models.NewspaperModels;
 using Epam.DigitalLibrary.LogicContracts;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -16,10 +18,10 @@ namespace Epam.DigitalLibrary.LibraryWebApi.Controllers
     [ApiController]
     public class ApiNewspaperController : ControllerBase
     {
-        private readonly Logger<ApiNewspaperController> _logger;
+        private readonly ILogger<ApiNewspaperController> _logger;
         private readonly INoteLogic _logic;
 
-        public ApiNewspaperController(Logger<ApiNewspaperController> logger, INoteLogic logic)
+        public ApiNewspaperController(ILogger<ApiNewspaperController> logger, INoteLogic logic)
         {
             _logger = logger;
             _logic = logic;
@@ -28,7 +30,7 @@ namespace Epam.DigitalLibrary.LibraryWebApi.Controllers
         [HttpGet("GetNewspaperReleases/{id}")]
         public IActionResult GetNewspaperReleases(Guid id)
         {
-            if (!IsNewspaperExist(id, out Newspaper newspaper))
+            if (!IsNewspaperExist(id, out Newspaper newspaperRelease))
             {
                 return NotFound("Release with such id isnt exist");
             }
@@ -36,6 +38,7 @@ namespace Epam.DigitalLibrary.LibraryWebApi.Controllers
             var releases = _logic.GetNewspaperReleases(id).Select(r => new NewspaperReleaseDetailsViewModel()
             {
                 ID = r.ID,
+                ReleaseId = r.ReleaseId,
                 PagesCount = r.PagesCount,
                 Number = r.Number,
                 ReleaseDate = r.ReleaseDate,
@@ -56,6 +59,7 @@ namespace Epam.DigitalLibrary.LibraryWebApi.Controllers
             return Ok(_logic.GetNewspaperById(id));
         }
 
+        [Authorize(Roles = UserRights.Librarian + "," + UserRights.Admin + "," + UserRights.ExternalClient)]
         [HttpPost("PostNewspaper")]
         public IActionResult PostNewspaper([FromBody] NewspaperInputViewModel newspaperModel)
         {
@@ -66,9 +70,16 @@ namespace Epam.DigitalLibrary.LibraryWebApi.Controllers
 
             int addResult = _logic.AddNewspaperRelease(newspaperModel, out Guid id);
 
-            return Ok(FillCreateMessage(addResult, id));
+            if (addResult == ResultCodes.Successfull)
+            {
+                _logger.LogInformation(2, $"Newspaper {id} was created | User: {User.Identity.Name}");
+                return Ok(id);
+            }
+
+            return BadRequest(FillCreateError(addResult));
         }
 
+        [Authorize(Roles = UserRights.Librarian + "," + UserRights.Admin + "," + UserRights.ExternalClient)]
         [HttpPost("PostNewspaperRelease")]
         public IActionResult PostNewspaperRelease([FromBody] NewspaperFullInput newspaperModel)
         {
@@ -77,26 +88,41 @@ namespace Epam.DigitalLibrary.LibraryWebApi.Controllers
                 return BadRequest();
             }
 
+            NewspaperDetailsViewModel newspaperDetailsView = _logic.GetNewspaperDetails(newspaperModel.NewspaperReleaseInputId);
+
             Newspaper newspaper = new Newspaper(
-                name: newspaperModel.NewspaperInput.Name,
-                publicationPlace: newspaperModel.NewspaperInput.PublicationPlace,
-                publisher: newspaperModel.NewspaperInput.Publisher,
-                publicationDate: newspaperModel.NewspaperInput.PublicationDate,
+                releaseId: newspaperModel.ReleaseInput.ReleaseId,
+                name: newspaperDetailsView.Name,
+                publicationPlace: newspaperDetailsView.PublicationPlace,
+                publisher: newspaperDetailsView.Publisher,
+                publicationDate: newspaperDetailsView.PublicationDate,
                 pagesCount: newspaperModel.ReleaseInput.PagesCount,
-                objectNotes: newspaperModel.NewspaperInput.ObjectNotes,
+                objectNotes: newspaperDetailsView.ObjectNotes,
                 number: newspaperModel.ReleaseInput.Number,
                 releaseDate: newspaperModel.ReleaseInput.ReleaseDate,
-                iSSN: newspaperModel.NewspaperInput.ISSN
+                iSSN: newspaperDetailsView.ISSN
                 );
 
-            int addresult = _logic.AddNote(newspaper, out Guid id);
+            int addResult = _logic.AddNote(newspaper, out Guid id);
 
-            return Ok(FillCreateMessage(addresult, id));
+            if (addResult == ResultCodes.Successfull)
+            {
+                _logger.LogInformation(2, $"Release {id} of newspaper was created | User: {User.Identity.Name}");
+                return Ok(id);
+            }
+
+            return BadRequest(FillCreateError(addResult));
         }
 
+        [Authorize(Roles = UserRights.Librarian + "," + UserRights.Admin + "," + UserRights.ExternalClient)]
         [HttpPut("UpdateNewspaper/{id}")]
         public IActionResult UpdateNewspaper(Guid id, [FromBody] NewspaperInputViewModel newspaperModel)
         {
+            if (!IsNewspaperReleaseExist(id, out NewspaperDetailsViewModel newspaperRelease))
+            {
+                return NotFound();
+            }
+
             if (!ModelState.IsValid)
             {
                 return BadRequest();
@@ -104,9 +130,16 @@ namespace Epam.DigitalLibrary.LibraryWebApi.Controllers
 
             int updateResult = _logic.UpdateNewspaperInfo(id, newspaperModel);
 
-            return Ok(FillUpdateError(updateResult));
+            if (updateResult == ResultCodes.Successfull)
+            {
+                _logger.LogInformation(2, $"Newspaper {id} was updated | User: {User.Identity.Name}");
+                return Ok("Newspaper was updated");
+            }
+
+            return BadRequest(FillUpdateError(updateResult));
         }
 
+        [Authorize(Roles = UserRights.Librarian + "," + UserRights.Admin + "," + UserRights.ExternalClient)]
         [HttpPut("UpdateNewspaperRelease/{id}")]
         public IActionResult UpdateNewspaperRelease(Guid id, [FromBody] NewspaperReleaseInputViewModel newspaperReleaseModel)
         {
@@ -135,28 +168,53 @@ namespace Epam.DigitalLibrary.LibraryWebApi.Controllers
 
             int updateResult = _logic.UpdateNote(id, newspaperUpdate);
 
-            return Ok(FillUpdateError(updateResult));
+            if (updateResult == ResultCodes.Successfull)
+            {
+                _logger.LogInformation(2, $"Release {id} of newspaper was updated | User: {User.Identity.Name}");
+                return Ok("Release of newspaper was updated");
+            }
+
+            return BadRequest(FillUpdateError(updateResult));
         }
 
+        [Authorize(Roles = UserRights.Librarian + "," + UserRights.Admin + "," + UserRights.ExternalClient)]
         [HttpDelete("DeleteNewspaper/{id}")]
         public IActionResult DeleteNewspaper(Guid id)
         {
+            if (!IsNewspaperReleaseExist(id, out NewspaperDetailsViewModel newspaperRelease))
+            {
+                return NotFound();
+            }
+
             bool deleteResult = _logic.MarkForDeleteNewspaperRelease(id);
 
-            return Ok(FillDeleteError(deleteResult));
+            if (deleteResult)
+            {
+                _logger.LogInformation(2, $"Newspaper {id} was marked for delete | User: {User.Identity.Name}");
+                return Ok($"Newspaper {id} was marked for delete");
+            }
+
+            return BadRequest(FillDeleteError(deleteResult));
         }
 
+        [Authorize(Roles = UserRights.Librarian + "," + UserRights.Admin + "," + UserRights.ExternalClient)]
         [HttpDelete("DeleteNewspaperRelease/{id}")]
         public IActionResult DeleteNewspaperRelease(Guid id)
         {
             if (!IsNewspaperExist(id, out Newspaper newspaper))
             {
-                return BadRequest();
+                return NotFound();
             }
 
             bool deleteResult = _logic.MarkForDelete(newspaper);
 
-            return Ok(deleteResult);
+            if (deleteResult)
+            {
+                _logger.LogInformation(2, $"Newspaper {id} of newspaper was marked for delete | User: {User.Identity.Name}");
+                return Ok($"Release {id} of newspaper was marked for delete");
+            }
+
+            return BadRequest(FillDeleteError(deleteResult));
         }
 
         private bool IsNewspaperExist(Guid noteId, out Newspaper foundNewspaper)
@@ -165,21 +223,27 @@ namespace Epam.DigitalLibrary.LibraryWebApi.Controllers
             return foundNewspaper is not null;
         }
 
-        private object FillCreateMessage(int addResult, Guid id)
+        private bool IsNewspaperReleaseExist(Guid newspaperReleaseId, out NewspaperDetailsViewModel foundNewspaperRelease)
         {
-            string message = id.ToString();
+            foundNewspaperRelease = _logic.GetNewspaperDetails(newspaperReleaseId);
+            return foundNewspaperRelease is not null;
+        }
+
+        private object FillCreateError(int addResult)
+        {
+            string errorMessage = null;
 
             if (addResult == ResultCodes.NoteExist)
             {
-                message = "Cannot add. Same newspaper already exist";
+                errorMessage = "Cannot add. Same newspaper already exist";
             }
 
             if (addResult == ResultCodes.Error)
             {
-                message = "Cannot add. Unexpected error";
+                errorMessage = "Cannot add. Unexpected error";
             }
 
-            return message;
+            return errorMessage;
         }
 
         private object FillUpdateError(int updateResult)

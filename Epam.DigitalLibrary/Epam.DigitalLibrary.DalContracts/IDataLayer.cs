@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Epam.DigitalLibrary.Entities;
+using Epam.DigitalLibrary.Entities.Models.SearchModels;
 
 namespace Epam.DigitalLibrary.DalContracts
 {
@@ -12,6 +13,8 @@ namespace Epam.DigitalLibrary.DalContracts
         public int AddNote(Note note, out Guid noteId);
 
         public List<Note> GetAllNotes();
+
+        public List<ShortNote> GetFilteredNotes(SearchRequest request, NoteTypes noteType);
 
         public Note GetById(Guid id);
 
@@ -38,5 +41,7 @@ namespace Epam.DigitalLibrary.DalContracts
         public int UpdateAuthor(Guid id, Author updatedAuthor);
 
         public int AddAuthor(Author author, out Guid id);
+
+        public List<Author> GetFilteredAuthors(string namepattern);
     }
 }

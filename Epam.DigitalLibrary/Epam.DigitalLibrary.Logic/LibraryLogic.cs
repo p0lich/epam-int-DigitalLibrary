@@ -13,6 +13,7 @@ using System.Data.SqlClient;
 using System.Security;
 using Epam.DigitalLibrary.CustomExeptions;
 using Epam.DigitalLibrary.Entities.Models.NewspaperModels;
+using Epam.DigitalLibrary.Entities.Models.SearchModels;
 
 namespace Epam.DigitalLibrary.Logic
 {
@@ -202,6 +203,11 @@ namespace Epam.DigitalLibrary.Logic
             return _dataLayer.GetPatentById(id);
         }
 
+        public List<ShortNote> GetFilteredShortNotes(SearchRequest searchRequest, NoteTypes noteType)
+        {
+            return _dataLayer.GetFilteredNotes(searchRequest, noteType);
+        }
+
         #region AUTHOR_LOGIC
         public List<Author> GetAvailableAuthors()
         {
@@ -217,9 +223,15 @@ namespace Epam.DigitalLibrary.Logic
         {
             return _dataLayer.AddAuthor(author, out id);
         }
+
         public int UpdateAuthor(Guid id, Author updateAuthor)
         {
             return _dataLayer.UpdateAuthor(id, updateAuthor);
+        }
+
+        public List<Author> GetFilteredAuthors(string namePattern)
+        {
+            return _dataLayer.GetFilteredAuthors(namePattern);
         }
         #endregion
 

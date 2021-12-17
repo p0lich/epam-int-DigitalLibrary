@@ -9,6 +9,8 @@ namespace Epam.DigitalLibrary.Entities.Models.NewspaperModels
     {
         public Guid ID { get; set; }
 
+        public Guid? ReleaseId { get; set; }
+
         public int PagesCount { get; set; }
 
         public string Number { get; set; }

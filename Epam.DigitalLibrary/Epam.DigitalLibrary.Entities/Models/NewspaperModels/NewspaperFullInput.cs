@@ -6,21 +6,10 @@ using System.Threading.Tasks;
 
 namespace Epam.DigitalLibrary.Entities.Models.NewspaperModels
 {
-    public class NewspaperFullInput : IValidatableObject
+    public class NewspaperFullInput
     {
-        public NewspaperInputViewModel NewspaperInput { get; set; }
+        public Guid NewspaperReleaseInputId { get; set; }
 
         public NewspaperReleaseInputViewModel ReleaseInput { get; set; }
-
-        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
-        {
-            if (ReleaseInput.ReleaseDate.Year < NewspaperInput.PublicationDate.Year)
-            {
-                yield return new ValidationResult(
-                    "Release date cannot be less than Publication date",
-                    new[] { nameof(ReleaseInput.ReleaseDate) }
-                    );
-            }
-        }
     }
 }

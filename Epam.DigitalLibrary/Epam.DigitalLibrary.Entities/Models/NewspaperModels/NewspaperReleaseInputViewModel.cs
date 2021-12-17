@@ -8,6 +8,8 @@ namespace Epam.DigitalLibrary.Entities.Models.NewspaperModels
 {
     public class NewspaperReleaseInputViewModel : IValidatableObject
     {
+        public Guid? ReleaseId { get; set; }
+
         [Required]
         [Range(0, short.MaxValue)]
         public int PagesCount { get; set; }

@@ -79,7 +79,7 @@ namespace Epam.DigitalLibrary.Entities
 
             private set
             {
-                if (_publicationDate.Year < value.Year)
+                if (_publicationDate.Year > value.Year)
                 {
                     throw new ArgumentException();
                 }
@@ -115,6 +115,7 @@ namespace Epam.DigitalLibrary.Entities
             string publicationPlace, string publisher, string number, DateTime releaseDate, string iSSN) :
             base(name, objectNotes, pagesCount, publicationDate)
         {
+            ReleaseId = null;
             PublicationPlace = publicationPlace;
             Publisher = publisher;
             PublicationDate = publicationDate;
@@ -127,6 +128,7 @@ namespace Epam.DigitalLibrary.Entities
             string publicationPlace, string publisher, string number, DateTime releaseDate, string iSSN) :
             base(id, name, objectNotes, pagesCount, publicationDate, isDeleted)
         {
+            ReleaseId = null;
             PublicationPlace = publicationPlace;
             Publisher = publisher;
             Number = number;
@@ -234,6 +236,7 @@ namespace Epam.DigitalLibrary.Entities
             return new Dictionary<string, object>
             {
                 { "ID", ID },
+                { "ID_Release", ReleaseId},
                 { "Name", Name },
                 { "PublicationPlace", PublicationPlace },
                 { "Publisher", Publisher },

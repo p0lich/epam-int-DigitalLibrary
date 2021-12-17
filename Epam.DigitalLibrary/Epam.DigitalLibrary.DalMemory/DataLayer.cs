@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Epam.DigitalLibrary.Entities;
 using Epam.DigitalLibrary.DalContracts;
+using Epam.DigitalLibrary.Entities.Models.SearchModels;
 
 namespace Epam.DigitalLibrary.DalMemory
 {
@@ -72,6 +73,16 @@ namespace Epam.DigitalLibrary.DalMemory
         public Note GetById(Guid id)
         {
             return _data.FirstOrDefault(n => n.ID == id);
+        }
+
+        public List<Author> GetFilteredAuthors(string namepattern)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<ShortNote> GetFilteredNotes(SearchRequest request, NoteTypes noteType)
+        {
+            throw new NotImplementedException();
         }
 
         public Newspaper GetNewspaperById(Guid id)

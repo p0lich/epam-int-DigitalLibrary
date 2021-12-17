@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Epam.DigitalLibrary.Entities;
 using Epam.DigitalLibrary.Entities.Models.NewspaperModels;
+using Epam.DigitalLibrary.Entities.Models.SearchModels;
 
 namespace Epam.DigitalLibrary.LogicContracts
 {
@@ -70,6 +71,10 @@ namespace Epam.DigitalLibrary.LogicContracts
 
         public int AddNewspaperRelease(NewspaperInputViewModel newspaperModel, out Guid id);
 
-        public List<NewspaperDetailsViewModel> GetAllNewspaperReleases(); 
+        public List<NewspaperDetailsViewModel> GetAllNewspaperReleases();
+
+        public List<ShortNote> GetFilteredShortNotes(SearchRequest searchRequest, NoteTypes noteType);
+
+        public List<Author> GetFilteredAuthors(string namePattern);
     }
 }
