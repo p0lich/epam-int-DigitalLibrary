@@ -17,5 +17,7 @@ namespace Epam.DigitalLibrary.DalContracts
         public int UpdateNewspaperRelease(Guid id, NewspaperInputViewModel newspaperModel);
         public bool MarkForDeleteNewspaperRelease(Guid id);
         public bool SetRelease(Guid newspaperId, Guid releaseId);
+
+        public List<Newspaper> GetReleaseNewspapers(Guid newspaperReleaseId);
     }
 }

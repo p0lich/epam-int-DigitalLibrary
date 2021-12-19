@@ -302,5 +302,53 @@ namespace Epam.DigitalLibrary.SqlDal
                 throw new DataAccessException(e.Message, e.InnerException);
             }
         }
+
+        public List<Newspaper> GetReleaseNewspapers(Guid newspaperReleaseId)
+        {
+            try
+            {
+                using (_connection = new SqlConnection(_connectionString))
+                {
+                    string stProc = "dbo.NewspaperRelease_GetReleaseNewspapers";
+                    using (SqlCommand command = new SqlCommand(stProc, _connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+
+                        command.Parameters.AddWithValue("@id_Release", newspaperReleaseId);
+
+                        List<Newspaper> newspapers = new List<Newspaper>();
+
+                        _connection.Open();
+                        var reader = command.ExecuteReader();
+
+                        while (reader.Read())
+                        {
+                            newspapers.Add(new Newspaper(
+                                id: (Guid)reader["Id"],
+                                releaseId: (Guid)reader["Id_Release"],
+                                name: reader["Name"] as string,
+                                publicationPlace: reader["PublicationPlace"] as string,
+                                publisher: reader["Publisher"] as string,
+                                publicationDate: (DateTime)reader["PublicationDate"],
+                                pagesCount: (short)reader["PagesCount"],
+                                objectNotes: reader["ObjectNotes"] as string,
+                                number: reader["Number"] as string,
+                                releaseDate: (DateTime)reader["ReleaseDate"],
+                                iSSN: reader["ISSN"] as string,
+                                isDeleted: (bool)reader["IsDeleted"]
+                                ));
+                        }
+
+                        return newspapers;
+                    }
+                }
+            }
+
+            catch (Exception e)
+            {
+                _connection.Close();
+                throw new DataAccessException(e.Message, e.InnerException);
+            }
+        }
     }
 }

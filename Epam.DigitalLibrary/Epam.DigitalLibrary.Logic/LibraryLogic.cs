@@ -180,6 +180,16 @@ namespace Epam.DigitalLibrary.Logic
 
         public bool MarkForDelete(Note note)
         {
+            if (note is Newspaper)
+            {
+                Newspaper newspaper = note as Newspaper;
+
+                if (newspaper.ReleaseId.HasValue && IsAllNewspaperReleasesMarked(note.ID))
+                {
+                    _newspaperReleaseDAO.MarkForDeleteNewspaperRelease(newspaper.ReleaseId.Value);
+                }
+            }
+
             return _dataLayer.MarkNote(note);
         }
 
@@ -276,12 +286,56 @@ namespace Epam.DigitalLibrary.Logic
 
         public bool MarkForDeleteNewspaperRelease(Guid id)
         {
-            return _newspaperReleaseDAO.MarkForDeleteNewspaperRelease(id);
+            try
+            {
+                List<Newspaper> releaseNewspapers = GetReleaseNewspapers(id);
+
+                foreach (var newspaper in releaseNewspapers)
+                {
+                    _dataLayer.MarkNote(newspaper);
+                }
+
+                return _newspaperReleaseDAO.MarkForDeleteNewspaperRelease(id);
+            }
+
+            catch (Exception e)
+            {
+                throw new BusinessLogicException(e.Message, e.InnerException);
+            }
+            
         }
 
         public int AddNewspaperRelease(NewspaperInputViewModel newspaperModel, out Guid id)
         {
             return _newspaperReleaseDAO.AddNewspaperRelease(newspaperModel, out id);
+        }
+
+        public List<Newspaper> GetReleaseNewspapers(Guid newspaperReleaseId)
+        {
+            return _newspaperReleaseDAO.GetReleaseNewspapers(newspaperReleaseId);
+        }
+
+        private bool IsAllNewspaperReleasesMarked(Guid newspaperId)
+        {
+            try
+            {
+                List<Newspaper> releaseNewspapers = _newspaperReleaseDAO.GetAllNewspaperReleases(newspaperId);
+
+                foreach (var newspaper in releaseNewspapers)
+                {
+                    if (!newspaper.IsDeleted)
+                    {
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+
+            catch (Exception e)
+            {
+                throw new BusinessLogicException(e.Message, e.InnerException);
+            }  
         }
         #endregion
     }
