@@ -73,6 +73,7 @@ namespace Epam.DigitalLibrary.LibraryWebApi
             }
 
             app.UseCustomExceptionHandler();
+            app.UseCustomAuthorizationDeniedHandler();
 
             app.UseHttpsRedirection();
 
