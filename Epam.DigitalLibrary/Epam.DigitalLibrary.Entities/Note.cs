@@ -11,6 +11,8 @@ namespace Epam.DigitalLibrary.Entities
         private string _name, _objectNotes;
         private int _pagesCount;
 
+        public NoteTypes NoteType { get; set; }
+
         public Guid ID { get; }
 
         public string Name
@@ -79,6 +81,7 @@ namespace Epam.DigitalLibrary.Entities
 
         public Note(string name, string objectNotes, int pagesCount, DateTime publicationDate)
         {
+            NoteType = NoteTypes.None;
             ID = Guid.NewGuid();
             Name = name;
             ObjectNotes = objectNotes;
@@ -89,6 +92,29 @@ namespace Epam.DigitalLibrary.Entities
 
         public Note(Guid id, string name, string objectNotes, int pagesCount, DateTime publicationDate, bool isDeleted)
         {
+            NoteType = NoteTypes.None;
+            ID = id;
+            Name = name;
+            ObjectNotes = objectNotes;
+            PagesCount = pagesCount;
+            PublicationDate = publicationDate;
+            IsDeleted = isDeleted;
+        }
+
+        public Note(NoteTypes noteType, string name, string objectNotes, int pagesCount, DateTime publicationDate)
+        {
+            NoteType = noteType;
+            ID = Guid.NewGuid();
+            Name = name;
+            ObjectNotes = objectNotes;
+            PagesCount = pagesCount;
+            PublicationDate = publicationDate;
+            IsDeleted = false;
+        }
+
+        public Note(NoteTypes noteType, Guid id, string name, string objectNotes, int pagesCount, DateTime publicationDate, bool isDeleted)
+        {
+            NoteType = noteType;
             ID = id;
             Name = name;
             ObjectNotes = objectNotes;

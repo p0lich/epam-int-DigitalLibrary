@@ -129,6 +129,27 @@ namespace Epam.DigitalLibrary.Entities
             ISBN = iSBN;
         }
 
+        public Book(NoteTypes noteType, string name, string objectNotes, int pagesCount,
+            List<Author> authors, string publicationPlace, string publisher, DateTime publicationDate, string iSBN) :
+            base(noteType, name, objectNotes, pagesCount, publicationDate)
+        {
+            Authors = authors.OrderBy(a => a.FirstName).ToList();
+            PublicationPlace = publicationPlace;
+            Publisher = publisher;
+            PublicationDate = publicationDate;
+            ISBN = iSBN;
+        }
+
+        public Book(NoteTypes noteType, Guid id, string name, string objectNotes, int pagesCount, bool isDeleted,
+            List<Author> authors, string publicationPlace, string publisher, DateTime publicationDate, string iSBN) :
+            base(noteType, id, name, objectNotes, pagesCount, publicationDate, isDeleted)
+        {
+            Authors = authors.OrderBy(a => a.FirstName).ToList();
+            PublicationPlace = publicationPlace;
+            Publisher = publisher;
+            ISBN = iSBN;
+        }
+
         public override bool IsUnique(List<Note> notes, Guid updateId)
         {
             IEnumerable<Book> books = notes.OfType<Book>();

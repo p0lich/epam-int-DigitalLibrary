@@ -313,6 +313,7 @@ namespace Epam.DigitalLibrary.SqlDal
                     {
                         command.CommandType = CommandType.StoredProcedure;
 
+                        command.Parameters.AddWithValue("@Id_Type", (int)note.NoteType);
                         command.Parameters.AddWithValue("@name", note.Name);
                         command.Parameters.AddWithValue("@publicationDate", note.PublicationDate);
                         command.Parameters.AddWithValue("@pagesCount", note.PagesCount);
@@ -545,6 +546,8 @@ namespace Epam.DigitalLibrary.SqlDal
                     {
                         command.CommandType = CommandType.StoredProcedure;
 
+                        command.Parameters.AddWithValue("@id_Type", (int)searchRequest.Type);
+
                         command.Parameters.AddWithValue("@namePattern",
                             string.IsNullOrEmpty(searchRequest.NamePattern) ?
                             DBNull.Value : searchRequest.NamePattern);
@@ -566,7 +569,7 @@ namespace Epam.DigitalLibrary.SqlDal
 
                             pagesCount = fullElementsCount / searchRequest.ElementsCount + 1;
 
-                            return pagesCount >= searchRequest.PageNumber;
+                            return pagesCount > searchRequest.PageNumber;
                         }
 
                         pagesCount = 0;

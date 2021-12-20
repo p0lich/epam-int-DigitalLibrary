@@ -48,6 +48,7 @@ namespace Epam.DigitalLibrary.LibraryWebApi.Controllers
             }
 
             Book book = new Book(
+                noteType: NoteTypes.Book,
                 name: bookModel.Name,
                 authors: bookModel.AuthorsId.Select(a => _logic.GetAuthor(a)).ToList(),
                 publicationPlace: bookModel.PublicationPlace,

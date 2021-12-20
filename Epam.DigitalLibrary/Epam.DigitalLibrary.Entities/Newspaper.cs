@@ -161,6 +161,56 @@ namespace Epam.DigitalLibrary.Entities
             ISSN = iSSN;
         }
 
+        public Newspaper(NoteTypes noteType, string name, string objectNotes, int pagesCount, DateTime publicationDate,
+            string publicationPlace, string publisher, string number, DateTime releaseDate, string iSSN) :
+            base(noteType, name, objectNotes, pagesCount, publicationDate)
+        {
+            ReleaseId = null;
+            PublicationPlace = publicationPlace;
+            Publisher = publisher;
+            PublicationDate = publicationDate;
+            Number = number;
+            ReleaseDate = releaseDate;
+            ISSN = iSSN;
+        }
+
+        public Newspaper(NoteTypes noteType, Guid id, string name, string objectNotes, int pagesCount, DateTime publicationDate, bool isDeleted,
+            string publicationPlace, string publisher, string number, DateTime releaseDate, string iSSN) :
+            base(noteType, id, name, objectNotes, pagesCount, publicationDate, isDeleted)
+        {
+            ReleaseId = null;
+            PublicationPlace = publicationPlace;
+            Publisher = publisher;
+            Number = number;
+            ReleaseDate = releaseDate;
+            ISSN = iSSN;
+        }
+
+        public Newspaper(NoteTypes noteType, Guid? releaseId, string name, string objectNotes, int pagesCount, DateTime publicationDate,
+            string publicationPlace, string publisher, string number, DateTime releaseDate, string iSSN) :
+            base(noteType, name, objectNotes, pagesCount, publicationDate)
+        {
+            ReleaseId = releaseId;
+            PublicationPlace = publicationPlace;
+            Publisher = publisher;
+            PublicationDate = publicationDate;
+            Number = number;
+            ReleaseDate = releaseDate;
+            ISSN = iSSN;
+        }
+
+        public Newspaper(NoteTypes noteType, Guid id, Guid? releaseId, string name, string objectNotes, int pagesCount, DateTime publicationDate, bool isDeleted,
+            string publicationPlace, string publisher, string number, DateTime releaseDate, string iSSN) :
+            base(noteType, id, name, objectNotes, pagesCount, publicationDate, isDeleted)
+        {
+            ReleaseId = releaseId;
+            PublicationPlace = publicationPlace;
+            Publisher = publisher;
+            Number = number;
+            ReleaseDate = releaseDate;
+            ISSN = iSSN;
+        }
+
         public override bool IsUnique(List<Note> notes, Guid updateId)
         {
             IEnumerable<Newspaper> newspapers = notes.OfType<Newspaper>();

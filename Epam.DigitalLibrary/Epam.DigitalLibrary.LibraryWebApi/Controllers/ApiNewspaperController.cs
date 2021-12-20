@@ -91,6 +91,7 @@ namespace Epam.DigitalLibrary.LibraryWebApi.Controllers
             NewspaperDetailsViewModel newspaperDetailsView = _logic.GetNewspaperDetails(newspaperModel.NewspaperReleaseInputId);
 
             Newspaper newspaper = new Newspaper(
+                noteType: NoteTypes.Newspaper,
                 releaseId: newspaperModel.ReleaseInput.ReleaseId,
                 name: newspaperDetailsView.Name,
                 publicationPlace: newspaperDetailsView.PublicationPlace,

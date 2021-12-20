@@ -47,6 +47,7 @@ namespace Epam.DigitalLibrary.LibraryWebApi.Controllers
             }
 
             Patent patent = new Patent(
+                noteType: NoteTypes.Patent,
                 name: patentModel.Name,
                 authors: patentModel.AuthorsId.Select(authId => _logic.GetAuthor(authId)).ToList(),
                 country: patentModel.Country,
