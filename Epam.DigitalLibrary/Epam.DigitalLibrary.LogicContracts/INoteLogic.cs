@@ -73,7 +73,7 @@ namespace Epam.DigitalLibrary.LogicContracts
 
         public List<NewspaperDetailsViewModel> GetAllNewspaperReleases();
 
-        public List<ShortNote> GetFilteredShortNotes(SearchRequest searchRequest, NoteTypes noteType);
+        public SearchResponse GetFilteredShortNotes(SearchRequest searchRequest, NoteTypes noteType);
 
         public List<Author> GetFilteredAuthors(string namePattern);
 

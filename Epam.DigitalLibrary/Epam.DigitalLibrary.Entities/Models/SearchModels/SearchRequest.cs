@@ -17,7 +17,7 @@ namespace Epam.DigitalLibrary.Entities.Models.SearchModels
 
         public int? MaxPagesCount { get; set; }
 
-        public int PageNumber { get; set; } = 1;
+        public int PageNumber { get; set; } = 0;
 
         public int ElementsCount { get; set; } = 20;
     }

@@ -80,7 +80,7 @@ namespace Epam.DigitalLibrary.DalMemory
             throw new NotImplementedException();
         }
 
-        public List<ShortNote> GetFilteredNotes(SearchRequest request, NoteTypes noteType)
+        public SearchResponse GetFilteredNotes(SearchRequest request, NoteTypes noteType)
         {
             throw new NotImplementedException();
         }

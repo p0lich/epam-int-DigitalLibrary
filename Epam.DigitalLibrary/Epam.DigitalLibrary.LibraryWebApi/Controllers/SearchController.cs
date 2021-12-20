@@ -30,7 +30,7 @@ namespace Epam.DigitalLibrary.LibraryWebApi.Controllers
         }
 
         [HttpPost("GetNotes")]
-        public List<ShortNote> GetNotes([FromBody] SearchRequest searchRequest)
+        public SearchResponse GetNotes([FromBody] SearchRequest searchRequest)
         {
             return _logic.GetFilteredShortNotes(searchRequest, searchRequest.Type);
         }

@@ -14,7 +14,7 @@ namespace Epam.DigitalLibrary.DalContracts
 
         public List<Note> GetAllNotes();
 
-        public List<ShortNote> GetFilteredNotes(SearchRequest request, NoteTypes noteType);
+        public SearchResponse GetFilteredNotes(SearchRequest request, NoteTypes noteType);
 
         public Note GetById(Guid id);
 

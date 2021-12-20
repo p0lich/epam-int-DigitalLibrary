@@ -213,7 +213,7 @@ namespace Epam.DigitalLibrary.Logic
             return _dataLayer.GetPatentById(id);
         }
 
-        public List<ShortNote> GetFilteredShortNotes(SearchRequest searchRequest, NoteTypes noteType)
+        public SearchResponse GetFilteredShortNotes(SearchRequest searchRequest, NoteTypes noteType)
         {
             return _dataLayer.GetFilteredNotes(searchRequest, noteType);
         }

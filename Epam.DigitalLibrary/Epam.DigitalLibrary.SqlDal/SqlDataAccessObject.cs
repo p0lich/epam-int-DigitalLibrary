@@ -448,25 +448,18 @@ namespace Epam.DigitalLibrary.SqlDal
             }
         }
 
-        public List<ShortNote> GetFilteredNotes(SearchRequest request, NoteTypes noteType)
+        public SearchResponse GetFilteredNotes(SearchRequest request, NoteTypes noteType)
         {
             try
             {
+                if (!IsPageInRange(request, out int pagesCount))
+                {
+                    throw new IndexOutOfRangeException("Page index was outside of search scope");
+                }
+
                 using (_connection = new SqlConnection(connectionString))
                 {
-                    if (noteType == NoteTypes.None)
-                    {
-                        List<ShortNote> shortNotes = new List<ShortNote>();
-
-                        shortNotes.AddRange(GetFilteredNotes(request, NoteTypes.Book));
-                        shortNotes.AddRange(GetFilteredNotes(request, NoteTypes.Newspaper));
-                        shortNotes.AddRange(GetFilteredNotes(request, NoteTypes.Patent));
-
-                        return shortNotes;
-                    }
-
                     string stProc = SelectFilterProcedure(noteType);
-
                     using (SqlCommand command = new SqlCommand(stProc, _connection))
                     {
                         command.CommandType = CommandType.StoredProcedure;
@@ -501,8 +494,14 @@ namespace Epam.DigitalLibrary.SqlDal
                                 PagesCount = (short)reader["PagesCount"]
                             });
                         }
+                        _connection.Close();
 
-                        return shortNotes;
+                        return new SearchResponse()
+                        {
+                            PageNumber = request.PageNumber,
+                            PagesCount = pagesCount,
+                            FoundNotes = shortNotes,
+                        };
                     }
                 }
             }
@@ -518,6 +517,9 @@ namespace Epam.DigitalLibrary.SqlDal
         {
             switch (noteType)
             {
+                case NoteTypes.None:
+                    return "dbo.Get_NoteShortInfo";
+
                 case NoteTypes.Book:
                     return "dbo.Get_BookShortInfo";
 
@@ -530,6 +532,55 @@ namespace Epam.DigitalLibrary.SqlDal
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+        }
+
+        private bool IsPageInRange(SearchRequest searchRequest, out int pagesCount)
+        {
+            try
+            {
+                using (_connection = new SqlConnection(connectionString))
+                {
+                    string stProc = "dbo.Get_FilteredNotesCount";
+                    using (SqlCommand command = new SqlCommand(stProc, _connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+
+                        command.Parameters.AddWithValue("@namePattern",
+                            string.IsNullOrEmpty(searchRequest.NamePattern) ?
+                            DBNull.Value : searchRequest.NamePattern);
+
+                        command.Parameters.AddWithValue("@minPagesCount",
+                            searchRequest.MinPagesCount is null ?
+                            DBNull.Value : searchRequest.MinPagesCount);
+
+                        command.Parameters.AddWithValue("@maxPagesCount",
+                            searchRequest.MaxPagesCount is null ?
+                            DBNull.Value : searchRequest.MaxPagesCount);
+
+                        _connection.Open();
+                        var reader = command.ExecuteReader();
+
+                        if (reader.Read())
+                        {
+                            int fullElementsCount = (int)reader["ElementsCount"];
+
+                            pagesCount = fullElementsCount / searchRequest.ElementsCount + 1;
+
+                            return pagesCount >= searchRequest.PageNumber;
+                        }
+
+                        pagesCount = 0;
+                        return false;
+                    }
+                }
+            }
+
+            catch (Exception e)
+            {
+                _connection.Close();
+                pagesCount = 0;
+                throw new DataAccessException(e.Message, e.InnerException);
+            }           
         }
 
         public List<Author> GetFilteredAuthors(string namePattern)
