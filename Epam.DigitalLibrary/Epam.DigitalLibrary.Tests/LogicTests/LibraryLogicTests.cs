@@ -29,7 +29,7 @@ namespace Epam.DigitalLibrary.Tests.LogicTests
         {
             Book bookForAdd = TestData.uniqueBook1;
 
-            int addResult = logic.AddNote(bookForAdd);
+            int addResult = logic.AddNote(bookForAdd, out Guid noteId);
 
             Assert.AreEqual(0, addResult);
         }
@@ -37,7 +37,7 @@ namespace Epam.DigitalLibrary.Tests.LogicTests
         [TestMethod]
         public void AddNote_ErrorCode_ReturnsErrorCodeForIncorrectNoteCorrectly()
         {
-            int addNullResult = logic.AddNote(null);
+            int addNullResult = logic.AddNote(null, out Guid noteId);
 
             Assert.AreEqual(-2, addNullResult);
         }
@@ -48,9 +48,9 @@ namespace Epam.DigitalLibrary.Tests.LogicTests
         {
             Book uniqueBook = TestData.uniqueBook1;
 
-            logic.AddNote(uniqueBook);
+            logic.AddNote(uniqueBook, out Guid noteId);
 
-            int addSameNoteResult = logic.AddNote(testBook);
+            int addSameNoteResult = logic.AddNote(testBook, out Guid sameNoteId);
 
             Assert.AreEqual(-1, addSameNoteResult);
         }
@@ -69,7 +69,7 @@ namespace Epam.DigitalLibrary.Tests.LogicTests
         {
             Newspaper uniqueNewspaper = TestData.uniqueNewspaper1;
 
-            int addResult = logic.AddNote(uniqueNewspaper);
+            int addResult = logic.AddNote(uniqueNewspaper, out Guid noteId);
 
             Assert.AreEqual(0, addResult);
         }
@@ -80,9 +80,9 @@ namespace Epam.DigitalLibrary.Tests.LogicTests
         {
             Newspaper uniqueNewspaper = TestData.uniqueNewspaper1;
 
-            logic.AddNote(uniqueNewspaper);
+            logic.AddNote(uniqueNewspaper, out Guid noteId);
 
-            int addSamenoteResult = logic.AddNote(testNewspaper);
+            int addSamenoteResult = logic.AddNote(testNewspaper, out Guid sameNoteId);
 
             Assert.AreEqual(-1, addSamenoteResult);
         }
@@ -101,7 +101,7 @@ namespace Epam.DigitalLibrary.Tests.LogicTests
         {
             Patent uniquePatent = TestData.uniquePatent1;
 
-            int addResult = logic.AddNote(uniquePatent);
+            int addResult = logic.AddNote(uniquePatent, out Guid noteId);
 
             Assert.AreEqual(0, addResult);
         }
@@ -112,9 +112,9 @@ namespace Epam.DigitalLibrary.Tests.LogicTests
             Patent uniquePatent = TestData.uniquePatent1;
             Patent samePatent = TestData.samePatent;
 
-            logic.AddNote(uniquePatent);
+            logic.AddNote(uniquePatent, out Guid noteId);
 
-            int addSamenoteResult = logic.AddNote(samePatent);
+            int addSamenoteResult = logic.AddNote(samePatent, out Guid sameNoteId);
 
             Assert.AreEqual(-1, addSamenoteResult);
         }
@@ -124,9 +124,9 @@ namespace Epam.DigitalLibrary.Tests.LogicTests
         [TestMethod]
         public void GroupByYear_GroupsCount_ReturnsGroupsByNoteYearCorrectly()
         {
-            logic.AddNote(TestData.uniqueBook1);
-            logic.AddNote(TestData.uniqueNewspaper1);
-            logic.AddNote(TestData.uniqueBook2);
+            logic.AddNote(TestData.uniqueBook1, out Guid testNoteId1);
+            logic.AddNote(TestData.uniqueNewspaper1, out Guid testNoteId2);
+            logic.AddNote(TestData.uniqueBook2, out Guid testNoteId3);
 
             IEnumerable<IGrouping<int, Note>> groupResult = logic.GroupByYear();
 
@@ -138,9 +138,9 @@ namespace Epam.DigitalLibrary.Tests.LogicTests
         [TestMethod]
         public void GroupByYear_NotesCount_ReturnCountOfNotesCorrectly()
         {
-            logic.AddNote(TestData.uniqueBook1);
-            logic.AddNote(TestData.uniqueNewspaper1);
-            logic.AddNote(TestData.uniqueBook2);
+            logic.AddNote(TestData.uniqueBook1, out Guid testNoteId1);
+            logic.AddNote(TestData.uniqueNewspaper1, out Guid testNoteId2);
+            logic.AddNote(TestData.uniqueBook2, out Guid testNoteId3);
 
             IEnumerable<IGrouping<int, Note>> groupResult = logic.GroupByYear();
 
@@ -169,7 +169,7 @@ namespace Epam.DigitalLibrary.Tests.LogicTests
         [TestMethod]
         public void RemoveNote_IsNoteRemoved_RemoveNoteCorrectly()
         {
-            logic.AddNote(TestData.uniqueBook1);
+            logic.AddNote(TestData.uniqueBook1, out Guid noteId);
 
             bool positiveRemoveResult = logic.RemoveNote();
 
@@ -189,10 +189,10 @@ namespace Epam.DigitalLibrary.Tests.LogicTests
         [TestMethod]
         public void SearchBooksAndPatensByAuthor_NotesCount_ReturnsCountOfFoundBooksAndPatentsByAuthorCorrectly()
         {
-            logic.AddNote(TestData.uniqueBook1);
-            logic.AddNote(TestData.uniqueBook3);
-            logic.AddNote(TestData.uniquePatent1);
-            logic.AddNote(TestData.uniquePatent2);
+            logic.AddNote(TestData.uniqueBook1, out Guid testBookId1);
+            logic.AddNote(TestData.uniqueBook3, out Guid testBookId2);
+            logic.AddNote(TestData.uniquePatent1, out Guid testPatentId1);
+            logic.AddNote(TestData.uniquePatent2, out Guid testPatentId2);
 
             Author author = TestData.existAuthor2;
 
@@ -204,8 +204,8 @@ namespace Epam.DigitalLibrary.Tests.LogicTests
         [TestMethod]
         public void SearchBooksAndPatensByAuthor_NotesCount_ReturnsCountOfFoundBooksAndPatentsInCollectionWithoutPatentsByAuthorCorrectly()
         {
-            logic.AddNote(TestData.uniqueBook1);
-            logic.AddNote(TestData.uniqueBook3);
+            logic.AddNote(TestData.uniqueBook1, out Guid testNoteId1);
+            logic.AddNote(TestData.uniqueBook3, out Guid testNoteId2);
 
             Author author = TestData.existAuthor2;
 
@@ -217,8 +217,8 @@ namespace Epam.DigitalLibrary.Tests.LogicTests
         [TestMethod]
         public void SearchBooksAndPatensByAuthor_NotesCount_ReturnsCountOfFoundBooksAndPatentsInCollectionWithoutBooksByAuthorCorrectly()
         {
-            logic.AddNote(TestData.uniquePatent1);
-            logic.AddNote(TestData.uniquePatent2);
+            logic.AddNote(TestData.uniquePatent1, out Guid testNoteId1);
+            logic.AddNote(TestData.uniquePatent2, out Guid testNoteId2);
 
             Author author = TestData.existAuthor2;
 
@@ -230,10 +230,10 @@ namespace Epam.DigitalLibrary.Tests.LogicTests
         [TestMethod]
         public void SearchBooksAndPatensByAuthor_NotesCount_ReturnsCountOfFoundBooksAndPatentsByNullReffAuthorCorrectly()
         {
-            logic.AddNote(TestData.uniqueBook1);
-            logic.AddNote(TestData.uniqueBook3);
-            logic.AddNote(TestData.uniquePatent1);
-            logic.AddNote(TestData.uniquePatent2);
+            logic.AddNote(TestData.uniqueBook1, out Guid testBookId1);
+            logic.AddNote(TestData.uniqueBook3, out Guid testBookId2);
+            logic.AddNote(TestData.uniquePatent1, out Guid testPatentId1);
+            logic.AddNote(TestData.uniquePatent2, out Guid testPatentId2);
 
             Author authorWithNullRef = TestData.nullRefAuthor;
 
@@ -258,9 +258,9 @@ namespace Epam.DigitalLibrary.Tests.LogicTests
         public void SearchBooksByAuthor_BooksCount_ReturnsCountOfFoundBooksByAuthorCorrectly()
         {
 
-            logic.AddNote(TestData.uniqueBook1);
-            logic.AddNote(TestData.uniqueBook2);
-            logic.AddNote(TestData.uniqueBook3);
+            logic.AddNote(TestData.uniqueBook1, out Guid testNoteId1);
+            logic.AddNote(TestData.uniqueBook2, out Guid testNoteId2);
+            logic.AddNote(TestData.uniqueBook3, out Guid testNoteId3);
 
             Author author = TestData.existAuthor1;
 
@@ -272,9 +272,9 @@ namespace Epam.DigitalLibrary.Tests.LogicTests
         [TestMethod]
         public void SearchBooksByAuthor_ZeroBooksCount_ReturnsCountOfFoundBooksByNullRefAuthorCorrectly()
         {
-            logic.AddNote(TestData.uniqueBook1);
-            logic.AddNote(TestData.uniqueBook2);
-            logic.AddNote(TestData.uniqueBook3);
+            logic.AddNote(TestData.uniqueBook1, out Guid testNoteId1);
+            logic.AddNote(TestData.uniqueBook2, out Guid testNoteId2);
+            logic.AddNote(TestData.uniqueBook3, out Guid testNoteId3);
 
             Author authorWithNullRef = TestData.nullRefAuthor;
 
@@ -298,10 +298,10 @@ namespace Epam.DigitalLibrary.Tests.LogicTests
         [TestMethod]
         public void SearchBooksByCharset_GroupsCount_ReturnsCountOfGroupsOfFoundedBooksByCharSetCorrectly()
         {
-            logic.AddNote(TestData.uniqueBook1);
-            logic.AddNote(TestData.uniqueBook2);
-            logic.AddNote(TestData.uniqueBook3);
-            logic.AddNote(TestData.uniqueBook4);
+            logic.AddNote(TestData.uniqueBook1, out Guid testNoteId1);
+            logic.AddNote(TestData.uniqueBook2, out Guid testNoteId2);
+            logic.AddNote(TestData.uniqueBook3, out Guid testNoteId3);
+            logic.AddNote(TestData.uniqueBook4, out Guid testNoteId4);
 
             string charSet = TestData.charSetOfExistBook;
 
@@ -313,10 +313,10 @@ namespace Epam.DigitalLibrary.Tests.LogicTests
         [TestMethod]
         public void SearchBooksByCharset_BooksCount_ReturnsCountOfFoundedBooksByCharSetCorrect()
         {
-            logic.AddNote(TestData.uniqueBook1);
-            logic.AddNote(TestData.uniqueBook2);
-            logic.AddNote(TestData.uniqueBook3);
-            logic.AddNote(TestData.uniqueBook4);
+            logic.AddNote(TestData.uniqueBook1, out Guid testNoteId1);
+            logic.AddNote(TestData.uniqueBook2, out Guid testNoteId2);
+            logic.AddNote(TestData.uniqueBook3, out Guid testNoteId3);
+            logic.AddNote(TestData.uniqueBook4, out Guid testNoteId4);
 
             string charSet = TestData.charSetOfExistBook;
 
@@ -334,10 +334,10 @@ namespace Epam.DigitalLibrary.Tests.LogicTests
         [TestMethod]
         public void SearchBooksByCharset_AllBooksCount_ReturnsCountOfFoundedBooksByEmptyCharSetCorrectly()
         {
-            logic.AddNote(TestData.uniqueBook1);
-            logic.AddNote(TestData.uniqueBook2);
-            logic.AddNote(TestData.uniqueBook3);
-            logic.AddNote(TestData.uniqueBook4);
+            logic.AddNote(TestData.uniqueBook1, out Guid testNoteId1);
+            logic.AddNote(TestData.uniqueBook2, out Guid testNoteId2);
+            logic.AddNote(TestData.uniqueBook3, out Guid testNoteId3);
+            logic.AddNote(TestData.uniqueBook4, out Guid testNoteId4);
 
             string emptyCharSet = TestData.emptyCharSet;
 
@@ -355,10 +355,10 @@ namespace Epam.DigitalLibrary.Tests.LogicTests
         [TestMethod]
         public void SearchBooksByCharset_AllGroupsCount_ReturnsAllGroupsOfFoundedBooksByNullRefCharSetCorrectly()
         {
-            logic.AddNote(TestData.uniqueBook1);
-            logic.AddNote(TestData.uniqueBook2);
-            logic.AddNote(TestData.uniqueBook3);
-            logic.AddNote(TestData.uniqueBook4);
+            logic.AddNote(TestData.uniqueBook1, out Guid testNoteId1);
+            logic.AddNote(TestData.uniqueBook2, out Guid testNoteId2);
+            logic.AddNote(TestData.uniqueBook3, out Guid testNoteId3);
+            logic.AddNote(TestData.uniqueBook4, out Guid testNoteId4);
 
             string nullCharSet = TestData.nullRefCharSet;
 
@@ -382,7 +382,7 @@ namespace Epam.DigitalLibrary.Tests.LogicTests
         [TestMethod]
         public void SearchByName_NotNullNote_ReturnsNoteByNameCorrectly()
         {
-            logic.AddNote(TestData.uniqueBook1);
+            logic.AddNote(TestData.uniqueBook1, out Guid noteId);
 
             string noteName = TestData.existName;
             Note foundNoteResult = logic.SearchByName(noteName);
@@ -393,7 +393,7 @@ namespace Epam.DigitalLibrary.Tests.LogicTests
         [TestMethod]
         public void SearchByName_Null_ReturnsNullByNonExistingNameCorrectly()
         {
-            logic.AddNote(TestData.uniqueBook1);
+            logic.AddNote(TestData.uniqueBook1, out Guid noteId);
 
             string wrongName = TestData.nonExistName;
             Note notFoundedNoteResult = logic.SearchByName(wrongName);
@@ -404,7 +404,7 @@ namespace Epam.DigitalLibrary.Tests.LogicTests
         [TestMethod]
         public void SearchByName_Null_ReturnsNullByNullRefNameCorrectly()
         {
-            logic.AddNote(TestData.uniqueBook1);
+            logic.AddNote(TestData.uniqueBook1, out Guid noteId);
 
             string nullName = TestData.nameWithNullRef;
             Note notFoundedNoteResult = logic.SearchByName(nullName);
@@ -418,9 +418,9 @@ namespace Epam.DigitalLibrary.Tests.LogicTests
         public void SearchPatentByInventor_PatentsCount_ReturnsCountOfFoundPatentsByAuthorCorrectly()
         {
 
-            logic.AddNote(TestData.uniquePatent1);
-            logic.AddNote(TestData.uniquePatent2);
-            logic.AddNote(TestData.uniquePatent3);
+            logic.AddNote(TestData.uniquePatent1, out Guid testNoteId1);
+            logic.AddNote(TestData.uniquePatent2, out Guid testNoteId2);
+            logic.AddNote(TestData.uniquePatent3, out Guid testNoteId3);
 
             Author author = TestData.existAuthor2;
 
@@ -432,9 +432,9 @@ namespace Epam.DigitalLibrary.Tests.LogicTests
         [TestMethod]
         public void SearchPatentByInventor_ZeroPatentsCount_ReturnsCountOfFoundPatentsByNullRefPatentsCorrectly()
         {
-            logic.AddNote(TestData.uniquePatent1);
-            logic.AddNote(TestData.uniquePatent2);
-            logic.AddNote(TestData.uniquePatent3);
+            logic.AddNote(TestData.uniquePatent1, out Guid testNoteId1);
+            logic.AddNote(TestData.uniquePatent2, out Guid testNoteId2);
+            logic.AddNote(TestData.uniquePatent3, out Guid testNoteId3);
 
             Author authorWithNullRef = TestData.nullRefAuthor;
 
@@ -466,8 +466,8 @@ namespace Epam.DigitalLibrary.Tests.LogicTests
         [TestMethod]
         public void GetCatalog_AllNotes_ReturnsAllNotesCorrectly()
         {
-            logic.AddNote(TestData.uniqueBook1);
-            logic.AddNote(TestData.uniqueBook2);
+            logic.AddNote(TestData.uniqueBook1, out Guid testNoteId1);
+            logic.AddNote(TestData.uniqueBook2, out Guid testNoteId2);
 
             int searchResultCount = logic.GetCatalog().Count;
 
@@ -487,15 +487,15 @@ namespace Epam.DigitalLibrary.Tests.LogicTests
         [TestMethod]
         public void SortInOrder_AllNotes_ReturnsSameCountOfNotesAfterForwardSortCorrectly()
         {
-            logic.AddNote(TestData.uniqueBook1);
-            logic.AddNote(TestData.uniqueBook2);
-            logic.AddNote(TestData.uniqueBook3);
-            logic.AddNote(TestData.uniqueNewspaper1);
-            logic.AddNote(TestData.uniqueNewspaper2);
-            logic.AddNote(TestData.uniqueNewspaper3);
-            logic.AddNote(TestData.uniquePatent1);
-            logic.AddNote(TestData.uniquePatent2);
-            logic.AddNote(TestData.uniquePatent3);
+            logic.AddNote(TestData.uniqueBook1, out Guid testBookId1);
+            logic.AddNote(TestData.uniqueBook2, out Guid testBookId2);
+            logic.AddNote(TestData.uniqueBook3, out Guid testBookId3);
+            logic.AddNote(TestData.uniqueNewspaper1, out Guid testNewspaperId1);
+            logic.AddNote(TestData.uniqueNewspaper2, out Guid testNewspaperId2);
+            logic.AddNote(TestData.uniqueNewspaper3, out Guid testNewspaperId3);
+            logic.AddNote(TestData.uniquePatent1, out Guid testPatentId1);
+            logic.AddNote(TestData.uniquePatent2, out Guid testPatentId2);
+            logic.AddNote(TestData.uniquePatent3, out Guid testPatentId3);
 
             int sortedElementsCount = logic.SortInOrder().Count;
 
@@ -505,15 +505,15 @@ namespace Epam.DigitalLibrary.Tests.LogicTests
         [TestMethod]
         public void SortInOrder_IsOrderRight_CheckIsAllNotesAfterForwardSortInCorrectOrder()
         {
-            logic.AddNote(TestData.uniqueBook1);
-            logic.AddNote(TestData.uniqueBook2);
-            logic.AddNote(TestData.uniqueBook3);
-            logic.AddNote(TestData.uniqueNewspaper1);
-            logic.AddNote(TestData.uniqueNewspaper2);
-            logic.AddNote(TestData.uniqueNewspaper3);
-            logic.AddNote(TestData.uniquePatent1);
-            logic.AddNote(TestData.uniquePatent2);
-            logic.AddNote(TestData.uniquePatent3);
+            logic.AddNote(TestData.uniqueBook1, out Guid testBookId1);
+            logic.AddNote(TestData.uniqueBook2, out Guid testBookId2);
+            logic.AddNote(TestData.uniqueBook3, out Guid testBookId3);
+            logic.AddNote(TestData.uniqueNewspaper1, out Guid testNewspaperId1);
+            logic.AddNote(TestData.uniqueNewspaper2, out Guid testNewspaperId2);
+            logic.AddNote(TestData.uniqueNewspaper3, out Guid testNewspaperId3);
+            logic.AddNote(TestData.uniquePatent1, out Guid testPatentId1);
+            logic.AddNote(TestData.uniquePatent2, out Guid testPatentId2);
+            logic.AddNote(TestData.uniquePatent3, out Guid testPatentId3);
 
             List<Note> forwardSortedLibrary = logic.SortInOrder();
             bool isOrderCorrect = true;
@@ -543,15 +543,15 @@ namespace Epam.DigitalLibrary.Tests.LogicTests
         [TestMethod]
         public void SortInReverseOrder_AllNotes_ReturnsSameCountOfNotesAfterReverseSortCorrectly()
         {
-            logic.AddNote(TestData.uniqueBook1);
-            logic.AddNote(TestData.uniqueBook2);
-            logic.AddNote(TestData.uniqueBook3);
-            logic.AddNote(TestData.uniqueNewspaper1);
-            logic.AddNote(TestData.uniqueNewspaper2);
-            logic.AddNote(TestData.uniqueNewspaper3);
-            logic.AddNote(TestData.uniquePatent1);
-            logic.AddNote(TestData.uniquePatent2);
-            logic.AddNote(TestData.uniquePatent3);
+            logic.AddNote(TestData.uniqueBook1, out Guid testBookId1);
+            logic.AddNote(TestData.uniqueBook2, out Guid testBookId2);
+            logic.AddNote(TestData.uniqueBook3, out Guid testBookId3);
+            logic.AddNote(TestData.uniqueNewspaper1, out Guid testNewspaperId1);
+            logic.AddNote(TestData.uniqueNewspaper2, out Guid testNewspaperId2);
+            logic.AddNote(TestData.uniqueNewspaper3, out Guid testNewspaperId3);
+            logic.AddNote(TestData.uniquePatent1, out Guid testPatentId1);
+            logic.AddNote(TestData.uniquePatent2, out Guid testPatentId2);
+            logic.AddNote(TestData.uniquePatent3, out Guid testPatentId3);
 
             int reverseSortedElementsCount = logic.SortInReverseOrder().Count;
 
@@ -561,15 +561,15 @@ namespace Epam.DigitalLibrary.Tests.LogicTests
         [TestMethod]
         public void SortInReverseOrder_IsOrderRight_CheckIsAllNotesAfterReverseSortInCorrectOrder()
         {
-            logic.AddNote(TestData.uniqueBook1);
-            logic.AddNote(TestData.uniqueBook2);
-            logic.AddNote(TestData.uniqueBook3);
-            logic.AddNote(TestData.uniqueNewspaper1);
-            logic.AddNote(TestData.uniqueNewspaper2);
-            logic.AddNote(TestData.uniqueNewspaper3);
-            logic.AddNote(TestData.uniquePatent1);
-            logic.AddNote(TestData.uniquePatent2);
-            logic.AddNote(TestData.uniquePatent3);
+            logic.AddNote(TestData.uniqueBook1, out Guid testBookId1);
+            logic.AddNote(TestData.uniqueBook2, out Guid testBookId2);
+            logic.AddNote(TestData.uniqueBook3, out Guid testBookId3);
+            logic.AddNote(TestData.uniqueNewspaper1, out Guid testNewspaperId1);
+            logic.AddNote(TestData.uniqueNewspaper2, out Guid testNewspaperId2);
+            logic.AddNote(TestData.uniqueNewspaper3, out Guid testNewspaperId3);
+            logic.AddNote(TestData.uniquePatent1, out Guid testPatentId1);
+            logic.AddNote(TestData.uniquePatent2, out Guid testPatentId2);
+            logic.AddNote(TestData.uniquePatent3, out Guid testPatentId3);
 
             List<Note> reversedSortedLibrary = logic.SortInReverseOrder();
             bool isReverseOrderCorrect = true;

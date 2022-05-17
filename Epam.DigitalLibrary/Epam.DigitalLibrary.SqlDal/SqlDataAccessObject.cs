@@ -10,6 +10,7 @@ using Epam.DigitalLibrary.Entities;
 using System.Configuration;
 using Epam.DigitalLibrary.DalConfig;
 using Epam.DigitalLibrary.CustomExeptions;
+using Epam.DigitalLibrary.Entities.Models.SearchModels;
 
 namespace Epam.DigitalLibrary.SqlDal
 {
@@ -29,35 +30,37 @@ namespace Epam.DigitalLibrary.SqlDal
             _patentDAO = new PatentDAO(connString);
         }
 
-        public int AddNote(Note note)
+        public int AddNote(Note note, out Guid noteId)
         {
             try
             {
                 if (!note.IsUnique(GetAllNotes(), note.ID))
                 {
+                    noteId = new Guid();
                     return ResultCodes.NoteExist;
                 }
 
-                InsertInitialNoteData(note, out Guid noteId);
+                InsertInitialNoteData(note, out Guid rootNoteId);
 
                 if (note is Book)
                 {
-                    return _bookDAO.InsertNote(noteId, note) ?
+                    return _bookDAO.InsertNote(rootNoteId, note, out noteId) ?
                         ResultCodes.Successfull : ResultCodes.Error;
                 }
 
                 if (note is Newspaper)
                 {
-                    return _newspaperDAO.InsertNote(noteId, note) ?
+                    return _newspaperDAO.InsertNote(rootNoteId, note, out noteId) ?
                         ResultCodes.Successfull : ResultCodes.Error;
                 }
 
-                return _patentDAO.InsertNote(noteId, note) ?
+                return _patentDAO.InsertNote(rootNoteId, note, out noteId) ?
                     ResultCodes.Successfull : ResultCodes.Error;
             }
 
             catch (Exception)
             {
+                noteId = new Guid();
                 return ResultCodes.Error;
             }
         }
@@ -155,6 +158,43 @@ namespace Epam.DigitalLibrary.SqlDal
             return _patentDAO.GetById(id) as Patent;
         }
 
+        public Author GetAuthor(Guid id)
+        {
+            try
+            {
+                using (_connection = new SqlConnection(connectionString))
+                {
+                    string stProc = "dbo.Author_GetById";
+                    using (SqlCommand command = new SqlCommand(stProc, _connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+
+                        command.Parameters.AddWithValue("@id", id);
+
+                        _connection.Open();
+                        var reader = command.ExecuteReader();
+
+                        if (reader.Read())
+                        {
+                            return new Author(
+                                id: (Guid)reader["Id"],
+                                firstName: reader["FirstName"] as string,
+                                lastName: reader["LastName"] as string
+                                );
+                        }
+
+                        return null;
+                    }
+                }
+            }
+
+            catch (Exception e)
+            {
+                _connection.Close();
+                throw new DataAccessException(e.Message, e.InnerException);
+            }
+        }
+
         public List<Author> GetAvailableAuthors()
         {
             try
@@ -186,6 +226,36 @@ namespace Epam.DigitalLibrary.SqlDal
 
             catch (Exception e)
             {
+                throw new DataAccessException(e.Message, e.InnerException);
+            }
+        }
+
+        public int UpdateAuthor(Guid id, Author updatedAuthor)
+        {
+            try
+            {
+                using (_connection = new SqlConnection(connectionString))
+                {
+                    string stProc = "dbo.Author_Update";
+                    using (SqlCommand command = new SqlCommand(stProc, _connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+
+                        command.Parameters.AddWithValue("@id", id);
+                        command.Parameters.AddWithValue("@firstName", updatedAuthor.FirstName);
+                        command.Parameters.AddWithValue("@lastName", updatedAuthor.LastName);
+
+                        _connection.Open();
+                        command.ExecuteScalar();
+
+                        return ResultCodes.Successfull;
+                    }
+                }
+            }
+
+            catch (Exception e)
+            {
+                _connection.Close();
                 throw new DataAccessException(e.Message, e.InnerException);
             }
         }
@@ -243,6 +313,7 @@ namespace Epam.DigitalLibrary.SqlDal
                     {
                         command.CommandType = CommandType.StoredProcedure;
 
+                        command.Parameters.AddWithValue("@Id_Type", (int)note.NoteType);
                         command.Parameters.AddWithValue("@name", note.Name);
                         command.Parameters.AddWithValue("@publicationDate", note.PublicationDate);
                         command.Parameters.AddWithValue("@pagesCount", note.PagesCount);
@@ -326,6 +397,226 @@ namespace Epam.DigitalLibrary.SqlDal
                 }
 
                 return ResultCodes.SuccessfullDelete;
+            }
+
+            catch (Exception e)
+            {
+                _connection.Close();
+                throw new DataAccessException(e.Message, e.InnerException);
+            }
+        }
+
+        public int AddAuthor(Author author, out Guid id)
+        {
+            try
+            {
+                using (_connection = new SqlConnection(connectionString))
+                {
+                    string stProc = "dbo.Add_Author";
+                    using (SqlCommand command = new SqlCommand(stProc, _connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+
+                        command.Parameters.AddWithValue("@firstName", author.FirstName);
+                        command.Parameters.AddWithValue("@lastName", author.LastName);
+
+                        SqlParameter outId = new SqlParameter("@id", SqlDbType.UniqueIdentifier)
+                        {
+                            Direction = ParameterDirection.Output
+                        };
+
+                        command.Parameters.Add(outId);
+
+                        _connection.Open();
+                        command.ExecuteScalar();
+                        _connection.Close();
+
+                        if (!Guid.TryParse(outId.Value.ToString(), out id))
+                        {
+                            throw new ArgumentException();
+                        }
+
+                        return ResultCodes.Successfull;
+                    }
+                }
+            }
+
+            catch (Exception e)
+            {
+                _connection.Close();
+                id = new Guid();
+                throw new DataAccessException(e.Message, e.InnerException);
+            }
+        }
+
+        public SearchResponse GetFilteredNotes(SearchRequest request, NoteTypes noteType)
+        {
+            try
+            {
+                if (!IsPageInRange(request, out int pagesCount))
+                {
+                    throw new IndexOutOfRangeException("Page index was outside of search scope");
+                }
+
+                using (_connection = new SqlConnection(connectionString))
+                {
+                    string stProc = SelectFilterProcedure(noteType);
+                    using (SqlCommand command = new SqlCommand(stProc, _connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+
+                        command.Parameters.AddWithValue("@namePattern",
+                            string.IsNullOrEmpty(request.NamePattern) ?
+                            DBNull.Value : request.NamePattern);
+
+                        command.Parameters.AddWithValue("@minPagesCount",
+                            request.MinPagesCount is null ?
+                            DBNull.Value : request.MinPagesCount);
+
+                        command.Parameters.AddWithValue("@maxPagesCount",
+                            request.MaxPagesCount is null ?
+                            DBNull.Value : request.MaxPagesCount);
+
+                        command.Parameters.AddWithValue("@pageNumber", request.PageNumber);
+                        command.Parameters.AddWithValue("@elementsCount", request.ElementsCount);
+
+                        List<ShortNote> shortNotes = new List<ShortNote>();
+
+                        _connection.Open();
+                        var reader = command.ExecuteReader();
+
+                        while (reader.Read())
+                        {
+                            shortNotes.Add(new ShortNote()
+                            {
+                                Type = noteType,
+                                Id = (Guid)reader["Id"],
+                                Name = reader["Name"] as string,
+                                PagesCount = (short)reader["PagesCount"]
+                            });
+                        }
+                        _connection.Close();
+
+                        return new SearchResponse()
+                        {
+                            PageNumber = request.PageNumber,
+                            PagesCount = pagesCount,
+                            FoundNotes = shortNotes,
+                        };
+                    }
+                }
+            }
+
+            catch (Exception e)
+            {
+                _connection.Close();
+                throw new DataAccessException(e.Message, e.InnerException);
+            }
+        }
+
+        private string SelectFilterProcedure(NoteTypes noteType)
+        {
+            switch (noteType)
+            {
+                case NoteTypes.None:
+                    return "dbo.Get_NoteShortInfo";
+
+                case NoteTypes.Book:
+                    return "dbo.Get_BookShortInfo";
+
+                case NoteTypes.Newspaper:
+                    return "dbo.Get_NewspaperShortInfo";
+
+                case NoteTypes.Patent:
+                    return "dbo.Get_PatentShortInfo";
+
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        private bool IsPageInRange(SearchRequest searchRequest, out int pagesCount)
+        {
+            try
+            {
+                using (_connection = new SqlConnection(connectionString))
+                {
+                    string stProc = "dbo.Get_FilteredNotesCount";
+                    using (SqlCommand command = new SqlCommand(stProc, _connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+
+                        command.Parameters.AddWithValue("@id_Type", (int)searchRequest.Type);
+
+                        command.Parameters.AddWithValue("@namePattern",
+                            string.IsNullOrEmpty(searchRequest.NamePattern) ?
+                            DBNull.Value : searchRequest.NamePattern);
+
+                        command.Parameters.AddWithValue("@minPagesCount",
+                            searchRequest.MinPagesCount is null ?
+                            DBNull.Value : searchRequest.MinPagesCount);
+
+                        command.Parameters.AddWithValue("@maxPagesCount",
+                            searchRequest.MaxPagesCount is null ?
+                            DBNull.Value : searchRequest.MaxPagesCount);
+
+                        _connection.Open();
+                        var reader = command.ExecuteReader();
+
+                        if (reader.Read())
+                        {
+                            int fullElementsCount = (int)reader["ElementsCount"];
+
+                            pagesCount = fullElementsCount / searchRequest.ElementsCount + 1;
+
+                            return pagesCount > searchRequest.PageNumber;
+                        }
+
+                        pagesCount = 0;
+                        return false;
+                    }
+                }
+            }
+
+            catch (Exception e)
+            {
+                _connection.Close();
+                pagesCount = 0;
+                throw new DataAccessException(e.Message, e.InnerException);
+            }           
+        }
+
+        public List<Author> GetFilteredAuthors(string namePattern)
+        {
+            try
+            {
+                using (_connection = new SqlConnection(connectionString))
+                {
+                    string stProc = "dbo.Author_GetByNamePattern";
+                    using (SqlCommand command = new SqlCommand(stProc, _connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+
+                        command.Parameters.AddWithValue("@namePattern", string.IsNullOrEmpty(namePattern) ?
+                            DBNull.Value : namePattern);
+
+                        List<Author> authors = new List<Author>();
+
+                        _connection.Open();
+                        var reader = command.ExecuteReader();
+
+                        while (reader.Read())
+                        {
+                            authors.Add(new Author(
+                                id: (Guid)reader["Id"],
+                                firstName: reader["FirstName"] as string,
+                                lastName: reader["LastName"] as string
+                                ));
+                        }
+
+                        return authors;
+                    }
+                }
             }
 
             catch (Exception e)

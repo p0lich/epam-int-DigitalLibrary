@@ -70,6 +70,7 @@ namespace Epam.DigitalLibrary.SqlDal
                         {
                             notes.Add(new Newspaper(
                             id: (Guid)reader["Id"],
+                            releaseId: (Guid)reader["Id_Release"],
                             name: reader["Name"] as string,
                             publicationPlace: reader["PublicationPlace"] as string,
                             publisher: reader["Publisher"] as string,
@@ -95,7 +96,7 @@ namespace Epam.DigitalLibrary.SqlDal
             }
         }
 
-        public bool InsertNote(Guid noteId, Note note)
+        public bool InsertNote(Guid rootNoteId, Note note, out Guid noteId)
         {
             try
             {
@@ -111,7 +112,8 @@ namespace Epam.DigitalLibrary.SqlDal
 
                         command.CommandType = CommandType.StoredProcedure;
 
-                        command.Parameters.AddWithValue("@id_Note", noteId);
+                        command.Parameters.AddWithValue("@id_Note", rootNoteId);
+                        command.Parameters.AddWithValue("@id_Release", newspaperData["ID_Release"] ?? DBNull.Value);
                         command.Parameters.AddWithValue("@publicationPlace", newspaperData["PublicationPlace"]);
                         command.Parameters.AddWithValue("@publisher", newspaperData["Publisher"]);
                         command.Parameters.AddWithValue("@iSSN", newspaperData["ISSN"] ?? DBNull.Value);
@@ -128,6 +130,11 @@ namespace Epam.DigitalLibrary.SqlDal
                         _connection.Open();
                         var res = command.ExecuteScalar();
                         _connection.Close();
+
+                        if (!Guid.TryParse(outId.Value.ToString(), out noteId))
+                        {
+                            throw new DataAccessException();
+                        }
                     }
                 }
 
@@ -137,6 +144,7 @@ namespace Epam.DigitalLibrary.SqlDal
             catch (Exception)
             {
                 _connection.Close();
+                noteId = new Guid();
                 return ResultCodes.ErrorInsert;
             }
         }
@@ -267,6 +275,7 @@ namespace Epam.DigitalLibrary.SqlDal
                         {
                             notes.Add(new Newspaper(
                             id: (Guid)reader["Id"],
+                            releaseId: (Guid)reader["Id_Release"],
                             name: reader["Name"] as string,
                             publicationPlace: reader["PublicationPlace"] as string,
                             publisher: reader["Publisher"] as string,
@@ -311,7 +320,8 @@ namespace Epam.DigitalLibrary.SqlDal
                         if (reader.Read())
                         {
                             return new Newspaper(
-                                id: (Guid)reader["ID"],
+                                id: (Guid)reader["Id"],
+                                releaseId: (Guid)reader["Id_Release"],
                                 name: reader["Name"] as string,
                                 publicationPlace: reader["PublicationPlace"] as string,
                                 publisher: reader["Publisher"] as string,

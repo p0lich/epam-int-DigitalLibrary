@@ -4,14 +4,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Epam.DigitalLibrary.Entities;
+using Epam.DigitalLibrary.Entities.Models.SearchModels;
 
 namespace Epam.DigitalLibrary.DalContracts
 {
     public interface IDataLayer
     {
-        public int AddNote(Note note);
+        public int AddNote(Note note, out Guid noteId);
 
         public List<Note> GetAllNotes();
+
+        public SearchResponse GetFilteredNotes(SearchRequest request, NoteTypes noteType);
 
         public Note GetById(Guid id);
 
@@ -31,6 +34,14 @@ namespace Epam.DigitalLibrary.DalContracts
 
         public Patent GetPatentById(Guid id);
 
+        public Author GetAuthor(Guid id);
+
         public List<Author> GetAvailableAuthors();
+
+        public int UpdateAuthor(Guid id, Author updatedAuthor);
+
+        public int AddAuthor(Author author, out Guid id);
+
+        public List<Author> GetFilteredAuthors(string namepattern);
     }
 }

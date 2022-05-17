@@ -9,7 +9,7 @@ namespace Epam.DigitalLibrary.DalContracts
 {
     public interface INoteDAO
     {
-        public bool InsertNote(Guid noteId, Note note);
+        public bool InsertNote(Guid rootNoteId, Note note, out Guid noteId);
 
         public bool DeleteNote(Guid noteId);
 

@@ -4,12 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Epam.DigitalLibrary.Entities;
+using Epam.DigitalLibrary.Entities.Models.NewspaperModels;
+using Epam.DigitalLibrary.Entities.Models.SearchModels;
 
 namespace Epam.DigitalLibrary.LogicContracts
 {
     public interface INoteLogic
     {
-        public int AddNote(Note note);
+        public int AddNote(Note note, out Guid noteId);
 
         public bool RemoveNote();
 
@@ -47,10 +49,34 @@ namespace Epam.DigitalLibrary.LogicContracts
 
         public Patent GetPatentById(Guid id);
 
+        public Author GetAuthor(Guid id);
+
         public List<Author> GetAvailableAuthors();
 
-        public IEnumerable<IGrouping<string, Newspaper>> GroupNewspapersByName();
+        public int AddAuthor(Author author, out Guid id);
+
+        public int UpdateAuthor(Guid id, Author updateAuthor);
+
+        public IEnumerable<IGrouping<Guid?, Newspaper>> GroupNewspapersByReleaseId();
 
         public List<Newspaper> GetNewspaperReleases(Guid newspaperId);
+
+        public bool SetReleaseToNewspaper(Guid newspaperId, Guid releaseId);
+
+        public NewspaperDetailsViewModel GetNewspaperDetails(Guid id);
+
+        public int UpdateNewspaperInfo(Guid id, NewspaperInputViewModel newspaperModel);
+
+        public bool MarkForDeleteNewspaperRelease(Guid id);
+
+        public int AddNewspaperRelease(NewspaperInputViewModel newspaperModel, out Guid id);
+
+        public List<NewspaperDetailsViewModel> GetAllNewspaperReleases();
+
+        public SearchResponse GetFilteredShortNotes(SearchRequest searchRequest, NoteTypes noteType);
+
+        public List<Author> GetFilteredAuthors(string namePattern);
+
+        public List<Newspaper> GetReleaseNewspapers(Guid newspaperReleaseId);
     }
 }

@@ -50,8 +50,6 @@ namespace Epam.DigitalLibrary.LibraryMVC
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            var a = Configuration.GetConnectionString("SSPIConnString");
-
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

@@ -213,7 +213,7 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
                     iSSN: newspaperInput.ISSN
                     );
 
-                int addResult = _logic.AddNote(newspaper);
+                int addResult = _logic.AddNote(newspaper, out Guid noteId);
 
                 if (FillCreateError(addResult) is not null)
                 {

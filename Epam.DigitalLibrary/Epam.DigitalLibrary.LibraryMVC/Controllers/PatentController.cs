@@ -151,7 +151,7 @@ namespace Epam.DigitalLibrary.LibraryMVC.Controllers
                     objectNotes: patentInput.ObjectNotes
                     );
 
-                int addResult = _logic.AddNote(patent);
+                int addResult = _logic.AddNote(patent, out Guid noteId);
 
                 if (FillCreateError(addResult) is not null)
                 {

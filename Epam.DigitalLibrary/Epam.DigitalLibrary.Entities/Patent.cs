@@ -132,6 +132,27 @@ namespace Epam.DigitalLibrary.Entities
             ApplicationDate = applicationDate;
         }
 
+        public Patent(NoteTypes noteType, string name, string objectNotes, int pagesCount,
+            List<Author> authors, string country, string registrationNumber, DateTime? applicationDate, DateTime publicationDate) :
+            base(noteType, name, objectNotes, pagesCount, publicationDate)
+        {
+            Authors = authors.OrderBy(a => a.FirstName).ToList();
+            Country = country;
+            RegistrationNumber = registrationNumber;
+            ApplicationDate = applicationDate;
+            PublicationDate = publicationDate;
+        }
+
+        public Patent(NoteTypes noteType, Guid id, string name, string objectNotes, int pagesCount, bool isDeleted,
+            List<Author> authors, string country, string registrationNumber, DateTime? applicationDate, DateTime publicationDate) :
+            base(noteType, id, name, objectNotes, pagesCount, publicationDate, isDeleted)
+        {
+            Authors = authors.OrderBy(a => a.FirstName).ToList();
+            Country = country;
+            RegistrationNumber = registrationNumber;
+            ApplicationDate = applicationDate;
+        }
+
         public override bool IsUnique(List<Note> notes, Guid updateId)
         {
             IEnumerable<Patent> patents = notes.OfType<Patent>();

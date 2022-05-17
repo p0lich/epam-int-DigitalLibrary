@@ -17,7 +17,7 @@ namespace Epam.DigitalLibrary.Entities
         {
             get => _firstName;
 
-            private set
+            set
             {
                 if (value is null)
                 {
@@ -39,7 +39,7 @@ namespace Epam.DigitalLibrary.Entities
         {
             get => _lastName;
 
-            private set
+            set
             {
                 if (value is null)
                 {
@@ -56,6 +56,8 @@ namespace Epam.DigitalLibrary.Entities
                 _lastName = value;
             }
         }
+
+        public Author() { }
 
         public Author(string firstName, string lastName)
         {

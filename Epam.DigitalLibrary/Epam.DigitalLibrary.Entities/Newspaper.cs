@@ -12,6 +12,8 @@ namespace Epam.DigitalLibrary.Entities
         private string _publicationPlace, _publisher, _issn;
         private DateTime _publicationDate, _releaseDate;
 
+        public Guid? ReleaseId { get; set; }
+
         public string PublicationPlace
         {
             get => _publicationPlace;
@@ -77,7 +79,7 @@ namespace Epam.DigitalLibrary.Entities
 
             private set
             {
-                if (_publicationDate.Year < value.Year)
+                if (_publicationDate.Year > value.Year)
                 {
                     throw new ArgumentException();
                 }
@@ -113,6 +115,7 @@ namespace Epam.DigitalLibrary.Entities
             string publicationPlace, string publisher, string number, DateTime releaseDate, string iSSN) :
             base(name, objectNotes, pagesCount, publicationDate)
         {
+            ReleaseId = null;
             PublicationPlace = publicationPlace;
             Publisher = publisher;
             PublicationDate = publicationDate;
@@ -125,6 +128,82 @@ namespace Epam.DigitalLibrary.Entities
             string publicationPlace, string publisher, string number, DateTime releaseDate, string iSSN) :
             base(id, name, objectNotes, pagesCount, publicationDate, isDeleted)
         {
+            ReleaseId = null;
+            PublicationPlace = publicationPlace;
+            Publisher = publisher;
+            Number = number;
+            ReleaseDate = releaseDate;
+            ISSN = iSSN;
+        }
+
+        public Newspaper(Guid? releaseId, string name, string objectNotes, int pagesCount, DateTime publicationDate,
+            string publicationPlace, string publisher, string number, DateTime releaseDate, string iSSN) :
+            base(name, objectNotes, pagesCount, publicationDate)
+        {
+            ReleaseId = releaseId;
+            PublicationPlace = publicationPlace;
+            Publisher = publisher;
+            PublicationDate = publicationDate;
+            Number = number;
+            ReleaseDate = releaseDate;
+            ISSN = iSSN;
+        }
+
+        public Newspaper(Guid id, Guid? releaseId, string name, string objectNotes, int pagesCount, DateTime publicationDate, bool isDeleted,
+            string publicationPlace, string publisher, string number, DateTime releaseDate, string iSSN) :
+            base(id, name, objectNotes, pagesCount, publicationDate, isDeleted)
+        {
+            ReleaseId = releaseId;
+            PublicationPlace = publicationPlace;
+            Publisher = publisher;
+            Number = number;
+            ReleaseDate = releaseDate;
+            ISSN = iSSN;
+        }
+
+        public Newspaper(NoteTypes noteType, string name, string objectNotes, int pagesCount, DateTime publicationDate,
+            string publicationPlace, string publisher, string number, DateTime releaseDate, string iSSN) :
+            base(noteType, name, objectNotes, pagesCount, publicationDate)
+        {
+            ReleaseId = null;
+            PublicationPlace = publicationPlace;
+            Publisher = publisher;
+            PublicationDate = publicationDate;
+            Number = number;
+            ReleaseDate = releaseDate;
+            ISSN = iSSN;
+        }
+
+        public Newspaper(NoteTypes noteType, Guid id, string name, string objectNotes, int pagesCount, DateTime publicationDate, bool isDeleted,
+            string publicationPlace, string publisher, string number, DateTime releaseDate, string iSSN) :
+            base(noteType, id, name, objectNotes, pagesCount, publicationDate, isDeleted)
+        {
+            ReleaseId = null;
+            PublicationPlace = publicationPlace;
+            Publisher = publisher;
+            Number = number;
+            ReleaseDate = releaseDate;
+            ISSN = iSSN;
+        }
+
+        public Newspaper(NoteTypes noteType, Guid? releaseId, string name, string objectNotes, int pagesCount, DateTime publicationDate,
+            string publicationPlace, string publisher, string number, DateTime releaseDate, string iSSN) :
+            base(noteType, name, objectNotes, pagesCount, publicationDate)
+        {
+            ReleaseId = releaseId;
+            PublicationPlace = publicationPlace;
+            Publisher = publisher;
+            PublicationDate = publicationDate;
+            Number = number;
+            ReleaseDate = releaseDate;
+            ISSN = iSSN;
+        }
+
+        public Newspaper(NoteTypes noteType, Guid id, Guid? releaseId, string name, string objectNotes, int pagesCount, DateTime publicationDate, bool isDeleted,
+            string publicationPlace, string publisher, string number, DateTime releaseDate, string iSSN) :
+            base(noteType, id, name, objectNotes, pagesCount, publicationDate, isDeleted)
+        {
+            ReleaseId = releaseId;
             PublicationPlace = publicationPlace;
             Publisher = publisher;
             Number = number;
@@ -207,6 +286,7 @@ namespace Epam.DigitalLibrary.Entities
             return new Dictionary<string, object>
             {
                 { "ID", ID },
+                { "ID_Release", ReleaseId},
                 { "Name", Name },
                 { "PublicationPlace", PublicationPlace },
                 { "Publisher", Publisher },
