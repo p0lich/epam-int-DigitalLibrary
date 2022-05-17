@@ -1,0 +1,73 @@
+﻿@model Epam.DigitalLibrary.LibraryMVC.Models.BookInputViewModel
+
+@section Scripts {
+    <script src="@Url.Content("~/js/js_validation_scripts/book_validation.js")"></script>
+}
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+@{
+    var error = TempData["Error"] as string;
+}
+
+@if (!string.IsNullOrEmpty(error))
+{
+    <h2 class="alert-danger" style="padding:20px;">@error</h2>
+}
+
+<h4>BookInputViewModel</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PublicationPlace" class="control-label"></label>
+                <input asp-for="PublicationPlace" class="form-control" />
+                <span asp-validation-for="PublicationPlace" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Publisher" class="control-label"></label>
+                <input asp-for="Publisher" class="form-control" />
+                <span asp-validation-for="Publisher" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PublicationDate" class="control-label"></label>
+                <input asp-for="PublicationDate" class="form-control" />
+                <span asp-validation-for="PublicationDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PagesCount" class="control-label"></label>
+                <input asp-for="PagesCount" class="form-control" />
+                <span asp-validation-for="PagesCount" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ObjectNotes" class="control-label"></label>
+                <input asp-for="ObjectNotes" class="form-control" />
+                <span asp-validation-for="ObjectNotes" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ISBN" class="control-label"></label>
+                <input asp-for="ISBN" class="form-control" />
+                <span asp-validation-for="ISBN" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="GetAllBooks">Back to List</a>
+</div>
+

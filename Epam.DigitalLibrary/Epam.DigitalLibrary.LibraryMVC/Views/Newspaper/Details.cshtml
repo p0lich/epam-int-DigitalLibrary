@@ -1,0 +1,92 @@
+﻿@model Epam.DigitalLibrary.LibraryMVC.Models.NewspaperModels.NewspaperFullDetails
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Newspaper Details</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.NewspaperDetails.Name)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.NewspaperDetails.Name)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.NewspaperDetails.PublicationPlace)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.NewspaperDetails.PublicationPlace)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.NewspaperDetails.Publisher)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.NewspaperDetails.Publisher)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.NewspaperDetails.PublicationDate)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.NewspaperDetails.PublicationDate)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.NewspaperDetails.ObjectNotes)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.NewspaperDetails.ObjectNotes)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.NewspaperDetails.ISSN)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.NewspaperDetails.ISSN)
+        </dd>
+    </dl>
+
+    <h4>Release Details</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ReleaseDetails.ID)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.ReleaseDetails.ID)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ReleaseDetails.PagesCount)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.ReleaseDetails.PagesCount)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ReleaseDetails.Number)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.ReleaseDetails.Number)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ReleaseDetails.ReleaseDate)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.ReleaseDetails.ReleaseDate)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ReleaseDetails.IsDeleted)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.ReleaseDetails.IsDeleted)
+        </dd>
+    </dl>
+</div>
+<div>
+    @Html.ActionLink("Get Releases", "GetNewspaperReleases", new { id = Model.ReleaseDetails.ID, pageId = 1 }) |
+    @Html.ActionLink("Edit", "Edit", new { id = Model.ReleaseDetails.ID }) |
+    @Html.ActionLink("Delete", "Delete", new { id = Model.ReleaseDetails.ID }) |
+    <a asp-action="GetAllReleases">Back to List</a>
+</div>

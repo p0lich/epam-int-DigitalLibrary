@@ -1,0 +1,31 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <a asp-controller="Book"
+       asp-action="GetAllBooks"
+       asp-route-id="1">
+        Show All books
+    </a>
+    <a asp-controller="Newspaper"
+       asp-action="GetAllReleases"
+       asp-route-id="1">
+        Show All newspaper releases
+    </a>
+    <a asp-controller="Patent"
+       asp-action="GetAllPatents"
+       asp-route-id="1">
+        Show all patents
+    </a>
+
+    @if (true)
+    {
+        <a asp-controller="Admin"
+           asp-action="Index">
+            Admin page
+        </a>
+    }
+</div>

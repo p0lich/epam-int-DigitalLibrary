@@ -1,0 +1,61 @@
+﻿@model PagingList<Epam.DigitalLibrary.LibraryMVC.Models.NewspaperModels.NewspaperReleaseLinkViewModel>
+
+@{
+    ViewData["Title"] = "GetNewspaperReleases";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>GetNewspaperReleases</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+
+@if (User.Identity.IsAuthenticated)
+{
+    <form asp-action="GetNewspaperReleases" method="get">
+        <div class="form-actions no-color">
+            <p>
+                Find by name: <input type="text" name="SearchString" value="@ViewData["CurrentFilter"]" />
+                <input type="submit" value="Search" class="btn btn-default" /> |
+                <a asp-action="GetNewspaperReleases">Back to Full List</a>
+            </p>
+        </div>
+    </form>
+}
+
+<table class="table">
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    <a asp-action="Details"
+                       asp-route-id="@item.ID">
+                        @item.ToString()
+                    </a>
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { id = item.ID }) |
+                    @Html.ActionLink("Details", "Details", new { id = item.ID }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = item.ID })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@{
+    var navigationIndexes = Model.GetNavigationIndexes(Model.PageIndex);
+}
+
+@foreach (var index in navigationIndexes)
+{
+    if (index == Model.PageIndex)
+    {
+        <a class="disabled">@index</a>
+        continue;
+    }
+
+    @Html.ActionLink(string.Format($" {index} "), "GetNewspaperReleases", new { pageId = index })
+}

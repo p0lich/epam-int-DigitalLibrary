@@ -1,0 +1,81 @@
+﻿@model PagingList<Epam.DigitalLibrary.LibraryMVC.Models.BookLinkViewModel>
+
+@{
+    ViewData["Title"] = "GetLibrary";
+}
+
+<h1>GetLibrary</h1>
+
+<p>
+    <a asp-controller="Book"
+       asp-action="Create">Create New Book</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            @*<th>
+                    @Html.DisplayNameFor(model => model.ID)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Name)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.PagesCount)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ObjectNotes)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.PublicationDate)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.IsDeleted)
+                </th>
+                <th></th>*@
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    <a asp-controller="Book"
+                       asp-action="Details"
+                       asp-route-id="@item.ID">
+                        @item.ToString()
+                    </a> 
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                    @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                    @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@*@{
+    var previousPageDisabled = !Model.PreviousPage ? "disabled" : "";
+    var nextPageDisabled = !Model.NextPage ? "disabled" : "";
+}*@
+
+@*<a asp-action="GetLibrary"
+       asp-route-id="@(Model.PageIndex - 1)"
+       class="btn btn-link">
+        Previous
+    </a>
+
+    <a asp-action="GetLibrary"
+       asp-route-id="@(Model.PageIndex + 1)"
+       class="btn btn-link">
+        Next
+    </a>*@
+
+
+@Html.ActionLink("1", "GetLibrary", new { pageId = 1 })
+
+@Html.ActionLink((Model.PageIndex - 1).ToString(), "GetLibrary", new { pageId = Model.PageIndex - 1 })
+@Html.ActionLink((Model.PageIndex + 1).ToString(), "GetLibrary", new { pageId = Model.PageIndex + 1 })
+
+@Html.ActionLink((Model.PagesCount).ToString(), "GetLibrary", new { pageId = Model.PagesCount })
